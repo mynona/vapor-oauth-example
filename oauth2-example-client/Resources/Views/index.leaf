@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Client</title>
+</head>
+
+<body style="background-color:#D7FEED;">
+
+  <h1>Client application</h1>
+
+<nav>
+   <ul>
+      <li><a href="http://localhost:8089/client-login">Login</a></li>
+      <li><a href="http://localhost:8089/protected-page">Protected Resource</a></li>
+   </ul>
+</nav>
+
+
+
+</body>
+</html>

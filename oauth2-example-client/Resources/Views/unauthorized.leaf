@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Client</title>
+</head>
+
+<body style="background-color:#D7FEED;">
+
+   <h1>Unauthorized.</h1>
+
+<nav>
+   <ul>
+      <li><a href="http://localhost:8089">Go back to home</a></li>
+   </ul>
+</nav>
+
+
+
+</body>
+</html>

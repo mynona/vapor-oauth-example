@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Client</title>
+</head>
+
+<body style="background-color:#D7FEED;">
+  <h3>Error (#(errorKey))</h3>
+  <p>#(errorMessage)</p>
+  <br />
+  <a href="http://localhost:8089/">Return to start page</a>
+</body>
+</html>

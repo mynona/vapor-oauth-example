@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OAuth Server</title>
+        <meta charset="UTF-8">
+    </head>
+    <body style="background-color:#FEEAE9;">
+        <h1>Sign in with oauth server</h1>
+
+        <form action="http://localhost:8090/oauth/login" method="POST">
+
+            <label for="username">Username:</label>
+            <input id="username" name="username" value="john_doe@something.com" />
+            <br />
+
+            <label for="password">Password:</label>
+            <input id="password" name="password" value="password" />
+            <br />
+            <input type="hidden" name="applicationAuthorized" value="true" />
+            <input type="hidden" name="csrfToken" value="#(csrfToken)" />
+            <input type="submit" value="Sign in" />
+        </form>
+
+    </body>
+
+</html>
