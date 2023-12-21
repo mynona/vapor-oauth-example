@@ -1,4 +1,4 @@
-# VaporOAuth example: Authorization Grant Flow
+# Simple VaporOAuth example for the Authorization Grant Flow
 
 https://github.com/brokenhandsio/vapor-oauth
 
