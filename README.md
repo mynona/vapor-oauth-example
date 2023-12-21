@@ -27,7 +27,7 @@ Start the client with http://localhost:8089
 
 * Client requests Authorization code
 * Server provides login screen (username, password)
-* Server user management
+* Server user management / Server-side sessions for user data
 * Server returns Authorization code to client
 * Client requests Access/Refresh token in exchange of Authorization code
 * Server returns Access token as JWT token
