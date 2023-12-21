@@ -1,11 +1,15 @@
-# VaporOAuth Example Server
+# VaporOAuth example: Authorization Grant Flow
 
 This repository is based on the oauth example by marius-se:
 
 https://github.com/marius-se/vapor-oauth2-example
 
-As it didn't compile on linux anymore and there were essential flows missing such as token introspection, I extended this
-example.
+As there were essential flows missing such as token introspection, I extended this
+example. 
+
+Unfortunately vapor/oauth doesn't compile on linux anymore. Therefore, I used the following fork, where these issues are fixed:
+
+https://github.com/vamsii777/vapor-oauth.git
 
 # Get started
 
@@ -15,7 +19,18 @@ The client will run at port 8089 and the server at port 8090.
 
 Start the client with http://localhost:8089
 
-Token introspection can be called via Postman.
+# What is included
+
+* Client requests Authorization code
+* Server provides login screen (username, password)
+* Server user management
+* Server returns Authorization code to client
+* Client requests Access/Refresh token in exchange of Authorization code
+* Server returns Access token as JWT token
+* Server returns Refresh token as UUID
+* Client stores both tokens as cookies on the client (reason: make it available for all microservices)
+* Client checks token_info endpoint to access restricted resources
+
 
 # What is missing
 
