@@ -52,7 +52,6 @@ public func configure(_ app: Application) throws {
    app.middleware.use(Author.sessionAuthenticator())
    app.middleware.use(OAuthUserSessionAuthenticator())
 
-
    //      =============================================================
    //      JWT
    //      =============================================================
@@ -68,6 +67,22 @@ public func configure(_ app: Application) throws {
    //      =============================================================
    //      OAuth configuration
    //      =============================================================
+
+   // authorizeHandler
+   // Creates authorization code that can be exchanged with a token
+   // via the tokenManager
+
+   // codeManager
+   // Manages authorization codes
+
+   // tokenManager
+   // Manages everything related to access and refresh tokens
+
+   // clientRetriever
+   // Manages clients who can request authorization
+
+   // resourceServerRetriever
+   // Manages resource servers who can access introspection (token_info endpoint)
 
    app.lifecycle.use(
       OAuth2(
@@ -87,5 +102,5 @@ public func configure(_ app: Application) throws {
    )
 
    try Routes(app)
-   
+
 }
