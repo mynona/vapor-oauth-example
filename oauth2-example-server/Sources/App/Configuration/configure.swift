@@ -35,10 +35,12 @@ public func configure(_ app: Application) throws {
    app.migrations.add(CreateRefreshToken())
    app.migrations.add(SessionRecord.migration)
    app.migrations.add(CreateResourceServer())
+   app.migrations.add(CreateClient())
 
    // Seed
    app.migrations.add(SeedAuthor())
    app.migrations.add(SeedResourceServer())
+   app.migrations.add(SeedClient())
 
    try app.autoMigrate().wait()
    
@@ -72,6 +74,8 @@ public func configure(_ app: Application) throws {
       redirectURIs: ["http://localhost:8089/callback"],
       clientSecret: "password123",
       validScopes: ["admin"],
+      confidential: true,
+      firstParty: true,
       allowedGrantType: .authorization
    )
 

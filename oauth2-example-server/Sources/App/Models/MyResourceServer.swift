@@ -28,8 +28,17 @@ final class MyResourceServer: Model, Content {
       self.password = password
    }
 
-   func verify(password: String) throws -> Bool {
-      try Bcrypt.verify(password, created: self.password)
-   }
-   
+   // Note for real implementation:
+   //
+   // vapor/oauth: password must be provided in plain text
+   // therefore Bcrypt doesn't work as it is a one-way-hash
+   // As we should never store plain text passwords in a database
+   // this model needs to be extended with a cypher
+
+   /*
+    func verify(password: String) throws -> Bool {
+    try Bcrypt.verify(password, created: self.password)
+    }
+    */
+
 }
