@@ -56,6 +56,4 @@ https://www.oauth.com
 # What is missing
 
 * At the moment you have to run the flow twice because the middleware doesn't store the session in time when it hits the authorize endpoint. This needs to be fixed on a fundamental layer = to extend OAuthUser to be a fluent model.
-* Logout flow
-* Include multiple clients in the flow
 
