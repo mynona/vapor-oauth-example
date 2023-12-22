@@ -29,11 +29,11 @@ Start the client with http://localhost:8089
 
 * Client requests Authorization code
 * Server provides login screen (username, password)
-* Server user management / Server-side sessions for user data
+* Server side data handling: sessions for user data, db clients, db resource servers
 * Server returns Authorization code to client
 * Client requests Access/Refresh token in exchange of Authorization code
 * Server returns Access token as JWT token
-* Server returns Refresh token as UUID
+* Server returns Refresh token as UUID value
 * Client stores both tokens as cookies on the client (reason: make it available for all microservices)
 * Client checks token_info endpoint to access restricted resources
 
