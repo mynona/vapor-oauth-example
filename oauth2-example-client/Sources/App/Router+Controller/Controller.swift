@@ -49,7 +49,7 @@ struct Controller: Encodable {
          domain: nil,
          path: nil,
          isSecure: false, // in real world case: true
-         isHTTPOnly: false, // in real world case: true
+         isHTTPOnly: true,
          sameSite: nil
       )
 
@@ -138,9 +138,13 @@ struct Controller: Encodable {
          domain: nil,
          path: nil,
          isSecure: false, // in real world case: true
-         isHTTPOnly: false, // in real world case: true
+         isHTTPOnly: true, // in real world case: true
          sameSite: nil
       )
+
+
+      // Token rotation is not supported in vapor/oauth at the moment:
+      // https://stateful.com/blog/oauth-refresh-token-best-practices
 
       let refreshTokenCookie = HTTPCookies.Value(
          string: refreshToken,
@@ -149,7 +153,7 @@ struct Controller: Encodable {
          domain: nil,
          path: nil,
          isSecure: false, // in real world case: true
-         isHTTPOnly: false, // in real world case: true
+         isHTTPOnly: true, // in real world case: true
          sameSite: nil
       )
 
@@ -292,6 +296,7 @@ struct Controller: Encodable {
 
       let tokenEndpoint = URI(string: "http://localhost:8090/oauth/token")
 
+      // A new token can only be retrieved with the client_secret
 
       let content = OAuth_RefreshTokenRequest(
          grant_type: "refresh_token",
@@ -314,6 +319,10 @@ struct Controller: Encodable {
       print("Refresh token response: \(response)")
       print("-----------------------------")
 #endif
+
+      if response.status != .ok {
+         throw(Abort(.unauthorized, reason: "Unauthorized"))
+      }
 
       // Unwrap response
       let token: OAuth_RefreshTokenResponse = try response.content.decode(OAuth_RefreshTokenResponse.self)
@@ -339,7 +348,7 @@ struct Controller: Encodable {
          domain: nil,
          path: nil,
          isSecure: false, // in real world case: true
-         isHTTPOnly: false, // in real world case: true
+         isHTTPOnly: true,
          sameSite: nil
       )
 
