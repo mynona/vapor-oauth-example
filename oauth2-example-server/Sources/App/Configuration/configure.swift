@@ -83,7 +83,8 @@ public func configure(_ app: Application) throws {
       OAuth2(
          codeManager: MyCodeManger(),
          tokenManager: MyTokenManager(app: app),
-         clientRetriever: StaticClientRetriever(clients: [someOAuthClient]),
+         //clientRetriever: StaticClientRetriever(clients: [someOAuthClient]),
+         clientRetriever: MyClientRetriever(app: app),
          authorizeHandler: MyAuthorizeHandler(),
          validScopes: ["admin"],
          resourceServerRetriever: MyResourceServerRetriever(app: app),
