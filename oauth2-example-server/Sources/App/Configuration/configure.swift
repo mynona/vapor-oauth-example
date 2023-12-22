@@ -5,30 +5,30 @@ import VaporOAuth
 import Leaf
 
 public func configure(_ app: Application) throws {
-   
+
    //      =============================================================
    //      Debugging
    //      =============================================================
-   
+
    app.logger.logLevel = .notice
 
    //      =============================================================
    //      PORT
    //      =============================================================
-   
+
    app.http.server.configuration.port = 8090
-   
+
    //      =============================================================
    //      Database
    //      =============================================================
-   
+
    app.databases.use(.sqlite(.file("local-db")), as: .sqlite)
    app.sessions.use(.fluent)
 
    //      =============================================================
    //      Migrations
    //      =============================================================
-   
+
    // Create Tables
    app.migrations.add(CreateAuthor())
    app.migrations.add(CreateAccessToken())
@@ -43,11 +43,11 @@ public func configure(_ app: Application) throws {
    app.migrations.add(SeedClient())
 
    try app.autoMigrate().wait()
-   
+
    //      =============================================================
    //      OAuth / Session Middleware
    //      =============================================================
-   
+
    app.middleware.use(app.sessions.middleware, at: .beginning)
    app.middleware.use(Author.sessionAuthenticator())
    app.middleware.use(OAuthUserSessionAuthenticator())
@@ -62,28 +62,17 @@ public func configure(_ app: Application) throws {
    //      =============================================================
    //      Leaf
    //      =============================================================
-   
+
    app.views.use(.leaf)
-   
+
    //      =============================================================
    //      OAuth configuration
    //      =============================================================
-   
-   let someOAuthClient = OAuthClient(
-      clientID: "1",
-      redirectURIs: ["http://localhost:8089/callback"],
-      clientSecret: "password123",
-      validScopes: ["admin"],
-      confidential: true,
-      firstParty: true,
-      allowedGrantType: .authorization
-   )
 
    app.lifecycle.use(
       OAuth2(
          codeManager: MyCodeManger(),
          tokenManager: MyTokenManager(app: app),
-         //clientRetriever: StaticClientRetriever(clients: [someOAuthClient]),
          clientRetriever: MyClientRetriever(app: app),
          authorizeHandler: MyAuthorizeHandler(),
          validScopes: ["admin"],
@@ -94,15 +83,9 @@ public func configure(_ app: Application) throws {
             resourceServerUsername: "test",
             resourceServerPassword: "test"
          )
-         
       )
    )
-   
+
    try Routes(app)
+   
 }
-
-
-
-
-
-
