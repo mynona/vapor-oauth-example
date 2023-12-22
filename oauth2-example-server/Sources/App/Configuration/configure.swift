@@ -49,8 +49,9 @@ public func configure(_ app: Application) throws {
    //      =============================================================
 
    app.middleware.use(app.sessions.middleware, at: .beginning)
-   app.middleware.use(Author.sessionAuthenticator())
    app.middleware.use(OAuthUserSessionAuthenticator())
+   app.middleware.use(Author.sessionAuthenticator())
+
 
    //      =============================================================
    //      JWT

@@ -1,10 +1,11 @@
 import Vapor
 import Leaf
 import VaporOAuth
+import Fluent
 
-struct Controller: Encodable {
+struct Controller {
 
-   func signin(_ request: Request) async throws -> ClientResponse {
+   func signin(_ request: Request) async throws -> Response {
 
       let user = try request.auth.require(Author.self)
 
@@ -19,26 +20,29 @@ struct Controller: Encodable {
 
       // Log in OAuth user with credentials
 
+      let oauth_user = OAuthUser(
+            userID: user.id?.uuidString,
+            username: user.username,
+            emailAddress: "",
+            password: user.password
+         )
+
+      request.auth.login(oauth_user)
+
+      return request.redirect(to: "http://localhost:8090/oauth/auth")
+
+   }
 
 
-       request.auth.login(
-          OAuthUser(
-             userID: user.id?.uuidString,
-             username: user.username,
-             emailAddress: "",
-             password: user.password
-          )
-       )
+   func auth(_ request: Request) async throws -> ClientResponse {
 
-      let oauth_user = try request.auth.require(OAuthUser.self)
-
-      // Get data from session
 
       let state = request.session.data["state"] ?? ""
       let client_id = request.session.data["client_id"] ?? ""
       let scope = request.session.data["scope"] ?? ""
       let redirect_uri = request.session.data["redirect_uri"] ?? ""
       let csrfToken = request.session.data["CSRFToken"] ?? ""
+
 
 #if DEBUG
       print("\n-----------------------------")
@@ -62,7 +66,6 @@ struct Controller: Encodable {
          csrfToken: csrfToken
       )
 
-
       let authorize = URI(string: "http://localhost:8090/oauth/authorize?client_id=\(client_id)&redirect_uri=\(redirect_uri)&response_type=code&scope=\(scope)&state=\(state)")
 
 #if DEBUG
@@ -75,33 +78,34 @@ struct Controller: Encodable {
 
       let cookie = request.cookies["vapor-session"] ?? ""
 
-
-      // doesnt change a thing:
-      /*
-      let a = OAuthUserSessionAuthenticator()
-      try await a.authenticate(
-         sessionID: user.id!.uuidString,
-         for: request
-      )
-       */
-
       let headers = HTTPHeaders(dictionaryLiteral:
-                                ("Cookie", "vapor-session=\(cookie.string)")
-                                )
+                                 ("Cookie", "vapor-session=\(cookie.string)")
+      )
 
 #if DEBUG
       print("\n-----------------------------")
       print("Controller().signin()")
       print("-----------------------------")
       print("headers: \(headers)")
+      print("uri: \(authorize)")
+      print("content: \(content)")
       print("-----------------------------")
 #endif
 
-      
+      let response =  try await request.client.post(authorize, headers: headers, content: content)
 
-      return try await request.client.post(authorize, headers: headers, content: content)
+#if DEBUG
+      print("\n-----------------------------")
+      print("Controller().signin()")
+      print("-----------------------------")
+      print("response: \(response)")
+      print("-----------------------------")
+#endif
+
+      return response
 
    }
+
 
 
 
