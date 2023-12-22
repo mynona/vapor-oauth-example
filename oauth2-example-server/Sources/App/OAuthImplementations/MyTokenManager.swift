@@ -6,7 +6,7 @@ import JWT
 
 
 
-class LiveTokenManager: TokenManager {
+class MyTokenManager: TokenManager {
 
    private let app: Application
 
@@ -41,7 +41,7 @@ class LiveTokenManager: TokenManager {
 
       // Access Token sent to client
 
-      let jwtAccessToken = LiveAccessToken(
+      let jwtAccessToken = MyAccessToken(
          tokenString: "\(jwt)",
          clientID: clientID,
          userID: userID,
@@ -51,7 +51,7 @@ class LiveTokenManager: TokenManager {
 
       // Access Token stored in database
 
-      let accessToken = LiveAccessToken(
+      let accessToken = MyAccessToken(
          tokenString: tokenString,
          clientID: clientID,
          userID: userID,
@@ -60,7 +60,7 @@ class LiveTokenManager: TokenManager {
       )
       try await accessToken.save(on: app.db)
 
-      let refreshToken = LiveRefreshToken(
+      let refreshToken = MyRefreshToken(
          tokenString: UUID().uuidString,
          clientID: clientID,
          userID: userID,
@@ -78,12 +78,12 @@ class LiveTokenManager: TokenManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("LiveTokenManager().generateAccessToken()")
+      print("MyTokenManager().generateAccessToken()")
       print("-----------------------------")
       print("-----------------------------")
 #endif
 
-      let accessToken = LiveAccessToken(
+      let accessToken = MyAccessToken(
          tokenString: UUID().uuidString,
          clientID: clientID,
          userID: userID,
@@ -97,7 +97,7 @@ class LiveTokenManager: TokenManager {
    // ----------------------------------------------------------
 
    func getRefreshToken(_ refreshToken: String) async throws -> VaporOAuth.RefreshToken? {
-      return try await LiveRefreshToken.query(on: app.db)
+      return try await MyRefreshToken.query(on: app.db)
          .filter(\.$tokenString == refreshToken)
          .first()
    }
@@ -113,7 +113,7 @@ class LiveTokenManager: TokenManager {
       let jwt = try app.jwt.signers.verify(accessToken, as: Payload.self)
 
       guard
-         let token = try await LiveAccessToken.query(on: app.db)
+         let token = try await MyAccessToken.query(on: app.db)
             .filter(\.$tokenString == jwt.jti)
             .first()
       else {
@@ -122,7 +122,7 @@ class LiveTokenManager: TokenManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("LiveTokenManager().getAccessToken()")
+      print("MyTokenManager().getAccessToken()")
       print("-----------------------------")
       print("Received access token: \(jwt)")
       print("-----------------------------")
@@ -132,7 +132,7 @@ class LiveTokenManager: TokenManager {
 
       // Return token from the database
 
-      return LiveAccessToken(
+      return MyAccessToken(
          id: token.id,
          tokenString: token.tokenString,
          clientID: token.clientID,
@@ -149,7 +149,7 @@ class LiveTokenManager: TokenManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("LiveTokenManager().uddateRefreshToken()")
+      print("MyTokenManager().uddateRefreshToken()")
       print("-----------------------------")
       print("-----------------------------")
 #endif

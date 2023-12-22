@@ -34,10 +34,12 @@ public func configure(_ app: Application) throws {
    app.migrations.add(CreateAccessToken())
    app.migrations.add(CreateRefreshToken())
    app.migrations.add(SessionRecord.migration)
+   app.migrations.add(CreateResourceServer())
 
    // Seed
    app.migrations.add(SeedAuthor())
-   
+   app.migrations.add(SeedResourceServer())
+
    try app.autoMigrate().wait()
    
    //      =============================================================
@@ -75,12 +77,12 @@ public func configure(_ app: Application) throws {
 
    app.lifecycle.use(
       OAuth2(
-         codeManager: LiveCodeManger(),
-         tokenManager: LiveTokenManager(app: app),
+         codeManager: MyCodeManger(),
+         tokenManager: MyTokenManager(app: app),
          clientRetriever: StaticClientRetriever(clients: [someOAuthClient]),
-         authorizeHandler: LiveAuthorizeHandler(),
+         authorizeHandler: MyAuthorizeHandler(),
          validScopes: ["admin"],
-         resourceServerRetriever: LiveResourceServerRetriever(),
+         resourceServerRetriever: MyResourceServerRetriever(app: app),
          oAuthHelper: .remote(
             tokenIntrospectionEndpoint: "token_info",
             client: app.client,

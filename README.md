@@ -2,6 +2,8 @@
 
 https://github.com/brokenhandsio/vapor-oauth
 
+(PKCE is not supported.)
+
 # Context
 
 This repository is based on the oauth example by marius-se:
@@ -40,4 +42,6 @@ Start the client with http://localhost:8089
 
 * At the moment you have to run the flow twice because the middleware doesn't store the session in time when it hits the authorize endpoint. This needs to be fixed on a fundamental layer = to extend OAuthUser to be a fluent model.
 * Refresh Token flow not implemented yet
+* Logout flow
+* Include multiple clients in the flow
 

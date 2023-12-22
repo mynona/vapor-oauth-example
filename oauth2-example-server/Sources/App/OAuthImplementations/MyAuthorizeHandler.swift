@@ -2,13 +2,13 @@ import Vapor
 import VaporOAuth
 import Leaf
 
-struct LiveAuthorizeHandler: AuthorizeHandler {
+struct MyAuthorizeHandler: AuthorizeHandler {
 
    func handleAuthorizationRequest(_ request: Request, authorizationRequestObject: AuthorizationRequestObject) async throws -> Response {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("LiveAuthorizeHandler().handleAuthorizationRequest()")
+      print("MyAuthorizeHandler().handleAuthorizationRequest()")
       print("-----------------------------")
       print("Authorization request received from the client:")
       print("\(authorizationRequestObject)")
@@ -53,7 +53,7 @@ struct LiveAuthorizeHandler: AuthorizeHandler {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("LiveAuthorizeHandler().handleAuthorizationError()")
+      print("MyAuthorizeHandler().handleAuthorizationError()")
       print("-----------------------------")
       print("Authorization error")
       print("\(errorType)")

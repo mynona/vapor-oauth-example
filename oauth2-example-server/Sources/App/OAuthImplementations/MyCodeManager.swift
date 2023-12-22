@@ -1,7 +1,7 @@
 import VaporOAuth
 import Vapor
 
-class LiveCodeManger: CodeManager {
+class MyCodeManger: CodeManager {
    func generateDeviceCode(userID: String, clientID: String, scopes: [String]?) async throws -> String {
       return ""
    }

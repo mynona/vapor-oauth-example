@@ -213,8 +213,10 @@ struct Controller: Encodable {
 
       // Basic authentication set up for the client to access the
       // introspection endpoint on the oauth server
-      let resourceServerUsername = "test"
-      let resourceServerPassword = "test"
+      // On the oauth server acess is managed via:
+      // resourceServerRetriever: LiveResourceServerRetriever(app: app)
+      let resourceServerUsername = "resource-1"
+      let resourceServerPassword = "resource-1-password"
 
       let credentials = "\(resourceServerUsername):\(resourceServerPassword)".base64String()
 

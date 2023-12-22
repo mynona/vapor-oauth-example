@@ -15,21 +15,29 @@ class MyResourceServerRetriever: ResourceServerRetriever {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthResourceServerRetriever().getServer()")
+      print("MyResourceServerRetriever().getServer()")
       print("-----------------------------")
       print("username: \(username)")
       print("-----------------------------")
 #endif
 
-      let refreshToken = "31E8A7F3-F268-408C-85AB-27C205AEA479"
-      let temp = try await MyRefreshToken.query(on: app.db)
-         .filter(\.$tokenString == refreshToken)
+      guard
+         let server = try await MyResourceServer.query(on: app.db)
+         .filter(\.$username == username)
          .first()
+      else {
+         return nil
+      }
 
-      print(temp)
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyResourceServerRetriever().getServer()")
+      print("-----------------------------")
+      print("Database query: \(server)")
+      print("-----------------------------")
+#endif
 
-
-      return OAuthResourceServer(username: "test", password: "test")
+      return OAuthResourceServer(username: server.username, password: server.password)
    }
 
 }
