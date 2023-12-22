@@ -3,6 +3,11 @@ import Vapor
 
 class MyCodeManger: CodeManager {
 
+   private let app: Application
+
+   init(app: Application) {
+      self.app = app
+   }
 
    // Device Code flow not part of this example:
 

@@ -138,7 +138,7 @@ struct Controller: Encodable {
          domain: nil,
          path: nil,
          isSecure: false, // in real world case: true
-         isHTTPOnly: true, // in real world case: true
+         isHTTPOnly: true,
          sameSite: nil
       )
 
@@ -153,7 +153,7 @@ struct Controller: Encodable {
          domain: nil,
          path: nil,
          isSecure: false, // in real world case: true
-         isHTTPOnly: true, // in real world case: true
+         isHTTPOnly: true,
          sameSite: nil
       )
 

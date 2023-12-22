@@ -86,7 +86,7 @@ public func configure(_ app: Application) throws {
 
    app.lifecycle.use(
       OAuth2(
-         codeManager: MyCodeManger(),
+         codeManager: MyCodeManger(app: app),
          tokenManager: MyTokenManager(app: app),
          clientRetriever: MyClientRetriever(app: app),
          authorizeHandler: MyAuthorizeHandler(),

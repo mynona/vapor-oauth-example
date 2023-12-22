@@ -2,7 +2,7 @@ import Vapor
 import Leaf
 import VaporOAuth
 
-struct OAuthController: Encodable {
+struct Controller: Encodable {
 
    func signin(_ request: Request) async throws -> ClientResponse {
 
@@ -18,6 +18,8 @@ struct OAuthController: Encodable {
 #endif
 
       // Log in OAuth user with credentials
+
+
 
        request.auth.login(
           OAuthUser(
@@ -73,6 +75,16 @@ struct OAuthController: Encodable {
 
       let cookie = request.cookies["vapor-session"] ?? ""
 
+
+      // doesnt change a thing:
+      /*
+      let a = OAuthUserSessionAuthenticator()
+      try await a.authenticate(
+         sessionID: user.id!.uuidString,
+         for: request
+      )
+       */
+
       let headers = HTTPHeaders(dictionaryLiteral:
                                 ("Cookie", "vapor-session=\(cookie.string)")
                                 )
@@ -84,6 +96,8 @@ struct OAuthController: Encodable {
       print("headers: \(headers)")
       print("-----------------------------")
 #endif
+
+      
 
       return try await request.client.post(authorize, headers: headers, content: content)
 

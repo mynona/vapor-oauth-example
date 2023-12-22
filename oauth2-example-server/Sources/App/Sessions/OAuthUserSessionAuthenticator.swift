@@ -2,7 +2,7 @@ import Vapor
 import VaporOAuth
 import Fluent
 
-struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
+public struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
     public typealias User = OAuthUser
 
     public func authenticate(sessionID: String, for request: Vapor.Request) async throws {
