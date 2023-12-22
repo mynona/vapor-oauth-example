@@ -51,6 +51,7 @@ https://www.oauth.com
 * Client stores both tokens as cookies on the client (reason: make it available for all microservices)
 * Client checks token_info endpoint to access restricted resources
 * Client can request a new access_token with the refresh_token
+* Client logout will just destroy the cookies in this example
 
 
 # What is missing
