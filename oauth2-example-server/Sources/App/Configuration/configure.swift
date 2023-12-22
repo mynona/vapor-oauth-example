@@ -36,6 +36,7 @@ public func configure(_ app: Application) throws {
    app.migrations.add(SessionRecord.migration)
    app.migrations.add(CreateResourceServer())
    app.migrations.add(CreateClient())
+   app.migrations.add(CreateAuthorizationCode())
 
    // Seed
    app.migrations.add(SeedAuthor())
@@ -94,13 +95,14 @@ public func configure(_ app: Application) throws {
          validScopes: ["admin"],
          resourceServerRetriever: MyResourceServerRetriever(app: app),
          oAuthHelper: .remote(
-            tokenIntrospectionEndpoint: "token_info",
+            tokenIntrospectionEndpoint: "",
             client: app.client,
-            resourceServerUsername: "test",
-            resourceServerPassword: "test"
+            resourceServerUsername: "",
+            resourceServerPassword: ""
          )
       )
    )
+
 
    try Routes(app)
 

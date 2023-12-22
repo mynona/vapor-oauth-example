@@ -2,7 +2,7 @@ import Fluent
 
 struct CreateAccessToken: AsyncMigration {
     func prepare(on database: Database) async throws {
-        try await database.schema("access_tokens")
+        try await database.schema("access_token")
             .id()
             .field("token_string", .string, .required)
             .field("client_id", .string, .required)

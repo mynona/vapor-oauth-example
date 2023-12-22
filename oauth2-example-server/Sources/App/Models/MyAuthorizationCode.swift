@@ -4,7 +4,7 @@ import Vapor
 
 final class MyAuthorizationCode: Model {
 
-   static let schema = "authorization_codes"
+   static let schema = "authorization_code"
 
    @ID(key: .id)
    var id: UUID?

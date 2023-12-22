@@ -4,7 +4,7 @@ import VaporOAuth
 
 final class MyRefreshToken: Model, RefreshToken {
    
-   static let schema = "refresh_tokens"
+   static let schema = "refresh_token"
    
    @ID(key: .id)
    var id: UUID?

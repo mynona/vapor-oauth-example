@@ -9,13 +9,11 @@ let package = Package(
     dependencies: [
       .package(url: "https://github.com/vapor/vapor.git", from: "4.89.3"),
       .package(url: "https://github.com/vapor/fluent.git", from: "4.8.0"),
-      .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
+      .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.6.0"),
       .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
       .package(url: "https://github.com/vapor/jwt.git", from: "4.2.2"),
-      //.package(url: "https://github.com/marius-se/vapor-oauth.git", branch: "vapor-4")
       //.package(url: "https://github.com/brokenhandsio/vapor-oauth.git", branch: "1.0.0-beta.2")
       .package(url: "https://github.com/vamsii777/vapor-oauth.git", branch: "main")
-      //.package(url: "https://github.com/brokenhandsio/vapor-oauth-fluent", from: "0.4.0")
     ],
     targets: [
         .target(

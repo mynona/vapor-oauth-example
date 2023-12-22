@@ -4,7 +4,7 @@ import Vapor
 
 final class MyAccessToken: Model, VaporOAuth.AccessToken {
    
-   static let schema = "access_tokens"
+   static let schema = "access_token"
 
    @ID(key: .id)
    var id: UUID?

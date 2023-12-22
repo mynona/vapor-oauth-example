@@ -29,7 +29,7 @@ struct Controller {
 
       request.auth.login(oauth_user)
 
-      return request.redirect(to: "http://localhost:8090/oauth/auth")
+      return request.redirect(to: "http://localhost:8090/oauth/login-forward")
 
    }
 
@@ -98,7 +98,7 @@ struct Controller {
       print("\n-----------------------------")
       print("Controller().signin()")
       print("-----------------------------")
-      print("response: \(response)")
+      print("response: \(response.status)")
       print("-----------------------------")
 #endif
 

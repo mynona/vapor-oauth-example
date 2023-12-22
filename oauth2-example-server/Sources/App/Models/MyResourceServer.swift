@@ -4,7 +4,7 @@ import Vapor
 
 final class MyResourceServer: Model, Content {
 
-   static let schema = "resource_servers"
+   static let schema = "resource_server"
 
    @ID(key: .id)
    var id: UUID?
