@@ -2,7 +2,7 @@ import Vapor
 import Leaf
 import VaporOAuth
 
-struct Controller: Encodable {
+struct OAuthController: Encodable {
 
    func signin(_ request: Request) async throws -> ClientResponse {
 
