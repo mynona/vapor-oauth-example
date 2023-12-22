@@ -48,6 +48,8 @@ https://www.oauth.com
 * Client requests Access/Refresh token in exchange of Authorization code
 * Server returns Access token as JWT token
 * Server returns Refresh token as UUID value
+* Server deletes expired Access tokens
+* Server deletes not used (*) refresh tokens as example
 * Client stores both tokens as cookies on the client (reason: make it available for all microservices)
 * Client checks token_info endpoint to access restricted resources
 * Client can request a new access_token with the refresh_token
