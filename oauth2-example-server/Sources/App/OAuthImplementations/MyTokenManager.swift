@@ -23,9 +23,13 @@ class MyTokenManager: TokenManager {
 
       let tokenString = UUID().uuidString
 
+      // Expiry time 1 minutes
+      // for testing of the flows
+      let expiryTime = Date(timeIntervalSinceNow: TimeInterval(60))
+
       let payload = Payload(
          subject: SubjectClaim(value: userID ?? ""),
-         expiration: ExpirationClaim(value: Date(timeIntervalSinceNow: TimeInterval(accessTokenExpiryTime))),
+         expiration: ExpirationClaim(value: expiryTime),
          issuer: "OAuth Server",
          audience: "Client",
          jti: tokenString,
@@ -33,11 +37,6 @@ class MyTokenManager: TokenManager {
       )
 
       let jwt = try app.jwt.signers.sign(payload)
-
-      // Expiry time
-
-
-      let expiryTime = Date(timeIntervalSinceNow: TimeInterval(60))
 
       // Access Token sent to client
 
@@ -73,16 +72,71 @@ class MyTokenManager: TokenManager {
 
    // ----------------------------------------------------------
 
-   func generateAccessToken(clientID: String, userID: String?, scopes: [String]?, expiryTime: Int) async throws -> VaporOAuth.AccessToken {
 
+   // generateAccessToken
+   // Called when a refresh token is exchanged for an access token
+
+   func generateAccessToken(clientID: String, userID: String?, scopes: [String]?, expiryTime: Int) async throws -> VaporOAuth.AccessToken {
 
 #if DEBUG
       print("\n-----------------------------")
       print("MyTokenManager().generateAccessToken()")
       print("-----------------------------")
+      print("Parameters:")
+      print("clientID: \(clientID)")
+      print("userID: \(userID)")
+      print("scopes: \(scopes)")
+      print("expiryTime: \(expiryTime)")
       print("-----------------------------")
 #endif
 
+      let tokenString = UUID().uuidString
+
+      // Expiry time 1 minutes
+      // for testing of the flows
+      let xexpiryTime = Date(timeIntervalSinceNow: TimeInterval(60))
+
+      let payload = Payload(
+         subject: SubjectClaim(value: userID ?? ""),
+         expiration: ExpirationClaim(value: xexpiryTime),
+         issuer: "OAuth Server",
+         audience: "Client",
+         jti: tokenString,
+         issuedAtTime: Date()
+      )
+
+      let jwt = try app.jwt.signers.sign(payload)
+
+      let jwtAccessToken = MyAccessToken(
+         tokenString: "\(jwt)",
+         clientID: clientID,
+         userID: userID,
+         scopes: scopes,
+         expiryTime: xexpiryTime
+      )
+
+      // Access Token stored in database
+
+      let accessToken = MyAccessToken(
+         tokenString: tokenString,
+         clientID: clientID,
+         userID: userID,
+         scopes: scopes,
+         expiryTime: xexpiryTime
+      )
+      try await accessToken.save(on: app.db)
+
+      let refreshToken = MyRefreshToken(
+         tokenString: UUID().uuidString,
+         clientID: clientID,
+         userID: userID,
+         scopes: scopes
+      )
+      try await refreshToken.save(on: app.db)
+
+      return jwtAccessToken
+
+/*
       let accessToken = MyAccessToken(
          tokenString: UUID().uuidString,
          clientID: clientID,
@@ -92,6 +146,7 @@ class MyTokenManager: TokenManager {
       )
       try await accessToken.save(on: app.db)
       return accessToken
+ */
    }
 
    // ----------------------------------------------------------
