@@ -73,7 +73,7 @@ public func configure(_ app: Application) throws {
    // via the tokenManager
 
    // codeManager
-   // Manages authorization codes
+   // Manages authorization codes 
 
    // tokenManager
    // Manages everything related to access and refresh tokens

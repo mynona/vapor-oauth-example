@@ -13,13 +13,11 @@
    <ul>
       <li><a href="http://localhost:8089">Start again</a></li>
       <br />
-      <li><a href="http://localhost:8089/refresh-token-test">Refresh token</a></li>
+      <li><a href="http://localhost:8089/refresh-token-test">Refresh token</a> When you refresh the token you can see the result in the updated cookie. For the sake of testing vapor/oauth access_tokens are only valid for 1 minute. Even if the access_token is invalid you can still request a new access_token with the refresh_token. Refresh tokens don't expire by default but you can customize this.'</li>
    </ul>
 </nav>
 
-<p>
-   Info: When you refresh the token you can see the result in the updated cookie. For the sake of testing vapor/oauth access_tokens are only valid for 1 minute.
-</p>
+
 
 </body>
 </html>

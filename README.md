@@ -25,7 +25,19 @@ The client will run at port 8089 and the server at port 8090.
 
 Start the client with http://localhost:8089
 
-Access tokens are valid only for 1 minute for testing purposes.
+* Access tokens are valid only for 1 minute for testing purposes.
+* Refresh tokens have no expiration.
+
+# Learning resources
+
+I recommend the following book as it does not only explain the theory but takes you through the whole flow with the required code:
+
+https://leanpub.com/themodernguidetooauth 
+
+As for the theory part:
+
+https://www.oauth.com
+
 
 # What is included
 

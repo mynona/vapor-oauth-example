@@ -2,17 +2,17 @@ import VaporOAuth
 import Vapor
 
 class MyCodeManger: CodeManager {
-   func generateDeviceCode(userID: String, clientID: String, scopes: [String]?) async throws -> String {
-      return ""
-   }
 
-   func getDeviceCode(_ deviceCode: String) async throws -> VaporOAuth.OAuthDeviceCode? {
-      return OAuthDeviceCode(deviceCodeID: "", userCode: "", clientID: "", userID: "", expiryDate: Date(), scopes: nil)
-   }
 
-   func deviceCodeUsed(_ deviceCode: VaporOAuth.OAuthDeviceCode) async throws {
+   // Device Code flow not part of this example:
 
-   }
+   func generateDeviceCode(userID: String, clientID: String, scopes: [String]?) async throws -> String { return "" }
+
+   func getDeviceCode(_ deviceCode: String) async throws -> VaporOAuth.OAuthDeviceCode? { return nil }
+
+   func deviceCodeUsed(_ deviceCode: VaporOAuth.OAuthDeviceCode) async throws { }
+
+   // ----------------------------------------------------------
 
    private(set) var usedCodes: [String] = []
    private(set) var codes: [String: OAuthCode] = [:]
