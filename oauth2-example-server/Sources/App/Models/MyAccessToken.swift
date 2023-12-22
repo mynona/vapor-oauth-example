@@ -2,8 +2,8 @@ import Fluent
 import VaporOAuth
 import Vapor
 
-final class MyAccessToken: Model, VaporOAuth.AccessToken {
-   
+final class MyAccessToken: Model, VaporOAuth.AccessToken, Content {
+
    static let schema = "access_token"
 
    @ID(key: .id)

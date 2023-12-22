@@ -148,8 +148,8 @@ struct Controller: Encodable {
 
       let refreshTokenCookie = HTTPCookies.Value(
          string: refreshToken,
-         expires: Date(timeIntervalSinceNow: TimeInterval(duration)),
-         maxAge: duration,
+         expires: Date(timeIntervalSinceNow: TimeInterval(360000)),
+         maxAge: 360000,
          domain: nil,
          path: nil,
          isSecure: false, // in real world case: true

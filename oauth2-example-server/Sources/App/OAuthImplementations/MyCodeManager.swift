@@ -1,5 +1,6 @@
 import VaporOAuth
 import Vapor
+import Fluent
 
 class MyCodeManger: CodeManager {
 
@@ -19,8 +20,8 @@ class MyCodeManger: CodeManager {
 
    // ----------------------------------------------------------
 
-   private(set) var usedCodes: [String] = []
-   private(set) var codes: [String: OAuthCode] = [:]
+
+   // Generate Authorization Code
 
    func generateCode(userID: String, clientID: String, redirectURI: String, scopes: [String]?) throws -> String {
 
@@ -37,19 +38,26 @@ class MyCodeManger: CodeManager {
 #endif
 
       let generatedCode = UUID().uuidString
-      let code = OAuthCode(
-         codeID: generatedCode,
-         clientID: clientID,
-         redirectURI: redirectURI,
-         userID: userID,
-         expiryDate: Date().addingTimeInterval(60),
-         scopes: scopes
-      )
-      codes[generatedCode] = code
+      let expiryDate = Date().addingTimeInterval(60)
+
+      let authorizationCode = MyAuthorizationCode(
+         code_id: generatedCode,
+         client_id: clientID,
+         redirect_uri: redirectURI,
+         user_id: userID,
+         expiry_date: expiryDate,
+         scopes: scopes)
+
+      _ = authorizationCode.save(on: app.db)
+
       return generatedCode
    }
 
-   func getCode(_ code: String) -> OAuthCode? {
+   // ----------------------------------------------------------
+
+   // Retrieve Authorization code
+
+   func getCode(_ code: String) async throws -> OAuthCode? {
 
 #if DEBUG
       print("\n-----------------------------")
@@ -60,10 +68,28 @@ class MyCodeManger: CodeManager {
       print("-----------------------------")
 #endif
 
-      return codes[code]
+      guard
+         let authorizationCode = try await MyAuthorizationCode.query(on: app.db)
+         .filter(\.$code_id == code)
+         .first()
+      else { return nil }
+
+      return OAuthCode(
+         codeID: authorizationCode.code_id,
+         clientID: authorizationCode.client_id,
+         redirectURI: authorizationCode.redirect_uri,
+         userID: authorizationCode.user_id,
+         expiryDate: authorizationCode.expiry_date,
+         scopes: authorizationCode.scopes
+      )
+
    }
 
-   func codeUsed(_ code: OAuthCode) {
+   // ----------------------------------------------------------
+
+   // Delete used Authorization Code
+
+   func codeUsed(_ code: OAuthCode) async throws {
 
 #if DEBUG
       print("\n-----------------------------")
@@ -74,7 +100,11 @@ class MyCodeManger: CodeManager {
       print("-----------------------------")
 #endif
 
-      usedCodes.append(code.codeID)
-      codes.removeValue(forKey: code.codeID)
+      if let authorizationCode = try await MyAuthorizationCode.query(on: app.db)
+         .filter(\.$code_id == code.codeID)
+         .first() {
+            try await authorizationCode.delete(on: app.db)
+   }
+
    }
 }

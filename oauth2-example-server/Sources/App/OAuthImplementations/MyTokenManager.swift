@@ -1,7 +1,6 @@
 import Vapor
 import VaporOAuth
 import Fluent
-import FluentKit
 import JWT
 
 
@@ -136,26 +135,8 @@ class MyTokenManager: TokenManager {
 
       return jwtAccessToken
 
-/*
-      let accessToken = MyAccessToken(
-         tokenString: UUID().uuidString,
-         clientID: clientID,
-         userID: userID,
-         scopes: scopes,
-         expiryTime: Date(timeIntervalSinceNow: TimeInterval(expiryTime))
-      )
-      try await accessToken.save(on: app.db)
-      return accessToken
- */
    }
 
-   // ----------------------------------------------------------
-
-   func getRefreshToken(_ refreshToken: String) async throws -> VaporOAuth.RefreshToken? {
-      return try await MyRefreshToken.query(on: app.db)
-         .filter(\.$tokenString == refreshToken)
-         .first()
-   }
 
    // ----------------------------------------------------------
 
@@ -174,6 +155,29 @@ class MyTokenManager: TokenManager {
       else {
          return nil
       }
+
+      // Delete expired access tokens for this user
+
+      if let id = token.id {
+         let expiredTokens = try await MyAccessToken
+            .query(on: app.db)
+            .filter(\.$userID == token.userID)
+            .filter(\.$expiryTime < token.expiryTime)
+            .filter(\.$id != id)
+            .all()
+
+#if DEBUG
+         print("\n-----------------------------")
+         print("MyTokenManager().getAccessToken()")
+         print("-----------------------------")
+         print("Count of expired tokens for this user: \(expiredTokens.count)")
+         print("Those access tokens have been deleted.")
+         print("-----------------------------")
+#endif
+
+         try await expiredTokens.delete(on: app.db)
+      }
+
 
 #if DEBUG
       print("\n-----------------------------")
@@ -200,11 +204,60 @@ class MyTokenManager: TokenManager {
 
    // ----------------------------------------------------------
 
+   // Called when refresh_token is exchanged for an access_token
+
+   func getRefreshToken(_ refreshToken: String) async throws -> VaporOAuth.RefreshToken? {
+
+      guard
+         let refreshToken = try await MyRefreshToken
+            .query(on: app.db)
+            .filter(\.$tokenString == refreshToken)
+            .first()
+      else {
+         return nil
+      }
+
+      // Delete all other issued refresh tokens for this user
+      // A user can have only one valid refresh token at a time
+      // You need to customize this to your use case in case
+      // you expect your users to access your application
+      // from multiple devices / browsers / scopes, etc.
+      // You might for example add an expiry data also for
+      // refresh tokens.
+
+      if let id = refreshToken.id {
+         let otherActiveRefreshTokens = try await MyRefreshToken
+            .query(on: app.db)
+            .filter(\.$userID == refreshToken.userID)
+            .filter(\.$id != id)
+            .all()
+
+#if DEBUG
+         print("\n-----------------------------")
+         print("MyTokenManager().getRefreshToken()")
+         print("-----------------------------")
+         print("Count of refresh tokens for this user: \(otherActiveRefreshTokens.count)")
+         print("Those refresh tokens have been deleted")
+         print("-----------------------------")
+#endif
+
+         try await otherActiveRefreshTokens.delete(on: app.db)
+
+      }
+
+      return refreshToken
+
+   }
+
+   // ----------------------------------------------------------
+
+   // When is this called?
+
    func updateRefreshToken(_ refreshToken: VaporOAuth.RefreshToken, scopes: [String]) async {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyTokenManager().uddateRefreshToken()")
+      print("MyTokenManager().updateRefreshToken()")
       print("-----------------------------")
       print("-----------------------------")
 #endif

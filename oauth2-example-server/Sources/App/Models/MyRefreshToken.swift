@@ -38,11 +38,12 @@ final class MyRefreshToken: Model, RefreshToken {
    
    init() {}
    
-   init(id: UUID? = nil, 
-        tokenString: String,
-        clientID: String,
-        userID: String? = nil,
-        scopes: [String]? = nil
+   init(
+      id: UUID? = nil,
+      tokenString: String,
+      clientID: String,
+      userID: String? = nil,
+      scopes: [String]? = nil
    ) {
       self.id = id
       self.tokenString = tokenString

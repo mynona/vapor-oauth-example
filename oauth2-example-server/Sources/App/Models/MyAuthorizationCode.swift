@@ -2,7 +2,7 @@ import Fluent
 import VaporOAuth
 import Vapor
 
-final class MyAuthorizationCode: Model {
+final class MyAuthorizationCode: Model, Content {
 
    static let schema = "authorization_code"
 
