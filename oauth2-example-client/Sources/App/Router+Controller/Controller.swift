@@ -36,6 +36,40 @@ struct Controller: Encodable {
 
    // ----------------------------------------------------------
 
+   func clientLogout(_ request: Request) async throws -> Response {
+
+      // Client logout will just destroy the cookies for testing purposes.
+      // You might want to delete the access_token and the refresh_token.
+      // This must be implemented on the server.
+
+      let deleteCookie = HTTPCookies.Value(
+         string: "",
+         expires: Date(timeIntervalSince1970: 0.0),
+         maxAge: 0,
+         domain: nil,
+         path: nil,
+         isSecure: false, // in real world case: true
+         isHTTPOnly: false, // in real world case: true
+         sameSite: nil
+      )
+
+      let view = try await request.view.render(
+         "index"
+      )
+
+      let res = try await view.encodeResponse(for: request)
+      res.cookies["access_token"] = deleteCookie
+      res.cookies["refresh_token"] = deleteCookie
+      res.cookies["vapor-session"] = deleteCookie
+      return res
+
+   }
+
+
+
+
+   // ----------------------------------------------------------
+
    func callback(_ request: Request) async throws -> Response {
 
       // Step 1: Authorization code
@@ -197,6 +231,12 @@ struct Controller: Encodable {
       print("-----------------------------")
 #endif
 
+
+      if response.status != .ok {
+         return try await request.view.render("unauthorized")
+      }
+
+
       // Unwrap response
       let introspection: OAuth_TokenIntrospectionResponse = try response.content.decode(OAuth_TokenIntrospectionResponse.self)
 
@@ -252,12 +292,14 @@ struct Controller: Encodable {
 
       let tokenEndpoint = URI(string: "http://localhost:8090/oauth/token")
 
+
       let content = OAuth_RefreshTokenRequest(
          grant_type: "refresh_token",
          client_id: "1",
          client_secret: "password123",
          refresh_token: cookie.string
       )
+
 
       let response = try await request.client.post(tokenEndpoint, headers: headers, content: content)
 
@@ -267,7 +309,7 @@ struct Controller: Encodable {
       print("-----------------------------")
       print("Refresh token endpoint: \(tokenEndpoint)")
       print("Refresh token request header: \(headers)")
-      print("Refresh token request content: \(content)")
+      //print("Refresh token request content: \(content)")
       print("-----------------------------")
       print("Refresh token response: \(response)")
       print("-----------------------------")
@@ -307,10 +349,8 @@ struct Controller: Encodable {
 
       let res = try await view.encodeResponse(for: request)
       res.cookies["access_token"] = accessTokenCookie
-      //res.cookies["refresh_token"] = refreshTokenCookie
       return res
 
-      //return try await request.view.render("refresh-token")
 
    }
 

@@ -8,6 +8,7 @@ struct Router: RouteCollection {
       routes.get(use: Controller().home)
       routes.get("protected-page", use: Controller().protectedPage)
       routes.get("refresh-token-test", use: Controller().refreshTokenPage)
+      routes.get("client-logout", use: Controller().clientLogout)
    }
    
 }
