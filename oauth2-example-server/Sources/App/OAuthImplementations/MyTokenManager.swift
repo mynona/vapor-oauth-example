@@ -7,72 +7,108 @@ class MyTokenManager: TokenManager {
 
    private let app: Application
 
+   // ----------------------------------------------------------
+
    init(app: Application) {
       self.app = app
    }
 
    // ----------------------------------------------------------
 
-   // Access and Refresh Token that are generated during
-   // in exchange for the Authorization Code:
-
-   func generateAccessRefreshTokens(clientID: String, userID: String?, scopes: [String]?, accessTokenExpiryTime: Int) async throws -> (VaporOAuth.AccessToken, VaporOAuth.RefreshToken) {
-
-      let tokenString = UUID().uuidString
-
-      // Expiry time 1 minutes
-      // for testing of the flows
-      let expiryTime = Date(timeIntervalSinceNow: TimeInterval(60))
+   /// Create JWT that is returned to the client
+   /// - Returns: signed JWT as String
+   func createJWT(subject: String, expiration: Date, issuer: String, audience: String, jti: String, issuedAtTime: Date ) throws -> String {
 
       let payload = Payload(
-         subject: SubjectClaim(value: userID ?? ""),
-         expiration: ExpirationClaim(value: expiryTime),
-         issuer: "OAuth Server",
-         audience: "Client",
-         jti: tokenString,
-         issuedAtTime: Date()
+         subject: SubjectClaim(value: subject),
+         expiration: ExpirationClaim(value: expiration),
+         issuer: issuer,
+         audience: audience,
+         jti: jti,
+         issuedAtTime: issuedAtTime
       )
 
-      let jwt = try app.jwt.signers.sign(payload)
+      return try app.jwt.signers.sign(payload)
 
-      // Access Token sent to client
+   }
 
-      let jwtAccessToken = MyAccessToken(
-         tokenString: "\(jwt)",
-         clientID: clientID,
-         userID: userID,
-         scopes: scopes,
-         expiryTime: expiryTime
-      )
+   // ----------------------------------------------------------
 
-      // Access Token stored in database
+   /// Create Access Token
+   func createAccessToken(tokenString: String, clientID: String, userID: String?, scopes: [String]?, expiryTime: Date) throws -> MyAccessToken {
 
-      let accessToken = MyAccessToken(
+      return MyAccessToken(
          tokenString: tokenString,
          clientID: clientID,
          userID: userID,
          scopes: scopes,
          expiryTime: expiryTime
       )
-      try await accessToken.save(on: app.db)
 
-      let refreshToken = MyRefreshToken(
-         tokenString: UUID().uuidString,
-         clientID: clientID,
-         userID: userID,
-         scopes: scopes
-      )
-      try await refreshToken.save(on: app.db)
-
-      return (jwtAccessToken, refreshToken)
    }
 
    // ----------------------------------------------------------
 
+   /// Create Refresh Token
+   func createRefreshToken(clientID: String, userID: String?, scopes: [String]?) throws -> MyRefreshToken {
 
-   // generateAccessToken
-   // Called when a refresh token is exchanged for an access token
+      return MyRefreshToken(
+         tokenString: [UInt8].random(count: 32).hex,
+         clientID: clientID,
+         userID: userID,
+         scopes: scopes
+      )
 
+   }
+
+   // ----------------------------------------------------------
+
+   /// Generate Access and Refresh Token in exchange for the Authorization Code
+   func generateAccessRefreshTokens(clientID: String, userID: String?, scopes: [String]?, accessTokenExpiryTime: Int) async throws -> (VaporOAuth.AccessToken, VaporOAuth.RefreshToken) {
+
+      let accessTokenUniqueId = UUID().uuidString
+
+      // Expiry time 1 minutes for testing purposes
+      let expiryTimeAccessToken = Date(timeIntervalSinceNow: TimeInterval(60))
+
+      let jwt = try createJWT(
+         subject: userID ?? "",
+         expiration: expiryTimeAccessToken,
+         issuer: "OAuth Server",
+         audience: "Client",
+         jti: accessTokenUniqueId,
+         issuedAtTime: Date()
+      )
+
+      // Access Token for Database
+      let accessToken = try createAccessToken(
+         tokenString: accessTokenUniqueId,
+         clientID: clientID,
+         userID: userID,
+         scopes: scopes,
+         expiryTime: expiryTimeAccessToken
+      )
+
+      try await accessToken.save(on: app.db)
+
+      // Access Token for Client: replace the token with the JWT
+      accessToken.tokenString = jwt
+
+      // Refresh Token
+      let refreshToken = try createRefreshToken(
+         clientID: clientID,
+         userID: userID,
+         scopes: scopes
+      )
+
+      try await refreshToken.save(on: app.db)
+
+      return (accessToken, refreshToken)
+   }
+
+   // ----------------------------------------------------------
+
+   /// Generate new Access Token in exchange for the Refresh Token
    func generateAccessToken(clientID: String, userID: String?, scopes: [String]?, expiryTime: Int) async throws -> VaporOAuth.AccessToken {
 
 #if DEBUG
@@ -87,67 +123,51 @@ class MyTokenManager: TokenManager {
       print("-----------------------------")
 #endif
 
-      let tokenString = UUID().uuidString
+      let accessTokenUniqueId = UUID().uuidString
 
-      // Expiry time 1 minutes
-      // for testing of the flows
-      let xexpiryTime = Date(timeIntervalSinceNow: TimeInterval(60))
+      // Expiry time 1 minutes for testing purposes
+      let expiryTimeAccessToken = Date(timeIntervalSinceNow: TimeInterval(60))
 
-      let payload = Payload(
-         subject: SubjectClaim(value: userID ?? ""),
-         expiration: ExpirationClaim(value: xexpiryTime),
+      let jwt = try createJWT(
+         subject: userID ?? "",
+         expiration: expiryTimeAccessToken,
          issuer: "OAuth Server",
          audience: "Client",
-         jti: tokenString,
+         jti: accessTokenUniqueId,
          issuedAtTime: Date()
       )
 
-      let jwt = try app.jwt.signers.sign(payload)
-
-      let jwtAccessToken = MyAccessToken(
-         tokenString: "\(jwt)",
+      // Access Token for Database
+      let accessToken = try createAccessToken(
+         tokenString: accessTokenUniqueId,
          clientID: clientID,
          userID: userID,
          scopes: scopes,
-         expiryTime: xexpiryTime
+         expiryTime: expiryTimeAccessToken
       )
 
-      // Access Token stored in database
-
-      let accessToken = MyAccessToken(
-         tokenString: tokenString,
-         clientID: clientID,
-         userID: userID,
-         scopes: scopes,
-         expiryTime: xexpiryTime
-      )
       try await accessToken.save(on: app.db)
 
-      let refreshToken = MyRefreshToken(
-         tokenString: UUID().uuidString,
-         clientID: clientID,
-         userID: userID,
-         scopes: scopes
-      )
-      try await refreshToken.save(on: app.db)
+      // Access Token for Client: replace the token with the JWT
+      accessToken.tokenString = jwt
 
-      return jwtAccessToken
+      return accessToken
 
    }
 
 
    // ----------------------------------------------------------
 
-   // Called by Token introspection
-   // Client sends JWT token
-
+   /// Get Access Token for the token introspection
    func getAccessToken(_ accessToken: String) async throws -> VaporOAuth.AccessToken? {
 
-      // Search for tokenString provided as unique key jti
+      // Client sends JWT
       let jwt = try app.jwt.signers.verify(accessToken, as: Payload.self)
 
+      // Check in database if an Access Token with
+      // the unique token identifier (jti) exists
       guard
-         let token = try await MyAccessToken.query(on: app.db)
+         let accessToken = try await MyAccessToken.query(on: app.db)
             .filter(\.$tokenString == jwt.jti)
             .first()
       else {
@@ -155,12 +175,11 @@ class MyTokenManager: TokenManager {
       }
 
       // Delete expired access tokens for this user
-
-      if let id = token.id {
+      if let id = accessToken.id {
          let expiredTokens = try await MyAccessToken
             .query(on: app.db)
-            .filter(\.$userID == token.userID)
-            .filter(\.$expiryTime < token.expiryTime)
+            .filter(\.$userID == accessToken.userID)
+            .filter(\.$expiryTime < accessToken.expiryTime)
             .filter(\.$id != id)
             .all()
 
@@ -183,27 +202,17 @@ class MyTokenManager: TokenManager {
       print("-----------------------------")
       print("Received access token: \(jwt)")
       print("-----------------------------")
-      print("Database access token: \(token)")
+      print("Database access token: \(accessToken)")
       print("-----------------------------")
 #endif
 
       // Return token from the database
-
-      return MyAccessToken(
-         id: token.id,
-         tokenString: token.tokenString,
-         clientID: token.clientID,
-         userID: token.userID,
-         scopes: token.scopes,
-         expiryTime: token.expiryTime
-      )
-
+      return accessToken
    }
 
    // ----------------------------------------------------------
 
-   // Called when refresh_token is exchanged for an access_token
-
+   /// Get Refresh Token
    func getRefreshToken(_ refreshToken: String) async throws -> VaporOAuth.RefreshToken? {
 
       guard
@@ -249,8 +258,7 @@ class MyTokenManager: TokenManager {
 
    // ----------------------------------------------------------
 
-   // When is this called?
-
+   /// Update Refresh Token scope
    func updateRefreshToken(_ refreshToken: VaporOAuth.RefreshToken, scopes: [String]) async throws {
 
 #if DEBUG
@@ -271,8 +279,6 @@ class MyTokenManager: TokenManager {
          try await token.save(on: app.db)
 
       }
-
-
    }
 
 }

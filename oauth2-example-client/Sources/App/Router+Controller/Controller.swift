@@ -151,7 +151,7 @@ struct Controller: Encodable {
          expires: Date(timeIntervalSinceNow: TimeInterval(360000)),
          maxAge: 360000,
          domain: nil,
-         path: nil,
+         path: nil, // in real world case: "/refresh"
          isSecure: false, // in real world case: true
          isHTTPOnly: true,
          sameSite: nil
