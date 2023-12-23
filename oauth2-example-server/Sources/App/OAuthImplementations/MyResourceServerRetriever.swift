@@ -22,9 +22,10 @@ class MyResourceServerRetriever: ResourceServerRetriever {
 #endif
 
       guard
-         let server = try await MyResourceServer.query(on: app.db)
-         .filter(\.$username == username)
-         .first()
+         let server = try await MyResourceServer
+            .query(on: app.db)
+            .filter(\.$username == username)
+            .first()
       else {
          return nil
       }

@@ -15,22 +15,48 @@ class MyClientRetriever: ClientRetriever {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyResourceServerRetriever().getServer()")
+      print("MyClientRetriever().getClient()")
       print("-----------------------------")
       print("clientID: \(clientID)")
       print("-----------------------------")
 #endif
 
+      guard
+         let client = try await MyClient
+            .query(on: app.db)
+            .filter(\.$client_id == clientID)
+            .first()
+      else {
+         return nil
+      }
 
-      return OAuthClient(
-         clientID: "1",
-         redirectURIs: ["http://localhost:8089/callback"],
-         clientSecret: "password123",
-         validScopes: ["admin"],
-         confidential: true,
-         firstParty: true,
-         allowedGrantType: .authorization
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyClientRetriever().getClient()")
+      print("-----------------------------")
+      print("Database query: \(client)")
+      print("-----------------------------")
+#endif
+
+      let oauthClient = OAuthClient(
+         clientID: client.client_id,
+         redirectURIs: client.redirect_uris,
+         clientSecret: client.client_secret,
+         validScopes: client.scopes,
+         confidential: client.confidential_client,
+         firstParty: client.first_party ?? true,
+         allowedGrantType: client.grant_type
       )
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyClientRetriever().getClient()")
+      print("-----------------------------")
+      print("OAuthClient redirect: \(oauthClient.redirectURIs)")
+      print("-----------------------------")
+#endif
+
+      return oauthClient
 
    }
 

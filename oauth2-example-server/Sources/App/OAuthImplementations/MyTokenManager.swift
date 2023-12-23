@@ -52,11 +52,15 @@ class MyTokenManager: TokenManager {
    /// Create Refresh Token
    func createRefreshToken(clientID: String, userID: String?, scopes: [String]?) throws -> MyRefreshToken {
 
+      // Expiry time: 30 days
+      let expiryTimeRefreshToken = Date(timeIntervalSinceNow: TimeInterval(60 * 60 * 24 * 30))
+
       return MyRefreshToken(
          tokenString: [UInt8].random(count: 32).hex,
          clientID: clientID,
          userID: userID,
-         scopes: scopes
+         scopes: scopes,
+         expiryTime: expiryTimeRefreshToken
       )
 
    }
@@ -224,18 +228,15 @@ class MyTokenManager: TokenManager {
          return nil
       }
 
-      // Delete all other issued refresh tokens for this user
-      // A user can have only one valid refresh token at a time
-      // You need to customize this to your use case in case
-      // you expect your users to access your application
-      // from multiple devices / browsers / scopes, etc.
-      // You might for example add an expiry data also for
-      // refresh tokens.
-
+      // Important: vapor/oauth does not invalidate refresh tokens
+      // Therefore, expired refresh tokens are only removed when a new
+      // refresh token for this user has been issued. There is no
+      // revoke feature.
       if let id = refreshToken.id {
          let otherActiveRefreshTokens = try await MyRefreshToken
             .query(on: app.db)
             .filter(\.$userID == refreshToken.userID)
+            .filter(\.$expiryTime < refreshToken.expiryTime)
             .filter(\.$id != id)
             .all()
 

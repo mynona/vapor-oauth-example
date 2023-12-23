@@ -17,7 +17,7 @@ final class MyRefreshToken: Model, RefreshToken {
    
    @Field(key: "user_id")
    var userID: String?
-   
+
    var scopes: [String]? {
       get {
          guard let scopes = _scopes else { return nil }
@@ -35,7 +35,10 @@ final class MyRefreshToken: Model, RefreshToken {
    
    @Field(key: "scopes")
    var _scopes: String?
-   
+
+   @OptionalField(key: "expiry_time")
+   var expiryTime: Date?
+
    init() {}
    
    init(
@@ -43,12 +46,14 @@ final class MyRefreshToken: Model, RefreshToken {
       tokenString: String,
       clientID: String,
       userID: String? = nil,
-      scopes: [String]? = nil
+      scopes: [String]? = nil,
+      expiryTime: Date?
    ) {
       self.id = id
       self.tokenString = tokenString
       self.clientID = clientID
       self.userID = userID
       self.scopes = scopes
+      self.expiryTime = expiryTime
    }
 }

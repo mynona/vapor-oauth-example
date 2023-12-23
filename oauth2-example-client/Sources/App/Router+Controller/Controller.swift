@@ -129,12 +129,12 @@ struct Controller: Encodable {
       // for the sake of this test run duration is set wrongly
       // duration would be set as the duration of the token
 
-      let duration = 600;
+      let maxAgeAccessToken = 60 * 2 // 2 minutes
 
       let accessTokenCookie = HTTPCookies.Value(
          string: accessToken,
-         expires: Date(timeIntervalSinceNow: TimeInterval(duration)),
-         maxAge: duration,
+         expires: Date(timeIntervalSinceNow: TimeInterval(maxAgeAccessToken)),
+         maxAge: maxAgeAccessToken,
          domain: nil,
          path: nil,
          isSecure: false, // in real world case: true
@@ -146,10 +146,12 @@ struct Controller: Encodable {
       // Token rotation is not supported in vapor/oauth at the moment:
       // https://stateful.com/blog/oauth-refresh-token-best-practices
 
+      let maxAgeRefreshToken = 60 * 60 * 24 * 30 // 30 days
+
       let refreshTokenCookie = HTTPCookies.Value(
          string: refreshToken,
-         expires: Date(timeIntervalSinceNow: TimeInterval(360000)),
-         maxAge: 360000,
+         expires: Date(timeIntervalSinceNow: TimeInterval(maxAgeRefreshToken)),
+         maxAge: maxAgeRefreshToken,
          domain: nil,
          path: nil, // in real world case: "/refresh"
          isSecure: false, // in real world case: true
