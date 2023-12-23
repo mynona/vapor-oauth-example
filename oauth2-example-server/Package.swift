@@ -13,7 +13,7 @@ let package = Package(
       .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
       .package(url: "https://github.com/vapor/jwt.git", from: "4.2.2"),
       //.package(url: "https://github.com/brokenhandsio/vapor-oauth.git", branch: "1.0.0-beta.2")
-      .package(url: "https://github.com/vamsii777/vapor-oauth.git", branch: "main")
+      .package(url: "https://github.com/vamsii777/vapor-oauth.git", branch: "feature/pkce-oauth")
     ],
     targets: [
         .target(

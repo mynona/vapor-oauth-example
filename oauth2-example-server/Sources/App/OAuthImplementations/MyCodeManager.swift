@@ -10,6 +10,10 @@ class MyCodeManger: CodeManager {
       self.app = app
    }
 
+   func generateCode(userID: String, clientID: String, redirectURI: String, scopes: [String]?, codeChallenge: String?, codeChallengeMethod: String?) async throws -> String {
+      return ""
+   }
+
    // Device Code flow not part of this example:
 
    func generateDeviceCode(userID: String, clientID: String, scopes: [String]?) async throws -> String { return "" }
@@ -80,7 +84,9 @@ class MyCodeManger: CodeManager {
          redirectURI: authorizationCode.redirect_uri,
          userID: authorizationCode.user_id,
          expiryDate: authorizationCode.expiry_date,
-         scopes: authorizationCode.scopes
+         scopes: authorizationCode.scopes,
+         codeChallenge: "",
+         codeChallengeMethod: ""
       )
 
    }
