@@ -1,23 +1,29 @@
 import Vapor
+import Foundation
 import Leaf
 import Crypto
 
 extension Controller {
 
-
-
    func clientLogin(_ request: Request) async throws -> Response {
 
+      // PKCE
       let codeVerifier = [UInt8].random(count: 128).hex
-      let hashed = SHA256.hash(data: Data(codeVerifier.utf8))
+      guard
+         let verifierData = codeVerifier.data(using: .utf8)
+      else {
+         throw Abort(.imATeapot, reason: "PKCE Code could not be generated")
+      }
+      //let hashed = SHA256.hash(data: Data(codeVerifier.utf8))
+      let verifierHash = SHA256.hash(data: verifierData)
 
-     // let codeChallenge = hashed.compactMap { String(format: "%02x", $0) }.joined()
-
+      //let codeChallenge = hashed.compactMap { String(format: "%02x", $0) }.joined()
+      let codeChallenge = Data(verifierHash).base64URLEncodedString()
 
 
       // FAKE FAKE FAKE FAKE FAKE FAKE
 
-      let codeChallenge = "cfbb15d50a8c2f4502988e6cd97e78c1f234c6a4d0ed7d193562d9dbdbc30ba6"
+      //let codeChallenge = "cfbb15d50a8c2f4502988e6cd97e78c1f234c6a4d0ed7d193562d9dbdbc30ba6"
 
 #if DEBUG
       print("\n-----------------------------")
@@ -25,7 +31,7 @@ extension Controller {
       print("-----------------------------")
       print("Code challenge:")
       print("codeVerifier: \(codeVerifier)")
-      print("\(hashed)")
+      print("\(verifierHash)")
       print("codeChallenge: \(codeChallenge)")
       print("-----------------------------")
 #endif
@@ -59,4 +65,14 @@ extension Controller {
 
    }
 
+}
+
+// Helper extension for base64 URL encoding
+extension Data {
+    func base64URLEncodedString() -> String {
+        return self.base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+    }
 }
