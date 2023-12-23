@@ -2,7 +2,6 @@
 
 https://github.com/brokenhandsio/vapor-oauth
 
-(PKCE is not supported.)
 
 # Context
 
@@ -13,7 +12,7 @@ https://github.com/marius-se/vapor-oauth2-example
 As there were essential flows missing such as token introspection, I extended this
 example. 
 
-Unfortunately, vapor/oauth doesn't compile on linux anymore. Therefore, I used the following fork, where these issues are fixed:
+Unfortunately, vapor/oauth doesn't compile on linux anymore. Therefore, I used the following fork, where these issues are fixed and additionally, PKCE is supported.
 
 https://github.com/vamsii777/vapor-oauth.git
 
@@ -41,7 +40,7 @@ https://www.oauth.com
 
 # What is included in this example?
 
-* Client requests Authorization code
+* Client requests Authorization code (with PKCE)
 * Server provides login screen (username, password)
 * Server side data handling: sessions for user data, db clients, db resource servers, db authorization code
 * Server returns Authorization code to client
