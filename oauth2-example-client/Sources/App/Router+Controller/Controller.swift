@@ -34,7 +34,7 @@ struct Controller: Encodable {
          path: path,
          isSecure: false, // in real world case: true
          isHTTPOnly: true,
-         sameSite: nil
+         sameSite: .lax
       )
 
    }
