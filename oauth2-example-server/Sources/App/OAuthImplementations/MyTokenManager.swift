@@ -3,8 +3,6 @@ import VaporOAuth
 import Fluent
 import JWT
 
-
-
 class MyTokenManager: TokenManager {
 
    private let app: Application
@@ -253,14 +251,26 @@ class MyTokenManager: TokenManager {
 
    // When is this called?
 
-   func updateRefreshToken(_ refreshToken: VaporOAuth.RefreshToken, scopes: [String]) async {
+   func updateRefreshToken(_ refreshToken: VaporOAuth.RefreshToken, scopes: [String]) async throws {
 
 #if DEBUG
       print("\n-----------------------------")
       print("MyTokenManager().updateRefreshToken()")
       print("-----------------------------")
+      print("Parameter: \(refreshToken)")
       print("-----------------------------")
 #endif
+
+      if let token = try await MyRefreshToken
+         .query(on: app.db)
+         .filter(\.$tokenString == refreshToken.tokenString)
+         .first() {
+
+         token.scopes = scopes
+
+         try await token.save(on: app.db)
+
+      }
 
 
    }
