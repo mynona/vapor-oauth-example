@@ -36,7 +36,6 @@ struct Controller {
 
    func loginForward(_ request: Request) async throws -> ClientResponse {
 
-
       let state = request.session.data["state"] ?? ""
       let client_id = request.session.data["client_id"] ?? ""
       let scope = request.session.data["scope"] ?? ""
@@ -44,7 +43,7 @@ struct Controller {
       let csrfToken = request.session.data["CSRFToken"] ?? ""
       let code_challenge = request.session.data["code_challenge"] ?? ""
       let code_challenge_method = request.session.data["code_challenge_method"] ?? ""
-
+      let nonce = request.session.data["nonce"] ?? ""
 
 #if DEBUG
       print("\n-----------------------------")
@@ -57,6 +56,7 @@ struct Controller {
       print("csrfToken: \(csrfToken)")
       print("code_challenge: \(code_challenge)")
       print("code_challenge_method: \(code_challenge_method)")
+      print("nonce: \(nonce)")
       print("-----------------------------")
 #endif
 

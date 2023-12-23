@@ -35,7 +35,8 @@ extension Controller {
          grant_type: "authorization_code",
          redirect_uri: "http://localhost:8089/callback",
          client_id: "1",
-         client_secret: "password123"
+         client_secret: "password123",
+         code_verifier: "hello_world"
       )
 
       let tokenEndpoint = URI(string: "http://localhost:8090/oauth/token")

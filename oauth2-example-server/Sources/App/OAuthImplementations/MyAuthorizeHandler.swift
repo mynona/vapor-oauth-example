@@ -25,14 +25,9 @@ struct MyAuthorizeHandler: AuthorizeHandler {
       request.session.data["client_id"] = authorizationRequestObject.clientID
       request.session.data["scope"] = authorizationRequestObject.scope.joined(separator: ",")
       request.session.data["redirect_uri"] = authorizationRequestObject.redirectURI.string
-
-      // FAKE FAKE FAKE FAKE FAKE 
-      // Should not work as code challenge is not sent
-
-      request.session.data["code_challenge"] = authorizationRequestObject.codeChallenge ?? "FAKE"
-
-      //"cfbb15d50a8c2f4502988e6cd97e78c1f234c6a4d0ed7d193562d9dbdbc30ba6"
+      request.session.data["code_challenge"] = authorizationRequestObject.codeChallenge ?? ""
       request.session.data["code_challenge_method"] = authorizationRequestObject.codeChallengeMethod ?? "S256"
+      request.session.data["nonce"] = authorizationRequestObject.nonce 
 
 #if DEBUG
       print("\n-----------------------------")

@@ -3,7 +3,7 @@ import VaporOAuth
 import Leaf
 import Fluent
 
-class MyResourceServerRetriever: ResourceServerRetriever {
+final class MyResourceServerRetriever: ResourceServerRetriever {
 
    private let app: Application
 

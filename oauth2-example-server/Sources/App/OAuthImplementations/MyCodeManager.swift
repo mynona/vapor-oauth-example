@@ -2,7 +2,7 @@ import VaporOAuth
 import Vapor
 import Fluent
 
-class MyCodeManger: CodeManager {
+final class MyCodeManger: CodeManager {
 
    private let app: Application
 

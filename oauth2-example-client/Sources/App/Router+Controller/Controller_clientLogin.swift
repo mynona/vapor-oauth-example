@@ -8,7 +8,15 @@ extension Controller {
    func clientLogin(_ request: Request) async throws -> Response {
 
       // PKCE
-      let codeVerifier = [UInt8].random(count: 128).hex
+
+
+      // For this example we will use a hardcoded code_verifier
+      // In a real world case you will create a new codeVerifier
+      // for each request
+
+      //let codeVerifier = "[UInt8].random(count: 128).hex"
+      let codeVerifier = "hello_world"
+
       guard
          let verifierData = codeVerifier.data(using: .utf8)
       else {
@@ -17,13 +25,7 @@ extension Controller {
       //let hashed = SHA256.hash(data: Data(codeVerifier.utf8))
       let verifierHash = SHA256.hash(data: verifierData)
 
-      //let codeChallenge = hashed.compactMap { String(format: "%02x", $0) }.joined()
       let codeChallenge = Data(verifierHash).base64URLEncodedString()
-
-
-      // FAKE FAKE FAKE FAKE FAKE FAKE
-
-      //let codeChallenge = "cfbb15d50a8c2f4502988e6cd97e78c1f234c6a4d0ed7d193562d9dbdbc30ba6"
 
 #if DEBUG
       print("\n-----------------------------")

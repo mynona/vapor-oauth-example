@@ -3,7 +3,8 @@ import VaporOAuth
 import Fluent
 import JWT
 
-class MyTokenManager: TokenManager {
+final class MyTokenManager: TokenManager {
+
 
    private let app: Application
 
@@ -66,6 +67,35 @@ class MyTokenManager: TokenManager {
    }
 
    // ----------------------------------------------------------
+
+
+   func generateTokens(clientID: String, userID: String?, scopes: [String]?, accessTokenExpiryTime: Int, idTokenExpiryTime: Int, nonce: String?) async throws -> (VaporOAuth.AccessToken, VaporOAuth.RefreshToken, VaporOAuth.IDToken) {
+
+      // Open ID not implemented
+
+      let tempAccessToken = MyAccessToken(id: UUID(), tokenString: "", clientID: "", userID: nil, scopes: nil, expiryTime: Date())
+
+      let tempRefreshToken = MyRefreshToken(tokenString: "", clientID: "", expiryTime: Date())
+
+      let tempIDToken = MyIDToken(tokenString: "", issuer: "", subject: "", audience: [""], expiration: Date(), issuedAt: Date(), nonce: "", authTime: Date())
+
+      return (tempAccessToken, tempRefreshToken, tempIDToken)
+
+   }
+
+   func generateIDToken(clientID: String, userID: String, scopes: [String]?, expiryTime: Int, nonce: String?) async throws -> VaporOAuth.IDToken {
+
+
+      // Open ID not implemented
+
+      let tempIDToken = MyIDToken(tokenString: "", issuer: "", subject: "", audience: [""], expiration: Date(), issuedAt: Date(), nonce: "", authTime: Date())
+
+      return tempIDToken
+
+   }
+
+   // ----------------------------------------------------------
+
 
    /// Generate Access and Refresh Token in exchange for the Authorization Code
    func generateAccessRefreshTokens(clientID: String, userID: String?, scopes: [String]?, accessTokenExpiryTime: Int) async throws -> (VaporOAuth.AccessToken, VaporOAuth.RefreshToken) {
