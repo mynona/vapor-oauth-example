@@ -39,7 +39,7 @@ As for the theory part:
 https://www.oauth.com
 
 
-# What is included
+# What is included in this example?
 
 * Client requests Authorization code
 * Server provides login screen (username, password)
@@ -55,4 +55,14 @@ https://www.oauth.com
 * Client can request a new access_token with the refresh_token flow
 * Client logout will just destroy the cookies in this example
 
+# Server endpoints
 
+OAuth server
+
+* oauth/authorize | Authorization flow
+* oauth/token | Exchange refresh token for new access token 
+* oauth/token_info | Token introspection
+
+Customized routes in this example
+
+* oauth/login | Sign-in flow
