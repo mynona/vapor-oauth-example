@@ -17,17 +17,22 @@ public struct OAuth_TokenRequest: Content {
    // Secret for the client application for the oauth server
    public let client_secret: String
 
+   // Code verifier for the PKCE challenge
+   public let code_verifier: String
+
    public init(
       code: String,
       grant_type: String,
       redirect_uri: String,
       client_id: String,
-      client_secret: String
+      client_secret: String,
+      code_verifier: String
    ) {
       self.code = code
       self.grant_type = grant_type
       self.redirect_uri = redirect_uri
       self.client_id = client_id
       self.client_secret = client_secret
+      self.code_verifier = code_verifier
    }
 }

@@ -42,6 +42,12 @@ final class MyAuthorizationCode: Model, Content {
    @Field(key: "scopes")
    var _scopes: String?
 
+   @OptionalField(key: "code_challenge")
+   var code_challenge: String?
+
+   @OptionalField(key: "code_challenge_method")
+   var code_challenge_method: String?
+
    init() {}
 
    init(id: UUID? = nil,
@@ -50,7 +56,9 @@ final class MyAuthorizationCode: Model, Content {
         redirect_uri: String,
         user_id: String,
         expiry_date: Date,
-        scopes: [String]?
+        scopes: [String]?,
+        code_challenge: String?,
+        code_challenge_method: String?
    ) {
       self.id = id
       self.code_id = code_id
@@ -59,5 +67,7 @@ final class MyAuthorizationCode: Model, Content {
       self.user_id = user_id
       self.expiry_date = expiry_date
       self.scopes = scopes
+      self.code_challenge = code_challenge
+      self.code_challenge_method = code_challenge_method
    }
 }

@@ -3,7 +3,7 @@ import VaporOAuth
 import Leaf
 import Fluent
 
-class MyClientRetriever: ClientRetriever {
+final class MyClientRetriever: ClientRetriever {
 
    private let app: Application
 

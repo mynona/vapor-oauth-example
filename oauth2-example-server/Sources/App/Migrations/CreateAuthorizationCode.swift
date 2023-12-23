@@ -15,6 +15,8 @@ struct CreateAuthorizationCode: AsyncMigration {
          .field("user_id", .string)
          .field("expiry_date", .datetime, .required)
          .field("scopes", .string)
+         .field("code_challenge", .string)
+         .field("code_challenge_method", .string)
          .create()
    }
 

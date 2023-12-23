@@ -25,6 +25,18 @@ struct MyAuthorizeHandler: AuthorizeHandler {
       request.session.data["client_id"] = authorizationRequestObject.clientID
       request.session.data["scope"] = authorizationRequestObject.scope.joined(separator: ",")
       request.session.data["redirect_uri"] = authorizationRequestObject.redirectURI.string
+      request.session.data["code_challenge"] = authorizationRequestObject.codeChallenge ?? ""
+      request.session.data["code_challenge_method"] = authorizationRequestObject.codeChallengeMethod ?? "S256"
+      request.session.data["nonce"] = authorizationRequestObject.nonce 
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyAuthorizeHandler().handleAuthorizationRequest()")
+      print("-----------------------------")
+      print("Request session:")
+      print("\(request.session.data)")
+      print("-----------------------------")
+#endif
 
       // Show login screen to user
       // In this example sign in with username and password

@@ -2,13 +2,15 @@ import VaporOAuth
 import Vapor
 import Fluent
 
-class MyCodeManger: CodeManager {
+final class MyCodeManger: CodeManager {
 
    private let app: Application
 
    init(app: Application) {
       self.app = app
    }
+
+
 
    // Device Code flow not part of this example:
 
@@ -23,7 +25,7 @@ class MyCodeManger: CodeManager {
 
    // Generate Authorization Code
 
-   func generateCode(userID: String, clientID: String, redirectURI: String, scopes: [String]?) throws -> String {
+   func generateCode(userID: String, clientID: String, redirectURI: String, scopes: [String]?, codeChallenge: String?, codeChallengeMethod: String?) throws -> String {
 
 #if DEBUG
       print("\n-----------------------------")
@@ -46,7 +48,10 @@ class MyCodeManger: CodeManager {
          redirect_uri: redirectURI,
          user_id: userID,
          expiry_date: expiryDate,
-         scopes: scopes)
+         scopes: scopes,
+         code_challenge: codeChallenge,
+         code_challenge_method: codeChallengeMethod
+      )
 
       _ = authorizationCode.save(on: app.db)
 
@@ -80,7 +85,9 @@ class MyCodeManger: CodeManager {
          redirectURI: authorizationCode.redirect_uri,
          userID: authorizationCode.user_id,
          expiryDate: authorizationCode.expiry_date,
-         scopes: authorizationCode.scopes
+         scopes: authorizationCode.scopes,
+         codeChallenge: authorizationCode.code_challenge,
+         codeChallengeMethod: authorizationCode.code_challenge_method
       )
 
    }
