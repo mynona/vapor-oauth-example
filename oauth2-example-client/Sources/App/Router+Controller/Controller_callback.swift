@@ -10,7 +10,6 @@ extension Controller {
       guard
          let code = request.query[String.self, at: "code"]
       else {
-
          throw(Abort(.badRequest, reason: "Invalid authorization code"))
       }
 

@@ -43,16 +43,16 @@ https://www.oauth.com
 
 * Client requests Authorization code
 * Server provides login screen (username, password)
-* Server side data handling: sessions for user data, db clients, db resource servers
+* Server side data handling: sessions for user data, db clients, db resource servers, db authorization code
 * Server returns Authorization code to client
 * Client requests Access/Refresh token in exchange of Authorization code
 * Server returns Access token as JWT token
 * Server returns Refresh token as UUID value
 * Server deletes expired Access tokens
-* Server deletes not used (*) refresh tokens as example
+* Server deletes expired Refesh tokens 
 * Client stores both tokens as cookies on the client (reason: make it available for all microservices)
 * Client checks token_info endpoint to access restricted resources
-* Client can request a new access_token with the refresh_token
+* Client can request a new access_token with the refresh_token flow
 * Client logout will just destroy the cookies in this example
 
 
