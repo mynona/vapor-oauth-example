@@ -5,13 +5,13 @@ import Fluent
 
 struct Controller {
 
-   func signin(_ request: Request) async throws -> Response {
+   func login(_ request: Request) async throws -> Response {
 
       let user = try request.auth.require(Author.self)
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().signin()")
+      print("Controller().login()")
       print("-----------------------------")
       print("Credentials authenticator / Fluent:")
       print("\(user)")
@@ -34,7 +34,7 @@ struct Controller {
    }
 
 
-   func auth(_ request: Request) async throws -> ClientResponse {
+   func loginForward(_ request: Request) async throws -> ClientResponse {
 
 
       let state = request.session.data["state"] ?? ""
@@ -42,35 +42,43 @@ struct Controller {
       let scope = request.session.data["scope"] ?? ""
       let redirect_uri = request.session.data["redirect_uri"] ?? ""
       let csrfToken = request.session.data["CSRFToken"] ?? ""
+      let code_challenge = request.session.data["code_challenge"] ?? ""
+      let code_challenge_method = request.session.data["code_challenge_method"] ?? ""
 
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().signin()")
+      print("Controller().loginForward()")
       print("-----------------------------")
       print("state: \(state)")
       print("client_id: \(client_id)")
       print("scope: \(scope)")
       print("redirect_uri: \(redirect_uri)")
       print("csrfToken: \(csrfToken)")
+      print("code_challenge: \(code_challenge)")
+      print("code_challenge_method: \(code_challenge_method)")
       print("-----------------------------")
 #endif
 
       struct Temp: Content {
          let applicationAuthorized: Bool
          let csrfToken: String
+         let code_challenge: String
+         let code_challenge_method: String
       }
 
       let content = Temp(
          applicationAuthorized: true,
-         csrfToken: csrfToken
+         csrfToken: csrfToken,
+         code_challenge: code_challenge,
+         code_challenge_method: code_challenge_method
       )
 
       let authorize = URI(string: "http://localhost:8090/oauth/authorize?client_id=\(client_id)&redirect_uri=\(redirect_uri)&response_type=code&scope=\(scope)&state=\(state)")
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().signin()")
+      print("Controller().loginForward()")
       print("-----------------------------")
       print("url: \(authorize)")
       print("-----------------------------")
@@ -84,7 +92,7 @@ struct Controller {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().signin()")
+      print("Controller().loginForward()")
       print("-----------------------------")
       print("headers: \(headers)")
       print("uri: \(authorize)")
@@ -96,7 +104,7 @@ struct Controller {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().signin()")
+      print("Controller().loginForward()")
       print("-----------------------------")
       print("response: \(response.status)")
       print("-----------------------------")

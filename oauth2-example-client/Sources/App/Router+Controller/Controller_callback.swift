@@ -7,18 +7,24 @@ extension Controller {
 
       // Step 1: Authorization code
 
-      guard
-         let code = request.query[String.self, at: "code"]
-      else {
-         throw(Abort(.badRequest, reason: "Invalid authorization code"))
-      }
+#if DEBUG
+      print("\n-----------------------------")
+      print("Controller().callback()")
+      print("-----------------------------")
+      print("Request: \(request)")
+      print("-----------------------------")
+#endif
+
+      let code: String = request.query["code"] ?? ""
+
+
 
 #if DEBUG
       print("\n-----------------------------")
       print("Controller().callback()")
       print("-----------------------------")
       print("Authorization code received from oauth server:")
-      print("Request: \(request)")
+      print("Code: \(code)")
       print("-----------------------------")
 #endif
 

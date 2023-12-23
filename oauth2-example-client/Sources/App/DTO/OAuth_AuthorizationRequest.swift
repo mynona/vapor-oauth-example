@@ -18,19 +18,27 @@ public struct OAuth_AuthorizationRequest: Content {
    // Scope requested for this application
    public let scope: [String]
 
-   // codeChallenge not supported
+   // Code Challenge
+   public let code_challenge: String
+
+   // Code Challenge Method
+   public let code_challenge_method: String
 
    public init(
       client_id: String,
       redirect_uri: String,
       state: String,
       response_type: String = "code",
-      scope: [String]
+      scope: [String],
+      code_challenge: String,
+      code_challenge_method: String
    ) {
       self.client_id = client_id
       self.redirect_uri = redirect_uri
       self.state = state
       self.response_type = response_type
       self.scope = scope
+      self.code_challenge = code_challenge
+      self.code_challenge_method = code_challenge_method
    }
 }
