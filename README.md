@@ -12,7 +12,9 @@ https://github.com/marius-se/vapor-oauth2-example
 As there were essential flows missing such as token introspection, I extended this
 example. 
 
-Unfortunately, vapor/oauth doesn't compile on linux anymore. Therefore, I used the following fork, where these issues are fixed and additionally, PKCE is supported.
+Unfortunately, vapor/oauth doesn't compile on linux anymore and is outdated. 
+
+Therefore, I used the following fork which is updated Vapor 4.89.3 and includes PKCE and id_token support:
 
 https://github.com/vamsii777/vapor-oauth.git
 
@@ -66,7 +68,7 @@ Open ID Provider (OAuth server)
 Customized routes on the client side
 
 * /client-login | Start authorization flow
-* /callback | Retrieve authorization code and request acess_token and refresh_token
+* /callback | Retrieve authorization code; request acess_token and refresh_token
 * /refresh | Exchange refresh_token for a new access_token
 * /introspection | Example for a protected page that calls the oauth/token_info endpoint
 
