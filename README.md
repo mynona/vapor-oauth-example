@@ -63,7 +63,7 @@ Open ID Provider (OAuth server)
 * oauth/authorize | Authorization flow
 * oauth/token | Exchange refresh token for new access token
 * oauth/token_info | Token introspection
-* oauth/login | Customized route to offer a imple sign-in form
+* oauth/login | Customized route to offer a simple sign-in form
 
 Customized routes on the client side
 
