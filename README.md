@@ -65,11 +65,11 @@ Open ID Provider (OAuth server)
 * oauth/token_info | Token introspection
 * oauth/login | Customized route to offer a simple sign-in form
 
-Customized routes on the client side
+Customized routes on the relying party (client) side
 
 * /client-login | Start authorization flow
 * /callback | Retrieve authorization code; request acess_token and refresh_token
 * /refresh | Exchange refresh_token for a new access_token
-* /introspection | Example for a protected page that calls the oauth/token_info endpoint
+* /introspection | Example of a protected page that calls the oauth/token_info endpoint
 
 
