@@ -91,6 +91,7 @@ extension Controller {
       let expiryInMinutes = try response.content.get(Int.self, at: "expires_in")
       let accessToken = try response.content.get(String.self, at: "access_token")
       let refreshToken = try response.content.get(String.self, at: "refresh_token")
+      //let idToken = try response.content.get(String.self, at: "id_token")
       let scope = try response.content.get(String.self, at: "scope")
 
       // Token rotation is not supported in vapor/oauth at the moment:

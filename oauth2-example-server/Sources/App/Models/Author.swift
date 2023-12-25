@@ -8,18 +8,53 @@ final class Author: Model, Content, Encodable {
    // Primary key must be named id (Fluent requirement)
    @ID(key: .id) var id: UUID?
 
-   // Attribute(s)
-   @Field(key: "first_name") 
-   var first_name: String
+   @Field(key: "username")
+   var username: String
 
-   @Field(key: "last_name") 
-   var last_name: String
-
-   @Field(key: "password") 
+   @Field(key: "password")
    var password: String
 
-   @Field(key: "username") 
-   var username: String
+   @OptionalField(key: "given_name") // first name
+   var givenName: String?
+
+   @OptionalField(key: "family_name") // last name
+   var familyName: String?
+
+   @OptionalField(key: "middle_name")
+   var middleName: String?
+
+   @OptionalField(key: "nickname")
+   var nickname: String?
+
+   @OptionalField(key: "profile")
+   var profile: String?
+
+   @OptionalField(key: "picture")
+   var picture: String?
+
+   @OptionalField(key: "website")
+   var website: String?
+
+   @OptionalField(key: "gender")
+   var gender: String?
+
+   @OptionalField(key: "birthdate")
+   var birthdate: String?
+
+   @OptionalField(key: "zoneinfo")
+   var zoneinfo: String?
+
+   @OptionalField(key: "locale")
+   var locale: String?
+
+   @OptionalField(key: "phone_number")
+   var phoneNumber: String?
+
+   @Timestamp(key: "created_at", on: .create, format: .default)
+   var created_at: Date?
+
+   @Timestamp(key: "updated_at", on: .update, format: .default)
+   var updated_at: Date?
 
    var scopes: [String] {
       get {
@@ -34,29 +69,41 @@ final class Author: Model, Content, Encodable {
    @Field(key: "scopes")
    var _scopes: String
 
-   @Timestamp(key: "created_at", on: .create, format: .default) 
-   var created_at: Date?
-
-   @Timestamp(key: "updated_at", on: .update, format: .default)
-   var updated_at: Date?
-
    init() { }
 
    init(
       id: UUID? = nil,
-      first_name: String,
-      last_name: String,
       username: String,
       password: String,
+      givenName: String?,
+      familyName: String?,
+      middleName: String?,
+      nickname: String?,
+      profile: String?,
+      picture: String?,
+      website: String?,
+      gender: String?,
+      birthdate: String?,
+      zoneinfo: String?,
+      locale: String?,
+      phoneNumber: String?,
       scopes: [String]
    ) {
-      // Primary key
       self.id = id
-      // Attributes
-      self.first_name = first_name
-      self.last_name = last_name
       self.username = username
       self.password = password
+      self.givenName = givenName
+      self.familyName = familyName
+      self.middleName = middleName
+      self.nickname = nickname
+      self.profile = profile
+      self.picture = picture
+      self.website = website
+      self.gender = gender
+      self.birthdate = birthdate
+      self.zoneinfo = zoneinfo
+      self.locale = locale
+      self.phoneNumber = phoneNumber
       self.scopes = scopes
    }
 
