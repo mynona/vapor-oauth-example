@@ -47,6 +47,7 @@ https://www.oauth.com
 * Server side data handling: sessions for user data, db clients, db resource servers, db authorization code
 * Server returns Authorization code to client
 * Client requests Access/Refresh token in exchange of Authorization code
+* Server checks if user is entitled for requested scope
 * Server returns Access token as JWT token
 * Server returns Refresh token as UUID value
 * Server deletes expired Access tokens
