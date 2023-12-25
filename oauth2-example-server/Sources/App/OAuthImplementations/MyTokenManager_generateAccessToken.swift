@@ -10,7 +10,7 @@ extension MyTokenManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyTokenManager().generateAccessToken()")
+      print("MyTokenManager() \(#function)")
       print("-----------------------------")
       print("Parameters:")
       print("clientID: \(clientID)")

@@ -32,7 +32,7 @@ extension MyTokenManager {
 
 #if DEBUG
          print("\n-----------------------------")
-         print("MyTokenManager().getAccessToken()")
+         print("MyTokenManager() \(#function)")
          print("-----------------------------")
          print("Count of expired tokens for this user: \(expiredTokens.count)")
          print("Those access tokens have been deleted.")
@@ -45,7 +45,7 @@ extension MyTokenManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyTokenManager().getAccessToken()")
+      print("MyTokenManager() \(#function)")
       print("-----------------------------")
       print("Received access token: \(jwt)")
       print("-----------------------------")

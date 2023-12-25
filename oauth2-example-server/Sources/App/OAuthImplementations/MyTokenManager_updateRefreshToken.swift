@@ -10,7 +10,7 @@ extension MyTokenManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyTokenManager().updateRefreshToken()")
+      print("MyTokenManager() \(#function)")
       print("-----------------------------")
       print("Parameter: \(refreshToken)")
       print("-----------------------------")

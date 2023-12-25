@@ -18,7 +18,7 @@ extension Controller {
 
 #if DEBUG
          print("\n-----------------------------")
-         print("Controller().protectedPage()")
+         print("Controller() \(#function)")
          print("-----------------------------")
          print("Unauthorized because access token cookie is missing")
          print("-----------------------------")
@@ -49,7 +49,7 @@ extension Controller {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().protectedPage()")
+      print("Controller() \(#function)")
       print("-----------------------------")
       print("Token introspection request")
       print("Headers: \(headers)")
@@ -62,7 +62,7 @@ extension Controller {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().protectedPage()")
+      print("Controller() \(#function)")
       print("-----------------------------")
       print("Token introspection response:")
       print("Response: \(response)")
@@ -80,7 +80,7 @@ extension Controller {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().protectedPage()")
+      print("Controller() \(#function)")
       print("-----------------------------")
       print("Unwrapped response::")
       print("Introspection: \(introspection)")

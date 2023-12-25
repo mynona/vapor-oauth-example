@@ -9,7 +9,7 @@ struct MyAuthorizeHandler: AuthorizeHandler {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyAuthorizeHandler().handleAuthorizationRequest()")
+      print("MyAuthorizeHandler() \(#function)")
       print("-----------------------------")
       print("Authorization request received from the client:")
       print("\(authorizationRequestObject)")
@@ -31,7 +31,7 @@ struct MyAuthorizeHandler: AuthorizeHandler {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyAuthorizeHandler().handleAuthorizationRequest()")
+      print("MyAuthorizeHandler() \(#function)")
       print("-----------------------------")
       print("Request session:")
       print("\(request.session.data)")
@@ -54,7 +54,7 @@ struct MyAuthorizeHandler: AuthorizeHandler {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyAuthorizeHandler().handleAuthorizationError()")
+      print("MyAuthorizeHandler() \(#function)")
       print("-----------------------------")
       print("Authorization error")
       print("\(errorType)")

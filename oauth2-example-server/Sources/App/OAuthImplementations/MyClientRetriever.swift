@@ -15,7 +15,7 @@ final class MyClientRetriever: ClientRetriever {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyClientRetriever().getClient()")
+      print("MyClientRetriever() \(#function)")
       print("-----------------------------")
       print("clientID: \(clientID)")
       print("-----------------------------")
@@ -32,7 +32,7 @@ final class MyClientRetriever: ClientRetriever {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyClientRetriever().getClient()")
+      print("MyClientRetriever() \(#function)")
       print("-----------------------------")
       print("Database query: \(client)")
       print("-----------------------------")
@@ -50,7 +50,7 @@ final class MyClientRetriever: ClientRetriever {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyClientRetriever().getClient()")
+      print("MyClientRetriever() \(#function)")
       print("-----------------------------")
       print("OAuthClient redirect: \(oauthClient.redirectURIs)")
       print("-----------------------------")

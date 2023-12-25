@@ -9,7 +9,7 @@ extension MyTokenManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyTokenManager().generateIDToken()")
+      print("MyTokenManager() \(#function)")
       print("-----------------------------")
       print("Parameters:")
       print("clientID: \(clientID)")

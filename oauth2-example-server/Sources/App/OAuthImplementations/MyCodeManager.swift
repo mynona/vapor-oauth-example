@@ -27,7 +27,7 @@ final class MyCodeManger: CodeManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyCodeManager().generateCode()")
+      print("MyCodeManager() \(#function)")
       print("-----------------------------")
       print("Called with parameters:")
       print("userID: \(userID)")
@@ -64,7 +64,7 @@ final class MyCodeManger: CodeManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyCodeManager().getCode()")
+      print("MyCodeManager() \(#function)")
       print("-----------------------------")
       print("Called with parameters:")
       print("code: \(code)")
@@ -98,7 +98,7 @@ final class MyCodeManger: CodeManager {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyCodeManager().codeUsed()")
+      print("MyCodeManager() \(#function)")
       print("-----------------------------")
       print("Called with parameters:")
       print("code: \(code.codeID)")

@@ -31,7 +31,7 @@ extension MyTokenManager {
 
 #if DEBUG
          print("\n-----------------------------")
-         print("MyTokenManager().getRefreshToken()")
+         print("MyTokenManager() \(#function)")
          print("-----------------------------")
          print("Count of refresh tokens for this user: \(otherActiveRefreshTokens.count)")
          print("Those refresh tokens have been deleted")

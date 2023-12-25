@@ -17,7 +17,7 @@ final class MyResourceServerRetriever: ResourceServerRetriever {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyResourceServerRetriever().getServer()")
+      print("MyResourceServerRetriever() \(#function)")
       print("-----------------------------")
       print("username: \(username)")
       print("-----------------------------")
@@ -34,7 +34,7 @@ final class MyResourceServerRetriever: ResourceServerRetriever {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("MyResourceServerRetriever().getServer()")
+      print("MyResourceServerRetriever() \(#function)")
       print("-----------------------------")
       print("Database query: \(server)")
       print("-----------------------------")
