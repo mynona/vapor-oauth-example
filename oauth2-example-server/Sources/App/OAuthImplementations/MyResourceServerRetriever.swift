@@ -11,6 +11,8 @@ final class MyResourceServerRetriever: ResourceServerRetriever {
       self.app = app
    }
 
+   // ----------------------------------------------------------
+
    func getServer(_ username: String) async throws -> VaporOAuth.OAuthResourceServer? {
 
 #if DEBUG

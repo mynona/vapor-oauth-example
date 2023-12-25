@@ -22,6 +22,8 @@ struct CreateAuthor: AsyncMigration {
          .field("username", .string, .required)
          .field("password", .string, .required)
          .field("scope", scope, .required) // database enum
+         .field("created_at", .datetime, .required)
+         .field("updated_at", .datetime)
          .unique(on: "username")
          .create()
    }

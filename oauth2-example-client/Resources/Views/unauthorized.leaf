@@ -7,7 +7,9 @@
 
 <body style="background-color:#D7FEED;">
 
-   <h1>Unauthorized.</h1>
+  <h1>Client (Relying party)</h1>
+
+   <h2>Unauthorized.</h2>
 
 <nav>
    <ul>

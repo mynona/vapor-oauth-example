@@ -16,7 +16,11 @@ extension Controller {
 #endif
 
       let code: String = request.query["code"] ?? ""
+      let state: String = request.query["state"] ?? ""
 
+
+      // Hardcoded in this example
+      //let x = request.cookies["refresh_token"]?.string ?? ""
 
 
 #if DEBUG
@@ -25,6 +29,7 @@ extension Controller {
       print("-----------------------------")
       print("Authorization code received from oauth server:")
       print("Code: \(code)")
+      print("State: \(state)")
       print("-----------------------------")
 #endif
 
@@ -72,8 +77,8 @@ extension Controller {
       )
 
       let res = try await view.encodeResponse(for: request)
-      res.cookies["access_token"] = createCookie(token: accessToken, for: .AccessToken)
-      res.cookies["refresh_token"] = createCookie(token: refreshToken, for: .RefreshToken)
+      res.cookies["access_token"] = createCookie(value: accessToken, for: .AccessToken)
+      res.cookies["refresh_token"] = createCookie(value: refreshToken, for: .RefreshToken)
       return res
 
    }

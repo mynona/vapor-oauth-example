@@ -7,15 +7,27 @@ extension MyTokenManager {
 
    func generateTokens(clientID: String, userID: String?, scopes: [String]?, accessTokenExpiryTime: Int, idTokenExpiryTime: Int, nonce: String?) async throws -> (VaporOAuth.AccessToken, VaporOAuth.RefreshToken, VaporOAuth.IDToken) {
 
-      // Open ID not implemented
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyTokenManager().generateAccessToken()")
+      print("-----------------------------")
+      print("Parameters:")
+      print("clientID: \(clientID)")
+      print("userID: \(userID)")
+      print("scopes: \(scopes)")
+      print("accessTokenExpiryTime: \(accessTokenExpiryTime)")
+      print("idTokenExpiryTime: \(idTokenExpiryTime)")
+      print("nonce: \(nonce)")
+      print("-----------------------------")
+#endif
 
-      let tempAccessToken = MyAccessToken(id: UUID(), tokenString: "", clientID: "", userID: nil, scopes: nil, expiryTime: Date())
+      let accessToken = try await generateAccessToken(clientID: clientID, userID: userID, scopes: scopes, expiryTime: accessTokenExpiryTime)
 
-      let tempRefreshToken = MyRefreshToken(tokenString: "", clientID: "", expiryTime: Date())
+      let refreshToken = try await generateRefreshToken(clientID: clientID, userID: userID, scopes: scopes)
 
-      let tempIDToken = MyIDToken(tokenString: "", issuer: "", subject: "", audience: [""], expiration: Date(), issuedAt: Date(), nonce: "", authTime: Date())
+      let idToken = try await generateIDToken(clientID: clientID, userID: userID ?? "", scopes: scopes, expiryTime: idTokenExpiryTime, nonce: nonce)
 
-      return (tempAccessToken, tempRefreshToken, tempIDToken)
+      return (accessToken, refreshToken, idToken)
 
    }
 

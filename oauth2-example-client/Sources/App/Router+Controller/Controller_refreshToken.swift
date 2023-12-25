@@ -76,10 +76,11 @@ extension Controller {
       )
 
       let res = try await view.encodeResponse(for: request)
-      res.cookies["access_token"] = createCookie(token: token.access_token, for: .AccessToken)
+      res.cookies["access_token"] = createCookie(value: token.access_token, for: .AccessToken)
       return res
 
 
    }
 
 }
+

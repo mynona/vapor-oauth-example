@@ -1,17 +1,16 @@
 import Vapor
 
+/// Request Refresh Token via /oauth/token
+/// - Parameters:
+///   - grant_type: "authorization_code" in case of the Authorization Code Flow
+///   - client_id: The client ID for the relying party application, obtained when it registered with the OpenID Provider (authorization server)
+///   - client_secret: Secret for the client application for the oauth server
+///   - refresh_token: Refresh Token
 public struct OAuth_RefreshTokenRequest: Content {
 
-   // Will always be "authorization_code"
    public let grant_type: String
-
-   // Id that identifies the client application
    public let client_id: String
-
-   // Secret for the client application for the oauth server
    public let client_secret: String
-
-   // Refresh token
    public let refresh_token: String
 
    public init(

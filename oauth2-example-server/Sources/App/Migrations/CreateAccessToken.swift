@@ -17,6 +17,7 @@ struct CreateAccessToken: AsyncMigration {
    }
    
    func revert(on database: Database) async throws {
-      try await database.schema("access_tokens").delete()
+      try await database.schema(schemaName)
+         .delete()
    }
 }

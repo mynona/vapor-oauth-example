@@ -1,23 +1,21 @@
 import Vapor
 
+/// Request Token with Authorization Code via /oauth/token
+/// - Parameters:
+///   - code: The authorization code received in response to the authentication request.
+///   - grant_type: “authorization_code” is used when exchanging an authorization code for tokens.
+///   - redirect_uri: Callback location at the application for the OpenID Provider’s response from this call.
+///   - client_id: The client ID for the relying party application, obtained when it registered with the OpenID Provider (authorization server)
+///   - client_secret: Secret for the client application for the oauth server
+///   - code_verifier: The PKCE code verifier value from which the code challenge in the authentication request was derived. It should be an unguessable, cryptographically random string between 43 and 128 characters in length, inclusive, using the characters A–Z, a–z, 0–9, “-”, “.”, “_”, and “~”.
+///
 public struct OAuth_TokenRequest: Content {
 
-   // Authorization Code we exchange for a token
    public let code: String
-
-   // Will always be "authorization_code"
    public let grant_type: String
-
-   // Must be exactly the same uri as for the authorization code
    public let redirect_uri: String
-
-   // Id that identifies the client application
    public let client_id: String
-
-   // Secret for the client application for the oauth server
    public let client_secret: String
-
-   // Code verifier for the PKCE challenge
    public let code_verifier: String
 
    public init(

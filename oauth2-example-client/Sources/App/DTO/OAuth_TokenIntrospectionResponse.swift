@@ -1,10 +1,15 @@
 import Vapor
 
+/// Open Id Provider response
+/// - Parameters:
+///   - active: true for an active access token. In case of false only the active parameters is returned
+///   - exp: Expiration in seconds
+///   - client_id: The client ID for the relying party application, obtained when it registered with the OpenID Provider (authorization server)
+///   - username: Username of the user
+///   - token_type: "bearer"
+///
 public struct OAuth_TokenIntrospectionResponse: Content {
 
-   // Only the active claim is guaranteed to be included.
-   // All other claims are optional and may not be provided
-   // by an oauth provider
    public let active: Bool
 
    public let scope: String?

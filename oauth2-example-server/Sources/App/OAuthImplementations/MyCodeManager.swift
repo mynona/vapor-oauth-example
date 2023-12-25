@@ -10,8 +10,6 @@ final class MyCodeManger: CodeManager {
       self.app = app
    }
 
-
-
    // Device Code flow not part of this example:
 
    func generateDeviceCode(userID: String, clientID: String, scopes: [String]?) async throws -> String { return "" }
@@ -75,8 +73,8 @@ final class MyCodeManger: CodeManager {
 
       guard
          let authorizationCode = try await MyAuthorizationCode.query(on: app.db)
-         .filter(\.$code_id == code)
-         .first()
+            .filter(\.$code_id == code)
+            .first()
       else { return nil }
 
       return OAuthCode(
@@ -110,8 +108,10 @@ final class MyCodeManger: CodeManager {
       if let authorizationCode = try await MyAuthorizationCode.query(on: app.db)
          .filter(\.$code_id == code.codeID)
          .first() {
-            try await authorizationCode.delete(on: app.db)
-   }
+
+         try await authorizationCode
+            .delete(on: app.db)
+      }
 
    }
 }

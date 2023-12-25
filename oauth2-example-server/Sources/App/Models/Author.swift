@@ -9,11 +9,26 @@ final class Author: Model, Content, Encodable {
    @ID(key: .id) var id: UUID?
 
    // Attribute(s)
-   @Field(key: "first_name") var first_name: String
-   @Field(key: "last_name") var last_name: String
-   @Field(key: "password") var password: String
-   @Field(key: "username") var username: String
-   @Enum(key: "scope") var scope: AuthorScope
+   @Field(key: "first_name") 
+   var first_name: String
+
+   @Field(key: "last_name") 
+   var last_name: String
+
+   @Field(key: "password") 
+   var password: String
+
+   @Field(key: "username") 
+   var username: String
+
+   @Enum(key: "scope") 
+   var scope: AuthorScope
+
+   @Timestamp(key: "created_at", on: .create, format: .default) 
+   var created_at: Date?
+
+   @Timestamp(key: "updated_at", on: .update, format: .default)
+   var updated_at: Date?
 
    init() { }
 

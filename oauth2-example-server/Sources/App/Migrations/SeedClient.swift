@@ -12,7 +12,7 @@ struct SeedClient: AsyncMigration {
          client_id: "1",
          redirect_uris: ["http://localhost:8089/callback"],
          client_secret: "password123",
-         scopes: ["admin"],
+         scopes: ["admin","openid"],
          confidential_client: true,
          first_party: true,
          grant_type: .authorization

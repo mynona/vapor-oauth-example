@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>OAuth Server</title>
+        <title>Open Id Provider</title>
         <meta charset="UTF-8">
     </head>
     <body style="background-color:#FEEAE9;">
-        <h1>Sign in with oauth server</h1>
+          <h1>Open Id Provider</h1>
+
+          <h2>Sign-in</h2>
 
         <form action="http://localhost:8090/oauth/login" method="POST">
 

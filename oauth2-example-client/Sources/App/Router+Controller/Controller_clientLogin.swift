@@ -7,14 +7,15 @@ extension Controller {
 
    func clientLogin(_ request: Request) async throws -> Response {
 
+      // -----------------------------------------------------
       // PKCE
-
+      // -----------------------------------------------------
 
       // For this example we will use a hardcoded code_verifier
       // In a real world case you will create a new codeVerifier
       // for each request
 
-      //let codeVerifier = "[UInt8].random(count: 128).hex"
+      //let codeVerifier = [UInt8].random(count: 128).hex
       let codeVerifier = "hello_world"
 
       guard
@@ -22,10 +23,18 @@ extension Controller {
       else {
          throw Abort(.imATeapot, reason: "PKCE Code could not be generated")
       }
-      //let hashed = SHA256.hash(data: Data(codeVerifier.utf8))
+
       let verifierHash = SHA256.hash(data: verifierData)
 
       let codeChallenge = Data(verifierHash).base64URLEncodedString()
+
+
+      // -----------------------------------------------------
+      // nonce
+      // -----------------------------------------------------
+
+      let nonce = "nonce-test"
+
 
 #if DEBUG
       print("\n-----------------------------")
@@ -35,6 +44,7 @@ extension Controller {
       print("codeVerifier: \(codeVerifier)")
       print("\(verifierHash)")
       print("codeChallenge: \(codeChallenge)")
+      print("nonce: \(nonce)")
       print("-----------------------------")
 #endif
 
@@ -45,14 +55,11 @@ extension Controller {
          response_type: "code",
          scope: ["admin"],
          code_challenge: "\(codeChallenge)",
-         code_challenge_method: "S256"
+         code_challenge_method: "S256",
+         nonce: nonce
       )
 
-
-
-
-
-      let uri = "http://localhost:8090/oauth/authorize?client_id=\(content.client_id)&redirect_uri=\(content.redirect_uri)&scope=\(content.scope.joined(separator: ","))&response_type=\(content.response_type)&state=\(content.state)&code_challenge=\(content.code_challenge)&code_challenge_method=\(content.code_challenge_method)"
+      let uri = "http://localhost:8090/oauth/authorize?client_id=\(content.client_id)&redirect_uri=\(content.redirect_uri)&scope=\(content.scope.joined(separator: ","))&response_type=\(content.response_type)&state=\(content.state)&code_challenge=\(content.code_challenge)&code_challenge_method=\(content.code_challenge_method)&nonce=\(nonce)"
 
 #if DEBUG
       print("\n-----------------------------")
@@ -63,7 +70,13 @@ extension Controller {
       print("-----------------------------")
 #endif
 
+
+      //let response = try await request.client.get(URI(string: uri)).encodeResponse(for: request)
+      //return response
+
       return request.redirect(to: uri)
+
+
 
    }
 

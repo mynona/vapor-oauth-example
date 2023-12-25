@@ -1,0 +1,34 @@
+version: '3.8'
+
+x-shared_environment: &shared_environment
+  LOG_LEVEL: ${LOG_LEVEL:-debug}
+  
+networks:
+  oauth:
+  
+services:
+  oauth-server:
+    container_name: oauth-server
+    image: oauth-server:latest
+    build: 
+      context: .
+    command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8090"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

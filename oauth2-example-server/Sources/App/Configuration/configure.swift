@@ -30,15 +30,16 @@ public func configure(_ app: Application) throws {
    //      =============================================================
 
    // Create Tables
+   app.migrations.add(SessionRecord.migration)
    app.migrations.add(CreateAuthor())
+   app.migrations.add(CreateAuthorizationCode())
    app.migrations.add(CreateAccessToken())
    app.migrations.add(CreateRefreshToken())
-   app.migrations.add(SessionRecord.migration)
+   app.migrations.add(CreateIDToken())
    app.migrations.add(CreateResourceServer())
    app.migrations.add(CreateClient())
-   app.migrations.add(CreateAuthorizationCode())
 
-   // Seed
+   // Seed with test data
    app.migrations.add(SeedAuthor())
    app.migrations.add(SeedResourceServer())
    app.migrations.add(SeedClient())
@@ -52,7 +53,6 @@ public func configure(_ app: Application) throws {
    app.middleware.use(app.sessions.middleware, at: .beginning)
    app.middleware.use(OAuthUserSessionAuthenticator())
    app.middleware.use(Author.sessionAuthenticator())
-
 
    //      =============================================================
    //      JWT
@@ -92,7 +92,7 @@ public func configure(_ app: Application) throws {
          tokenManager: MyTokenManager(app: app),
          clientRetriever: MyClientRetriever(app: app),
          authorizeHandler: MyAuthorizeHandler(),
-         validScopes: ["admin"],
+         validScopes: nil, //["admin,openid"], value required if no clients
          resourceServerRetriever: MyResourceServerRetriever(app: app),
          oAuthHelper: .remote(
             tokenIntrospectionEndpoint: "",
