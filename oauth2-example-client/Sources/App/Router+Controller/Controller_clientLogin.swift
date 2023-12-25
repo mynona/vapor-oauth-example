@@ -5,18 +5,19 @@ import Crypto
 
 extension Controller {
 
+   /// Starts the Authentication flow
+   ///
+   /// PKCE:
+   /// - code verifier is SHA256 hashed. The hashed code is sent as code_challenge together with the code_challenge_method as String ("SHA256") which indicates the hashing method
+   ///
+   /// Open ID:
+   /// - The nonce parameter is included as value in the id_token
+   ///
+   /// At the moment the cookies are not returned when the Authorization Code is returned to the relaying party (client). Therefore, the code_verifier and nonce are hardcoded values.
    func clientLogin(_ request: Request) async throws -> Response {
 
-      // -----------------------------------------------------
-      // PKCE
-      // -----------------------------------------------------
-
-      // For this example we will use a hardcoded code_verifier
-      // In a real world case you will create a new codeVerifier
-      // for each request
-
-      //let codeVerifier = [UInt8].random(count: 128).hex
-      let codeVerifier = "hello_world"
+      let codeVerifier = "hello_world" // [UInt8].random(count: 128).hex
+      let nonce = "nonce-test"
 
       guard
          let verifierData = codeVerifier.data(using: .utf8)
@@ -28,19 +29,10 @@ extension Controller {
 
       let codeChallenge = Data(verifierHash).base64URLEncodedString()
 
-
-      // -----------------------------------------------------
-      // nonce
-      // -----------------------------------------------------
-
-      let nonce = "nonce-test"
-
-
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().login()")
+      print("Controller() \(#function)")
       print("-----------------------------")
-      print("Code challenge:")
       print("codeVerifier: \(codeVerifier)")
       print("\(verifierHash)")
       print("codeChallenge: \(codeChallenge)")
@@ -63,31 +55,17 @@ extension Controller {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller().login()")
+      print("Controller() \(#function)")
       print("-----------------------------")
       print("Authorization request sent to oauth server:")
       print("URI: \(uri)")
       print("-----------------------------")
 #endif
 
-
-      //let response = try await request.client.get(URI(string: uri)).encodeResponse(for: request)
-      //return response
-
       return request.redirect(to: uri)
-
-
 
    }
 
 }
 
-// Helper extension for base64 URL encoding
-extension Data {
-    func base64URLEncodedString() -> String {
-        return self.base64EncodedString()
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "=", with: "")
-    }
-}
+

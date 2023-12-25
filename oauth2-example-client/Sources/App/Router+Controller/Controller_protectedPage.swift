@@ -3,10 +3,13 @@ import Leaf
 
 extension Controller {
 
+   /// Token introspection flow when accessing a protected resource
+   ///
+   /// Endpoint /oauth/token is called with Basic Authentication
+   ///
    func protectedPage(_ request: Request) async throws -> View {
 
       // Get access token from cookie
-
       guard
          let cookie = request.cookies["access_token"]
       else {
@@ -33,13 +36,9 @@ extension Controller {
          token: accessToken
       )
 
-      // Basic authentication set up for the client to access the
-      // introspection endpoint on the oauth server
-      // On the oauth server acess is managed via:
-      // resourceServerRetriever: LiveResourceServerRetriever(app: app)
+      // Add basic authentication credentials to the request header
       let resourceServerUsername = "resource-1"
       let resourceServerPassword = "resource-1-password"
-
       let credentials = "\(resourceServerUsername):\(resourceServerPassword)".base64String()
 
       let headers = HTTPHeaders(dictionaryLiteral:
@@ -68,11 +67,11 @@ extension Controller {
       print("-----------------------------")
 #endif
 
-
-      if response.status != .ok {
+      guard
+         response.status == .ok
+      else {
          return try await request.view.render("unauthorized")
       }
-
 
       // Unwrap response
       let introspection: OAuth_TokenIntrospectionResponse = try response.content.decode(OAuth_TokenIntrospectionResponse.self)
@@ -87,12 +86,11 @@ extension Controller {
 #endif
 
       // Invalid access token
-
-      if introspection.active == false {
+      guard
+         introspection.active == true
+      else {
          return try await request.view.render("unauthorized")
       }
-
-      // Valid access token
 
       return try await request.view.render("protected-page")
    }
