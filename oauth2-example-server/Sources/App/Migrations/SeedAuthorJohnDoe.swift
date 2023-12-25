@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-struct SeedAuthor: AsyncMigration {
+struct SeedAuthorJohnDoe: AsyncMigration {
 
    func prepare(on database: Database) async throws {
 

@@ -2,7 +2,7 @@ import Vapor
 import VaporOAuth
 import Leaf
 
-struct MyAuthorizeHandler: AuthorizeHandler {
+extension MyAuthorizationHandler {
 
    /// Handle Authorization Request from the client
    func handleAuthorizationRequest(_ request: Request, authorizationRequestObject: AuthorizationRequestObject) async throws -> Response {
@@ -27,7 +27,7 @@ struct MyAuthorizeHandler: AuthorizeHandler {
       request.session.data["redirect_uri"] = authorizationRequestObject.redirectURI.string
       request.session.data["code_challenge"] = authorizationRequestObject.codeChallenge ?? ""
       request.session.data["code_challenge_method"] = authorizationRequestObject.codeChallengeMethod ?? "S256"
-      request.session.data["nonce"] = authorizationRequestObject.nonce 
+      request.session.data["nonce"] = authorizationRequestObject.nonce
 
 #if DEBUG
       print("\n-----------------------------")
@@ -44,25 +44,4 @@ struct MyAuthorizeHandler: AuthorizeHandler {
       return try await request.view.render("signin", viewContext).encodeResponse(for: request)
    }
 
-   // ----------------------------------------------------------
-
-   /// - Throws: invalidClientID 
-   /// - Throws: confidentialClientTokenGrant
-   /// - Throws: invalidRedirectURI
-   /// - Throws: httpRedirectURI
-   func handleAuthorizationError(_ errorType: AuthorizationError) async throws -> Response {
-
-#if DEBUG
-      print("\n-----------------------------")
-      print("MyAuthorizeHandler() \(#function)")
-      print("-----------------------------")
-      print("Authorization error")
-      print("\(errorType)")
-      print("-----------------------------")
-#endif
-
-      return Response(status: .unauthorized, body: .init(string: errorType.localizedDescription))
-   }
-
 }
-
