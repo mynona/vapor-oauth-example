@@ -2,6 +2,12 @@ import VaporOAuth
 import Vapor
 import Fluent
 
+/// Manage authorization code
+///
+/// * generate authorization code
+/// * get authorization code
+/// * remove used authorization code
+/// 
 final class MyCodeManger: CodeManager {
 
    public let app: Application

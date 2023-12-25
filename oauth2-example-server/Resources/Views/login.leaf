@@ -23,6 +23,12 @@
             <input type="submit" value="Sign in" />
         </form>
 
+                  <p>The requested scope is 'admin'
+          <ul>
+          <li>john_doe@something.com (only entitled for 'admin'</li>
+          <li>jane_doe@something.com (only entitled for 'viewer'</li>
+          </p>
+
     </body>
 
 </html>

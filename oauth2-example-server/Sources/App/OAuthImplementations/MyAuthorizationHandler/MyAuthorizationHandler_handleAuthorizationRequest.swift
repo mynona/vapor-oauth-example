@@ -39,9 +39,9 @@ extension MyAuthorizationHandler {
 #endif
 
       // Show login screen to user
-      // In this example sign in with username and password
 
-      return try await request.view.render("signin", viewContext).encodeResponse(for: request)
+      return try await request.view.render("login", viewContext).encodeResponse(for: request)
+
    }
 
 }

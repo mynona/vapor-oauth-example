@@ -3,6 +3,7 @@ import VaporOAuth
 import Fluent
 import JWT
 
+/// Retrieve username in Token introspection
 final class MyUserManager: UserManager {
 
    let app: Application
@@ -37,7 +38,7 @@ final class MyUserManager: UserManager {
 
    // ----------------------------------------------------------
 
-   /// Needed to retrieve user for token introspection
+   /// Retrieve username in Introspection
    func getUser(userID: String) async throws -> VaporOAuth.OAuthUser? {
 
       guard

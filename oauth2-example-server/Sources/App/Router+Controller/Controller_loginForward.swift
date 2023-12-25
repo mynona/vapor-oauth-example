@@ -74,7 +74,7 @@ extension Controller {
 
       // Make sure session cookie is forwarded
 
-      let response =  try await request.client.post(authorize, headers: headers, content: content).encodeResponse(for: request)
+      let response = try await request.client.post(authorize, headers: headers, content: content).encodeResponse(for: request)
 
       response.cookies["vapor-session"] = cookie
 
@@ -82,7 +82,7 @@ extension Controller {
       print("\n-----------------------------")
       print("Controller() \(#function)")
       print("-----------------------------")
-      print("response: \(response)")
+      print("response: \(response.headers)")
       print("-----------------------------")
 #endif
 

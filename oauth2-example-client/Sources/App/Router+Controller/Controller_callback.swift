@@ -14,6 +14,12 @@ extension Controller {
    ///
    func callback(_ request: Request) async throws -> Response {
 
+      /*
+       There is an issue that cookies are not returned to the /callback
+       This issue has already been reported. If no session cookie it is hard
+       to persist the code_verifier and state across calls in a secure way.
+       */
+
 #if DEBUG
       print("\n-----------------------------")
       print("Controller() \(#function)")

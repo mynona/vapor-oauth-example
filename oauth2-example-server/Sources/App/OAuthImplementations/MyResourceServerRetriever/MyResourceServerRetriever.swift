@@ -3,6 +3,7 @@ import VaporOAuth
 import Leaf
 import Fluent
 
+/// Get username and password for resource servers
 final class MyResourceServerRetriever: ResourceServerRetriever {
 
    private let app: Application

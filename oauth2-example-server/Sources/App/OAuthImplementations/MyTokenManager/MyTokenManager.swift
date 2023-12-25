@@ -3,6 +3,12 @@ import VaporOAuth
 import Fluent
 import JWT
 
+/// Manage Token handling
+///
+/// * generate access_token, refresh_token, id_token
+/// * retrieve tokens
+/// * update tokens
+/// 
 final class MyTokenManager: TokenManager {
 
    let app: Application
@@ -85,5 +91,40 @@ final class MyTokenManager: TokenManager {
       )
       
    }
-   
+
+   // ----------------------------------------------------------
+
+   func isUserEntitled(user userID: String?, scopes: [String]?) async throws -> Bool {
+
+      // Get user
+      guard
+         let userID,
+         let uuid = UUID(uuidString: userID),
+         let scopes,
+         scopes.count > 0,
+         let author = try await Author
+            .query(on: app.db)
+            .filter(\.$id == uuid)
+            .first()
+      else {
+         throw Abort(.badRequest, reason: "No user specified or no scopes requested.")
+      }
+
+      // Convert scope to Array
+      var allScopesMatched: Bool = true
+      let userScopes = author.scope.rawValue.split(separator: ",")
+      for userScope in userScopes {
+         var matched: Bool = false
+         for scope in scopes {
+            if scope == userScope {
+               matched = true
+            }
+         }
+         allScopesMatched = matched
+      }
+
+      return allScopesMatched
+
+   }
+
 }

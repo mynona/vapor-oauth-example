@@ -20,6 +20,12 @@ extension MyTokenManager {
       print("-----------------------------")
 #endif
 
+      guard
+         try await isUserEntitled(user: userID, scopes: scopes) == true
+      else {
+         throw Abort(.unauthorized, reason: "User is not entitled for this scope.")
+      }
+
       let accessTokenUniqueId = UUID().uuidString
 
       // Expiry time 1 minutes for testing purposes

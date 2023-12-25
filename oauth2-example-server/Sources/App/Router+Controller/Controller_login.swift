@@ -42,8 +42,23 @@ extension Controller {
       let response = try await request.redirect(to: "http://localhost:8090/oauth/login-forward").encodeResponse(for: request)
       response.cookies["vapor-session"] = cookie
 
-         print(response)
 
+      // just for the sake of this example delete cookies
+
+      let deleteCookie = HTTPCookies.Value(
+         string: "",
+         expires: Date(timeIntervalSince1970: 0.0),
+         maxAge: 0,
+         domain: nil,
+         path: nil,
+         isSecure: false, // in real world case: true
+         isHTTPOnly: true,
+         sameSite: nil
+      )
+
+      response.cookies["access_token"] = deleteCookie
+      response.cookies["refresh_token"] = deleteCookie
+      response.cookies["vapor-session"] = deleteCookie
 
       return response
 
