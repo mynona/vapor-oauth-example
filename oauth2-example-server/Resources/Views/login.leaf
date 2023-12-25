@@ -25,8 +25,8 @@
 
                   <p>The requested scope is 'admin'
           <ul>
-          <li>john_doe@something.com (only entitled for 'admin'</li>
-          <li>jane_doe@something.com (only entitled for 'viewer'</li>
+          <li>john_doe@something.com (entitled for 'admin')</li>
+          <li>jane_doe@something.com (entitled for 'viewer', 'openid', 'something')</li>
           </p>
 
     </body>

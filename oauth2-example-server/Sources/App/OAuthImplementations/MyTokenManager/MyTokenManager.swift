@@ -110,20 +110,12 @@ final class MyTokenManager: TokenManager {
          throw Abort(.badRequest, reason: "No user specified or no scopes requested.")
       }
 
-      // Convert scope to Array
-      var allScopesMatched: Bool = true
-      let userScopes = author.scope.rawValue.split(separator: ",")
-      for userScope in userScopes {
-         var matched: Bool = false
-         for scope in scopes {
-            if scope == userScope {
-               matched = true
-            }
-         }
-         allScopesMatched = matched
-      }
+      // Get unique sets of all scopes
+      let userScopes = Set(author.scopes)
+      let requestedScopes = Set(scopes)
 
-      return allScopesMatched
+      // Return true if all requestedScopes are part of the user scopes
+      return requestedScopes.isSubset(of: userScopes)
 
    }
 

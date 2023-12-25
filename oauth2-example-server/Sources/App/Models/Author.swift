@@ -21,8 +21,18 @@ final class Author: Model, Content, Encodable {
    @Field(key: "username") 
    var username: String
 
-   @Enum(key: "scope") 
-   var scope: AuthorScope
+   var scopes: [String] {
+      get {
+         let scopesArray = _scopes.split(separator: ",")
+         return scopesArray.map(String.init)
+      }
+      set {
+         _scopes = newValue.joined(separator: ",")
+      }
+   }
+
+   @Field(key: "scopes")
+   var _scopes: String
 
    @Timestamp(key: "created_at", on: .create, format: .default) 
    var created_at: Date?
@@ -38,7 +48,7 @@ final class Author: Model, Content, Encodable {
       last_name: String,
       username: String,
       password: String,
-      scope: AuthorScope
+      scopes: [String]
    ) {
       // Primary key
       self.id = id
@@ -47,7 +57,7 @@ final class Author: Model, Content, Encodable {
       self.last_name = last_name
       self.username = username
       self.password = password
-      self.scope = scope
+      self.scopes = scopes
    }
 
 }
