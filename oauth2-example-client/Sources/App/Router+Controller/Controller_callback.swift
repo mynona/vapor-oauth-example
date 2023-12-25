@@ -18,10 +18,12 @@ extension Controller {
       let code: String = request.query["code"] ?? ""
       let state: String = request.query["state"] ?? ""
 
-
-      // Hardcoded in this example
-      //let x = request.cookies["refresh_token"]?.string ?? ""
-
+      // Validation if state is returned correctly
+      guard
+         state == "ping-pong"
+      else {
+         throw(Abort(.badRequest, reason: "Returned state is incorrect."))
+      }
 
 #if DEBUG
       print("\n-----------------------------")
