@@ -54,7 +54,7 @@ https://www.oauth.com
 * Client can request a new access_token with the refresh_token flow
 * Client logout will just destroy the cookies in this example
 
-# Server endpoints
+# Endpoints
 
 Open ID Provider (OAuth server)
 
