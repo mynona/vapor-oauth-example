@@ -13,7 +13,7 @@
    <ul>
       <li><a href="http://localhost:8089/client-login">Login</a></li>
       <br />
-      <li><a href="http://localhost:8089/protected-page">Protected Resource</a></li>
+      <li><a href="http://localhost:8089/introspection">Protected Resource that calls the oauth/token_info endpoint</a></li>
    </ul>
 </nav>
 

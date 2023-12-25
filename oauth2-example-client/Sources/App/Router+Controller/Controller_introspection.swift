@@ -5,9 +5,11 @@ extension Controller {
 
    /// Token introspection flow when accessing a protected resource
    ///
-   /// Endpoint /oauth/token is called with Basic Authentication
+   /// Endpoint /oauth/token is called with Basic Authentication to check if the access_token is valid
+   /// - valid: show page
+   /// - invalid: show unauthorized page
    ///
-   func protectedPage(_ request: Request) async throws -> View {
+   func introspection(_ request: Request) async throws -> View {
 
       // Get access token from cookie
       guard
@@ -92,7 +94,7 @@ extension Controller {
          return try await request.view.render("unauthorized")
       }
 
-      return try await request.view.render("protected-page")
+      return try await request.view.render("introspection-success")
    }
 
 }

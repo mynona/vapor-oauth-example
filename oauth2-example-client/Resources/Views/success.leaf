@@ -11,12 +11,9 @@
 
 <nav>
    <ul>
-      <li><a href="http://localhost:8089/protected-page">Protected Resource</a></li>
+      <li><a href="http://localhost:8089/introspection">Protected Resource</a></li>
    </ul>
 </nav>
-
-
-
 
 </body>
 </html>

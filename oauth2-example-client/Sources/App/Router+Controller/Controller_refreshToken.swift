@@ -75,7 +75,7 @@ extension Controller {
       
       // Return view and update cookie 'access_token'
       let view = try await request.view.render(
-         "protected-page"
+         "introspection-success"
       )
       
       let res = try await view.encodeResponse(for: request)

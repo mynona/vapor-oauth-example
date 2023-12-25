@@ -56,12 +56,18 @@ https://www.oauth.com
 
 # Server endpoints
 
-OAuth server
+Open ID Provider (OAuth server)
 
 * oauth/authorize | Authorization flow
-* oauth/token | Exchange refresh token for new access token 
+* oauth/token | Exchange refresh token for new access token
 * oauth/token_info | Token introspection
+* oauth/login | Simple sign-in form
 
-Customized routes in this example
+Customized routes on the client side
 
-* oauth/login | Sign-in flow
+* /client-login | Start authorization flow
+* /callback | Retrieve authorization code and request acess_token and refresh_token
+* /refresh | Exchange refresh_token for a new access_token
+* /introspection | Example for a protected page that calls the oauth/token_info endpoint
+
+
