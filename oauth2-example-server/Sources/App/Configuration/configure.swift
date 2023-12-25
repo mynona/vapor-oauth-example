@@ -40,7 +40,8 @@ public func configure(_ app: Application) throws {
    app.migrations.add(CreateClient())
 
    // Seed with test data
-   app.migrations.add(SeedAuthor())
+   app.migrations.add(SeedAuthorJohnDoe())
+   app.migrations.add(SeedAuthorJaneDoe())
    app.migrations.add(SeedResourceServer())
    app.migrations.add(SeedClient())
 
@@ -91,7 +92,8 @@ public func configure(_ app: Application) throws {
          codeManager: MyCodeManger(app: app),
          tokenManager: MyTokenManager(app: app),
          clientRetriever: MyClientRetriever(app: app),
-         authorizeHandler: MyAuthorizeHandler(),
+         authorizeHandler: MyAuthorizationHandler(),
+         userManager: MyUserManager(app: app),
          validScopes: nil, //["admin,openid"], value required if no clients
          resourceServerRetriever: MyResourceServerRetriever(app: app),
          oAuthHelper: .remote(
