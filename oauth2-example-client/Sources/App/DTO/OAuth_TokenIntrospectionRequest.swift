@@ -1,5 +1,8 @@
 import Vapor
 
+/// Send Request to /oauth/user-info/
+/// - Parameters:
+///   - token: 
 public struct OAuth_TokenIntrospectionRequest: Content {
 
    // Access Token that is sent to the token introspection endpoint
