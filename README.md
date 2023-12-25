@@ -14,7 +14,7 @@ example.
 
 Unfortunately, vapor/oauth doesn't compile on linux anymore and is outdated. 
 
-Therefore, I used the following fork which is updated Vapor 4.89.3 and includes PKCE and id_token support:
+Therefore, I used the following fork which is updated to vapor 4.89.3 and includes PKCE and id_token support:
 
 https://github.com/vamsii777/vapor-oauth.git
 
@@ -63,7 +63,7 @@ Open ID Provider (OAuth server)
 * oauth/authorize | Authorization flow
 * oauth/token | Exchange refresh token for new access token
 * oauth/token_info | Token introspection
-* oauth/login | Simple sign-in form
+* oauth/login | Customized route to offer a imple sign-in form
 
 Customized routes on the client side
 
