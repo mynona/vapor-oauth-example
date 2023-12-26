@@ -8,10 +8,12 @@ struct SeedAuthorJaneDoe: AsyncMigration {
       let uuid = UUID(uuidString: "8c3afb78-3b44-11ec-8aa0-9c18a4eebeeb")
       let password = try Bcrypt.hash("password")
 
-      let author = Author(
+      let author = MyUser(
          id: uuid,
          username: "jane_doe@something.com",
          password: password,
+         emailAddress: nil,
+         emailAddressVerified: nil,
          givenName: "Jane",
          familyName: "Doe",
          middleName: nil,
@@ -24,7 +26,14 @@ struct SeedAuthorJaneDoe: AsyncMigration {
          zoneinfo: nil,
          locale: nil,
          phoneNumber: nil,
-         scopes: ["viewer","openid","something","something"]
+         phoneNumberVerified: nil,
+         scopes: ["viewer","openid","something","something"],
+         newsletter: false,
+         blocked: false,
+         last_login: nil,
+         validated_at: nil,
+         federated: false,
+         oauth_provider: .SELF
       )
 
       return try await author.save(on: database)
@@ -32,7 +41,7 @@ struct SeedAuthorJaneDoe: AsyncMigration {
    
    func revert(on database: Database) async throws {
       
-      try await Author
+      try await MyUser
          .query(on: database)
          .filter(\.$username == "jane_doe@something.com")
          .delete()

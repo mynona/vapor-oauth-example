@@ -3,9 +3,20 @@ import Vapor
 
 struct CreateAuthor: AsyncMigration {
 
-   let schemaName: String  = Author.schema
+   let schemaName: String  = MyUser.schema
 
    func prepare(on database: Database) async throws {
+
+      let cookie_preferences = try await database.enum("cookie_preferences")
+         .case("NOT_SET")
+         .case("ACCEPTED")
+         .case("DECLINED")
+         .create()
+
+      let oauth_provider = try await database.enum("oauth_provider")
+         .case("GOOGLE")
+         .case("SELF")
+         .create()
 
       try await database.schema(schemaName)
          .id()
@@ -18,13 +29,24 @@ struct CreateAuthor: AsyncMigration {
          .field("profile", .string)
          .field("picture", .string)
          .field("website", .string)
+         .field("email", .string)
+         .field("email_verified", .bool)
          .field("gender", .string)
          .field("birthdate", .string)
          .field("zoneinfo", .string)
          .field("locale", .string)
          .field("phone_number", .string)
+         .field("phone_number_verified", .bool)
          .field("created_at", .datetime, .required)
          .field("updated_at", .datetime, .required)
+         .field("cookie_preferences", cookie_preferences) // database enum
+         .field("oauth_provider", oauth_provider) // database enum
+         .field("federated", .bool) 
+         .field("newsletter", .bool, .required)
+         .field("blocked", .bool, .required)
+         .field("last_login", .datetime)
+         .field("number_of_logins", .int)
+         .field("validated_at", .datetime)
          .field("scopes", .string, .required)
          .unique(on: "username")
          .create()
