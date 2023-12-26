@@ -2,8 +2,18 @@ import Fluent
 import Vapor
 import VaporOAuth
 
-final class MyRefreshToken: Model, RefreshToken {
-   
+/// Refresh Token
+///
+/// - Parameters:
+///   - id: unique identifier in the database
+///   - token_string: token itself
+///   - client_id: client for whom the token was created
+///   - user_id: user for whom the token was created
+///   - scopes: scopes that can be granted with this refresh token
+///   - expiry_time: time when the token expires
+///
+final class MyRefreshToken: Model, VaporOAuth.RefreshToken, Content {
+
    static let schema = "refresh_token"
    
    @ID(key: .id)

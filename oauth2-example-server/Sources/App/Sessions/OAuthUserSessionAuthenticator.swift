@@ -33,7 +33,7 @@ public struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
 
        // Query database for user
 
-       let author = try await Author
+       let author = try await MyUser
           .query(on: request.db)
           .filter(\.$id == uuid)
           .first()

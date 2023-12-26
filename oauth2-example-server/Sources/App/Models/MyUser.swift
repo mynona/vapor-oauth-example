@@ -100,31 +100,35 @@ final class MyUser: Model, Content {
    var phoneNumberVerified: Bool?
 
    @Timestamp(key: "created_at", on: .create, format: .default)
-   var created_at: Date?
+   var createdAt: Date?
 
    @Timestamp(key: "updated_at", on: .update, format: .default)
-   var updated_at: Date?
+   var updatedAt: Date?
 
    @Timestamp(key: "last_login", on: .none, format: .default)
-   var last_login: Date?
+   var lastLogin: Date?
+
+   @Timestamp(key: "validated_at", on: .none, format: .default)
+   var validatedAt: Date?
 
    @Field(key: "number_of_logins")
-   var number_of_logins: Int
+   var numberOfLogins: Int
 
-   var scopes: [String] {
+   var roles: [String] {
       get {
-         let scopesArray = _scopes.split(separator: ",")
-         return scopesArray.map(String.init)
+         let rolesArray = _roles.split(separator: ",")
+         return rolesArray.map(String.init)
       }
       set {
-         _scopes = newValue.joined(separator: ",")
+         _roles = newValue.joined(separator: ",")
       }
    }
 
-   @Field(key: "scopes")
-   var _scopes: String
+   @Field(key: "roles")
+   var _roles: String
 
-   @Field(key: "cookie_preferences") var cookie_preferences: CookiePreferences?
+   @Field(key: "cookie_preferences") 
+   var cookiePreferences: CookiePreferences?
 
    @Boolean(key: "newsletter")
    var newsletter: Bool
@@ -136,10 +140,9 @@ final class MyUser: Model, Content {
    var federated: Bool?
 
    @Field(key: "oauth_provider") 
-   var oauth_provider: OAuthProvider?
+   var oauthProvider: OAuthProvider?
 
-   @Timestamp(key: "validated_at", on: .none, format: .default)
-   var validated_at: Date?
+
 
 
 
@@ -172,15 +175,15 @@ final class MyUser: Model, Content {
       locale: String?,
       phoneNumber: String?,
       phoneNumberVerified: Bool?,
-      scopes: [String],
+      roles: [String],
       newsletter: Bool = true,
       blocked: Bool = false,
-      last_login: Date? = nil,
-      number_of_logins: Int = 0,
-      validated_at: Date? = nil,
-      cookie_preferences: CookiePreferences? = .NOT_SET,
+      lastLogin: Date? = nil,
+      numberOfLogins: Int = 0,
+      validatedAt: Date? = nil,
+      cookiePreferences: CookiePreferences? = .NOT_SET,
       federated: Bool = false,
-      oauth_provider: OAuthProvider? = .NONE
+      oauthProvider: OAuthProvider? = .SELF
    ) {
       self.id = id
       self.username = username
@@ -200,15 +203,15 @@ final class MyUser: Model, Content {
       self.locale = locale
       self.phoneNumber = phoneNumber
       self.phoneNumberVerified = phoneNumberVerified
-      self.scopes = scopes
+      self.roles = roles
       self.newsletter = newsletter
       self.blocked = blocked
-      self.last_login = last_login
-      self.number_of_logins = number_of_logins
-      self.validated_at = validated_at
-      self.cookie_preferences = cookie_preferences
+      self.lastLogin = lastLogin
+      self.numberOfLogins = numberOfLogins
+      self.validatedAt = validatedAt
+      self.cookiePreferences = cookiePreferences
       self.federated = federated
-      self.oauth_provider = oauth_provider
+      self.oauthProvider = oauthProvider
    }
 
 }

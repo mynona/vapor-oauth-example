@@ -2,6 +2,19 @@ import Fluent
 import VaporOAuth
 import Vapor
 
+/// Authorization Code
+///
+/// - Parameters:
+///   - id: unique identifier in database (uuid)
+///   - code_id: unique code identifier; separate from id as requirement is to have this value as string value and id is usually an uuid value
+///   - client_id: client for whom this code was generated
+///   - redirect_uri: client redirect uri
+///   - user_id: user for whom this code was generated
+///   - expiry_date: expiry data of the authorization code
+///   - scopes: scopes requested by the client
+///   - code_challenge: PKCE code challenge provided
+///   - code_challenge_method: PKCE code challenge method
+///
 final class MyAuthorizationCode: Model, Content {
 
    static let schema = "authorization_code"

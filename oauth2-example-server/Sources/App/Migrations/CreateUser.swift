@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-struct CreateAuthor: AsyncMigration {
+struct CreateUser: AsyncMigration {
 
    let schemaName: String  = MyUser.schema
 
@@ -47,7 +47,7 @@ struct CreateAuthor: AsyncMigration {
          .field("last_login", .datetime)
          .field("number_of_logins", .int)
          .field("validated_at", .datetime)
-         .field("scopes", .string, .required)
+         .field("roles", .string, .required)
          .unique(on: "username")
          .create()
    }

@@ -31,7 +31,7 @@ public func configure(_ app: Application) throws {
 
    // Create Tables
    app.migrations.add(SessionRecord.migration)
-   app.migrations.add(CreateAuthor())
+   app.migrations.add(CreateUser())
    app.migrations.add(CreateAuthorizationCode())
    app.migrations.add(CreateAccessToken())
    app.migrations.add(CreateRefreshToken())
@@ -40,8 +40,8 @@ public func configure(_ app: Application) throws {
    app.migrations.add(CreateClient())
 
    // Seed with test data
-   app.migrations.add(SeedAuthorJohnDoe())
-   app.migrations.add(SeedAuthorJaneDoe())
+   app.migrations.add(SeedUserJohnDoe())
+   app.migrations.add(SeedUserJaneDoe())
    app.migrations.add(SeedResourceServer())
    app.migrations.add(SeedClient())
 
@@ -53,7 +53,7 @@ public func configure(_ app: Application) throws {
 
    app.middleware.use(app.sessions.middleware, at: .beginning)
    app.middleware.use(OAuthUserSessionAuthenticator())
-   app.middleware.use(Author.sessionAuthenticator())
+   app.middleware.use(MyUser.sessionAuthenticator())
 
    //      =============================================================
    //      JWT

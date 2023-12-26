@@ -4,6 +4,18 @@ import Vapor
 
 extension OAuthFlowType: Content {}
 
+/// Clients
+///
+/// - Parameters:
+///   - id: unique identifier (uuid) in the database
+///   - client_id: unique identifier of the client. separate from the id as the requirement for the client_id is to be as string value
+///   - redirect_uri: allowed redirect uris for this client
+///   - client_secret: client secret
+///   - scopes: allowed scopes for this client
+///   - confidential_client: An application that can securely store confidential secrets with which to authenticate itself to an authorization server or use another secure authentication mechanism for that purpose. Confidential clients typically execute primarily on a protected server.
+///   - first_party: First-party applications are those controlled by the same organization or person who owns this authorization provider.
+///   - grant_type: authorization_code
+///
 final class MyClient: Model, Content {
 
    static let schema = "client"

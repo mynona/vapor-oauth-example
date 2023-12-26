@@ -10,7 +10,8 @@ import VaporOAuth
 ///   - audience: (aud) Client ID of the relying party (application) for which the ID Token is intended. May be a single, case-sensitive string or an array of the same if there are multiple audiences.
 ///   - expiration: (exp) Expiration time for the ID Token, specified as the number of seconds since January 1, 1970, 00:00:00 UTC to the time of token expiration. Applications must consider an ID Token invalid after this time, with a few minutes of tolerance allowed for clock skew.
 ///   - issuedAt: (iat) Time at which the ID Token was issued, specified as the number of seconds since January 1, 1970, 00:00:00 UTC to the time of ID Token issuance.
-final class MyIDToken: Model, IDToken {
+///
+final class MyIDToken: Model, VaporOAuth.IDToken {
 
    static let schema = "id_token"
 

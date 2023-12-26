@@ -1,8 +1,6 @@
-//
-//  File.swift
-//  
-//
-//  Created by Andreas Soller on 26.12.23.
-//
+import Vapor
 
-import Foundation
+public enum OAuthProvider: String, Content {
+   case GOOGLE
+   case SELF
+}

@@ -1,8 +1,7 @@
-//
-//  File.swift
-//  
-//
-//  Created by Andreas Soller on 26.12.23.
-//
+import Vapor
 
-import Foundation
+public enum CookiePreferences: String, Content {
+   case ACCEPTED
+   case DECLINED
+   case NOT_SET
+}

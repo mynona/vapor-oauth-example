@@ -7,7 +7,7 @@ extension Controller {
 
    func login(_ request: Request) async throws -> Response {
 
-      let user = try request.auth.require(Author.self)
+      let user = try request.auth.require(MyUser.self)
 
 #if DEBUG
       print("\n-----------------------------")

@@ -31,7 +31,7 @@ extension MyTokenManager {
       if let uuid = UUID(uuidString: userID) {
 
          // Query database for user
-         if let author = try await Author
+         if let author = try await MyUser
             .query(on: app.db)
             .filter(\.$id == uuid)
             .first() {
@@ -40,7 +40,7 @@ extension MyTokenManager {
                subject = "\(id)"
             }
 
-            if let created_at = author.created_at {
+            if let created_at = author.createdAt {
                authTime = created_at
             }
 

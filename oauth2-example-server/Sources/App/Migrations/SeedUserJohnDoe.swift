@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-struct SeedAuthorJohnDoe: AsyncMigration {
+struct SeedUserJohnDoe: AsyncMigration {
 
    func prepare(on database: Database) async throws {
 
@@ -27,13 +27,14 @@ struct SeedAuthorJohnDoe: AsyncMigration {
          locale: nil,
          phoneNumber: nil,
          phoneNumberVerified: nil,
-         scopes: ["admin","openid"],
+         roles: ["admin","openid"],
          newsletter: false,
          blocked: false,
-         last_login: nil,
-         validated_at: nil,
+         lastLogin: nil,
+         validatedAt: nil,
+         cookiePreferences: .NOT_SET,
          federated: false,
-         oauth_provider: .SELF
+         oauthProvider: .SELF
       )
 
       return try await author.save(on: database)

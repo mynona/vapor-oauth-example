@@ -102,7 +102,7 @@ final class MyTokenManager: TokenManager {
          let uuid = UUID(uuidString: userID),
          let scopes,
          scopes.count > 0,
-         let author = try await Author
+         let author = try await MyUser
             .query(on: app.db)
             .filter(\.$id == uuid)
             .first()
@@ -111,7 +111,7 @@ final class MyTokenManager: TokenManager {
       }
 
       // Get unique sets of all scopes
-      let userScopes = Set(author.scopes)
+      let userScopes = Set(author.roles)
       let requestedScopes = Set(scopes)
 
       // Return true if all requestedScopes are part of the user scopes

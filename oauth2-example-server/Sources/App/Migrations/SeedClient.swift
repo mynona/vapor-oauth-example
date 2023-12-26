@@ -6,8 +6,6 @@ struct SeedClient: AsyncMigration {
 
    func prepare(on database: Database) async throws {
 
-      let uuid = UUID()
-
       let client = MyClient(
          client_id: "1",
          redirect_uris: ["http://localhost:8089/callback"],

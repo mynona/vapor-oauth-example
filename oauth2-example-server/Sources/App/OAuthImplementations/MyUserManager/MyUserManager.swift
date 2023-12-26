@@ -17,7 +17,7 @@ final class MyUserManager: UserManager {
    func authenticateUser(username: String, password: String) async throws -> String? {
 
       guard
-         let author = try await Author
+         let author = try await MyUser
             .query(on: app.db)
             .filter(\.$username == username)
             .first(),
@@ -48,7 +48,7 @@ final class MyUserManager: UserManager {
       }
 
       guard
-         let author = try await Author
+         let author = try await MyUser
             .query(on: app.db)
             .filter(\.$id == uuid)
             .first()
