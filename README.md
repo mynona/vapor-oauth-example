@@ -64,7 +64,7 @@ Open ID Provider (OAuth server)
 * oauth/authorize | Authorization flow
 * oauth/token | Exchange refresh token for new access token
 * oauth/token_info | Token introspection
-* .well-known/.well-known/jwks.json | Receive a list of the public RSA keys used for signing
+* .well-known/.well-known/jwks.json | Receive a list of the public RSA keys to validate signatures
 * oauth/login | Customized route to offer a simple sign-in form
 
 Customized routes on the relying party (client) side
