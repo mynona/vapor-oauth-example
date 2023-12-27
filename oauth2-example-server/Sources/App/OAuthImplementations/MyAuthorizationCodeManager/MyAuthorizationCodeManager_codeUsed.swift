@@ -2,7 +2,7 @@ import VaporOAuth
 import Vapor
 import Fluent
 
-extension MyCodeManger {
+extension MyAuthorizationCodeManger {
 
    /// Delete used Authorization Code
    func codeUsed(_ code: OAuthCode) async throws {

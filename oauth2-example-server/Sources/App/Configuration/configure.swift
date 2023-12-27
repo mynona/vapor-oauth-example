@@ -3,32 +3,33 @@ import FluentSQLiteDriver
 import Vapor
 import VaporOAuth
 import Leaf
+import JWTKit
 
 public func configure(_ app: Application) throws {
-
+   
    //      =============================================================
    //      Debugging
    //      =============================================================
-
+   
    app.logger.logLevel = .notice
-
+   
    //      =============================================================
    //      PORT
    //      =============================================================
-
+   
    app.http.server.configuration.port = 8090
-
+   
    //      =============================================================
    //      Database
    //      =============================================================
-
+   
    app.databases.use(.sqlite(.file("local-db")), as: .sqlite)
    app.sessions.use(.fluent)
-
+   
    //      =============================================================
    //      Migrations
    //      =============================================================
-
+   
    // Create Tables
    app.migrations.add(SessionRecord.migration)
    app.migrations.add(CreateUser())
@@ -38,42 +39,38 @@ public func configure(_ app: Application) throws {
    app.migrations.add(CreateIDToken())
    app.migrations.add(CreateResourceServer())
    app.migrations.add(CreateClient())
-
+   
    // Seed with test data
    app.migrations.add(SeedUserJohnDoe())
    app.migrations.add(SeedUserJaneDoe())
    app.migrations.add(SeedResourceServer())
    app.migrations.add(SeedClient())
-
+   
    try app.autoMigrate().wait()
-
+   
    //      =============================================================
    //      OAuth / Session Middleware
    //      =============================================================
-
+   
    app.middleware.use(app.sessions.middleware, at: .beginning)
    app.middleware.use(OAuthUserSessionAuthenticator())
    app.middleware.use(MyUser.sessionAuthenticator())
 
    //      =============================================================
-   //      JWT
-   //      =============================================================
-
-   app.jwt.signers.use(.hs256(key: "test"))
-
-   //      =============================================================
    //      Leaf
    //      =============================================================
-
+   
    app.views.use(.leaf)
-
+   
    //      =============================================================
    //      OAuth configuration
    //      =============================================================
 
+   let keyManagementService = MyKeyManagementService(app: app)
+
    app.lifecycle.use(
       OAuth2(
-         codeManager: MyCodeManger(app: app),
+         codeManager: MyAuthorizationCodeManger(app: app),
          tokenManager: MyTokenManager(app: app),
          clientRetriever: MyClientRetriever(app: app),
          authorizeHandler: MyAuthorizationHandler(),
@@ -85,11 +82,25 @@ public func configure(_ app: Application) throws {
             client: app.client,
             resourceServerUsername: "",
             resourceServerPassword: ""
-         )
+         ),
+         jwtSignerService: MyJWTSignerService(keyManagementService: keyManagementService),
+         keyManagementService: keyManagementService
       )
    )
 
+   //      =============================================================
+   //      JWT
+   //      =============================================================
 
+   guard
+      let privateKey = keyManagementService.privateKey
+   else{
+      throw(Abort(.internalServerError, reason: "Private RSA Key could not be retrieved."))
+   }
+
+   app.jwt.signers.use(.rs256(key: privateKey))
+
+   
    try Routes(app)
-
+   
 }

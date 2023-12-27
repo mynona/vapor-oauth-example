@@ -20,7 +20,7 @@ final class MyTokenManager: TokenManager {
    }
    
    // ----------------------------------------------------------
-   
+   /*
    /// Create JWT that is returned to the client
    /// - Returns: signed JWT as String
    func createJWT(subject: String, expiration: Date, issuer: String, audience: String, jti: String, issuedAtTime: Date ) throws -> String {
@@ -37,7 +37,8 @@ final class MyTokenManager: TokenManager {
       return try app.jwt.signers.sign(payload)
       
    }
-   
+    */
+
    // ----------------------------------------------------------
    
    /// Create Access Token
@@ -66,7 +67,7 @@ final class MyTokenManager: TokenManager {
          clientID: clientID,
          userID: userID,
          scopes: scopes,
-         expiryTime: expiryTimeRefreshToken
+         expiration: expiryTimeRefreshToken
       )
       
    }

@@ -8,7 +8,7 @@ import Fluent
 /// * get authorization code
 /// * remove used authorization code
 /// 
-final class MyCodeManger: CodeManager {
+final class MyAuthorizationCodeManger: CodeManager {
 
    public let app: Application
 

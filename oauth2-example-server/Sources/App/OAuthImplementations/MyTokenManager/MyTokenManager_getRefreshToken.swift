@@ -8,14 +8,26 @@ extension MyTokenManager {
    /// Get Refresh Token
    func getRefreshToken(_ refreshToken: String) async throws -> VaporOAuth.RefreshToken? {
 
+
+      let token: String?
+      do {
+         let jwt = try app.jwt.signers.verify(refreshToken, as: MyRefreshToken.self)
+         token = jwt.tokenString
+      } catch {
+         token = refreshToken
+      }
+
       guard
+         let token,
          let refreshToken = try await MyRefreshToken
             .query(on: app.db)
-            .filter(\.$tokenString == refreshToken)
+            .filter(\.$tokenString == token)
             .first()
       else {
          return nil
       }
+
+
 
       // Important: vapor/oauth does not invalidate refresh tokens
       // Therefore, expired refresh tokens are only removed when a new
@@ -25,7 +37,7 @@ extension MyTokenManager {
          let otherActiveRefreshTokens = try await MyRefreshToken
             .query(on: app.db)
             .filter(\.$userID == refreshToken.userID)
-            .filter(\.$expiryTime < refreshToken.expiryTime)
+            .filter(\.$expiration < refreshToken.expiration)
             .filter(\.$id != id)
             .all()
 

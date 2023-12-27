@@ -2,7 +2,7 @@ import VaporOAuth
 import Vapor
 import Fluent
 
-extension MyCodeManger {
+extension MyAuthorizationCodeManger {
 
    /// Generate Authorization Code
    func generateCode(userID: String, clientID: String, redirectURI: String, scopes: [String]?, codeChallenge: String?, codeChallengeMethod: String?) throws -> String {

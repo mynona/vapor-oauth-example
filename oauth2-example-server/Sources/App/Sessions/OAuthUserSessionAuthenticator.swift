@@ -9,7 +9,7 @@ public struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthUserSessionAuthenticator().authenticate()")
+      print("OAuthUserSessionAuthenticator() \(#function)")
       print("-----------------------------")
       print("User UUID is stored as sessionID")
       print("sessionID: \(sessionID)")
@@ -22,7 +22,7 @@ public struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthUserSessionAuthenticator().authenticate()")
+      print("OAuthUserSessionAuthenticator() \(#function)")
       print("-----------------------------")
       print("sessionID could not be converted to UUID")
       print("-----------------------------")
@@ -40,7 +40,7 @@ public struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthUserSessionAuthenticator().authenticate()")
+      print("OAuthUserSessionAuthenticator() \(#function)")
       print("-----------------------------")
       print("User: \(author)")
       print("-----------------------------")

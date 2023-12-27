@@ -45,7 +45,7 @@ extension Controller {
          redirect_uri: "http://localhost:8089/callback",
          state: "ping-pong",
          response_type: "code",
-         scope: ["admin"],
+         scope: ["openid"],
          code_challenge: "\(codeChallenge)",
          code_challenge_method: "S256",
          nonce: nonce

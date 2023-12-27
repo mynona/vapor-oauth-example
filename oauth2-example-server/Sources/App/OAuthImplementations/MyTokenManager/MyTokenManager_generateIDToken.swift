@@ -56,6 +56,19 @@ extension MyTokenManager {
 
       try await idToken.save(on: app.db)
 
+
+      // Delete expired id_tokens for this user
+      if let id = idToken.id {
+         let expiredTokens = try await MyIDToken
+            .query(on: app.db)
+            .filter(\.$expiration < idToken.expiration)
+            .filter(\.$id != id)
+            .all()
+         
+         try await expiredTokens.delete(on: app.db)
+         
+      }
+
       return idToken
 
    }

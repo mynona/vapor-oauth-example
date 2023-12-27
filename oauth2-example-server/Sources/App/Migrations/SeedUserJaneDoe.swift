@@ -27,7 +27,7 @@ struct SeedUserJaneDoe: AsyncMigration {
          locale: nil,
          phoneNumber: nil,
          phoneNumberVerified: nil,
-         roles: ["viewer","openid","something","something"],
+         roles: ["viewer","lalala","something","something"],
          newsletter: false,
          blocked: false,
          lastLogin: nil,

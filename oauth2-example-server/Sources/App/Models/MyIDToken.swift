@@ -1,6 +1,7 @@
 import Fluent
 import Vapor
 import VaporOAuth
+import JWTKit
 
 /// IDToken
 /// - Parameters:
@@ -12,6 +13,19 @@ import VaporOAuth
 ///   - issuedAt: (iat) Time at which the ID Token was issued, specified as the number of seconds since January 1, 1970, 00:00:00 UTC to the time of ID Token issuance.
 ///
 final class MyIDToken: Model, VaporOAuth.IDToken {
+
+   func verify(using signer: JWTKit.JWTSigner) throws {
+      //return try app.jwt.signers.sign(payload)
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyIDToken() \(#function)")
+      print("-----------------------------")
+      print("signer: \(signer)")
+      print("-----------------------------")
+#endif
+
+   }
 
    static let schema = "id_token"
 

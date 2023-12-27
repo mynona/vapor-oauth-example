@@ -1,8 +1,14 @@
-//
-//  File.swift
-//  
-//
-//  Created by Andreas Soller on 27.12.23.
-//
+import Vapor
 
-import Foundation
+public protocol IssuedAtClaim: Codable { }
+
+public extension IssuedAtClaim {
+
+   /// When the JWT is created iat will be populated with the current date
+   var iat: Date {
+         return Date()
+   }
+
+}
+
+

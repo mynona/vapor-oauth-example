@@ -12,7 +12,7 @@ struct CreateRefreshToken: AsyncMigration {
          .field("client_id", .string, .required)
          .field("user_id", .string, .required)
          .field("scopes", .string, .required)
-         .field("expiry_time", .datetime)
+         .field("expiration", .datetime)
          .create()
    }
    

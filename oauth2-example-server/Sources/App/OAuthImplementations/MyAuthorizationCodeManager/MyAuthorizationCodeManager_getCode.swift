@@ -2,7 +2,7 @@ import VaporOAuth
 import Vapor
 import Fluent
 
-extension MyCodeManger {
+extension MyAuthorizationCodeManger {
 
    /// Retrieve Authorization code
    func getCode(_ code: String) async throws -> OAuthCode? {

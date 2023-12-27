@@ -88,24 +88,31 @@ extension Controller {
          throw(Abort(response.status))
       }
 
+
       let expiryInMinutes = try response.content.get(Int.self, at: "expires_in")
-      let accessToken = try response.content.get(String.self, at: "access_token")
-      let refreshToken = try response.content.get(String.self, at: "refresh_token")
-      //let idToken = try response.content.get(String.self, at: "id_token")
+      let accessToken = try? response.content.get(String.self, at: "access_token")
+      let refreshToken = try? response.content.get(String.self, at: "refresh_token")
+      let idToken = try? response.content.get(String.self, at: "id_token")
       let scope = try response.content.get(String.self, at: "scope")
-
-      // Token rotation is not supported in vapor/oauth at the moment:
-      // https://stateful.com/blog/oauth-refresh-token-best-practices
-
-
 
       let view = try await request.view.render(
          "success"
       )
 
       let res = try await view.encodeResponse(for: request)
-      res.cookies["access_token"] = createCookie(value: accessToken, for: .AccessToken)
-      res.cookies["refresh_token"] = createCookie(value: refreshToken, for: .RefreshToken)
+
+      if let accessToken {
+         res.cookies["access_token"] = createCookie(value: accessToken, for: .AccessToken)
+      }
+
+      if let refreshToken {
+         res.cookies["refresh_token"] = createCookie(value: refreshToken, for: .RefreshToken)
+      }
+
+      if let idToken {
+         res.cookies["id_token"] = createCookie(value: idToken, for: .RefreshToken)
+      }
+
       return res
 
    }

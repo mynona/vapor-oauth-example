@@ -1,7 +1,7 @@
 import Vapor
 import VaporOAuth
 import Fluent
-import JWT
+import JWTKit
 
 extension MyTokenManager {
 
@@ -31,6 +31,7 @@ extension MyTokenManager {
       // Expiry time 1 minutes for testing purposes
       let expiryTimeAccessToken = Date(timeIntervalSinceNow: TimeInterval(60))
 
+      /*
       let jwt = try createJWT(
          subject: userID ?? "",
          expiration: expiryTimeAccessToken,
@@ -39,6 +40,7 @@ extension MyTokenManager {
          jti: accessTokenUniqueId,
          issuedAtTime: Date()
       )
+       */
 
       // Access Token for Database
       let accessToken = try createAccessToken(
@@ -52,7 +54,7 @@ extension MyTokenManager {
       try await accessToken.save(on: app.db)
 
       // Access Token for Client: replace the token with the JWT
-      accessToken.tokenString = jwt
+      //accessToken.tokenString = jwt
 
       return accessToken
 

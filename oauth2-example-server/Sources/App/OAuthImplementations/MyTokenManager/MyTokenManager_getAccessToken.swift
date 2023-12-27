@@ -8,14 +8,30 @@ extension MyTokenManager {
    /// Get Access Token for the token introspection
    func getAccessToken(_ accessToken: String) async throws -> VaporOAuth.AccessToken? {
 
-      // Client sends JWT
-      let jwt = try app.jwt.signers.verify(accessToken, as: Payload.self)
+#if DEBUG
+         print("\n-----------------------------")
+         print("MyTokenManager() \(#function)")
+         print("-----------------------------")
+         print("Parameter accessToken:: \(accessToken)")
+         print("-----------------------------")
+#endif
 
-      // Check in database if an Access Token with
-      // the unique token identifier (jti) exists
+      let token: String?
+      do {
+         let jwt = try app.jwt.signers.verify(accessToken, as: MyAccessToken.self)
+         token = jwt.jti
+      } catch {
+         token = accessToken
+      }
+
+      
+
+      // Check in database if the access_token exists
       guard
+         let token,
          let accessToken = try await MyAccessToken.query(on: app.db)
-            .filter(\.$tokenString == jwt.jti)
+            //.filter(\.$tokenString == jwt.jti)
+            .filter(\.$tokenString == token)
             .first()
       else {
          return nil
@@ -42,12 +58,9 @@ extension MyTokenManager {
          try await expiredTokens.delete(on: app.db)
       }
 
-
 #if DEBUG
       print("\n-----------------------------")
       print("MyTokenManager() \(#function)")
-      print("-----------------------------")
-      print("Received access token: \(jwt)")
       print("-----------------------------")
       print("Database access token: \(accessToken)")
       print("-----------------------------")

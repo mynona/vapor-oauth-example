@@ -15,7 +15,7 @@ import VaporOAuth
 final class MyRefreshToken: Model, VaporOAuth.RefreshToken, Content {
 
    static let schema = "refresh_token"
-   
+
    @ID(key: .id)
    var id: UUID?
    
@@ -46,8 +46,8 @@ final class MyRefreshToken: Model, VaporOAuth.RefreshToken, Content {
    @Field(key: "scopes")
    var _scopes: String?
 
-   @OptionalField(key: "expiry_time")
-   var expiryTime: Date?
+   @Field(key: "expiration")
+   var expiration: Date
 
    init() {}
    
@@ -57,13 +57,13 @@ final class MyRefreshToken: Model, VaporOAuth.RefreshToken, Content {
       clientID: String,
       userID: String? = nil,
       scopes: [String]? = nil,
-      expiryTime: Date?
+      expiration: Date
    ) {
       self.id = id
       self.tokenString = tokenString
       self.clientID = clientID
       self.userID = userID
       self.scopes = scopes
-      self.expiryTime = expiryTime
+      self.expiration = expiration
    }
 }

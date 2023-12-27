@@ -27,6 +27,7 @@ extension Controller {
       let res = try await view.encodeResponse(for: request)
       res.cookies["access_token"] = deleteCookie
       res.cookies["refresh_token"] = deleteCookie
+      res.cookies["id_token"] = deleteCookie
       res.cookies["vapor-session"] = deleteCookie
       return res
 
