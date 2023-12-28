@@ -84,7 +84,7 @@ Client = Relying Party
 * Client can request a new access_token with the refresh_token flow
 * Client initiates logout
 * **Server** destroys session upon logout
-* Client destroys cookies upon logou
+* Client destroys cookies upon logout
 
 ---
 # What is out of scope of this example flow?
