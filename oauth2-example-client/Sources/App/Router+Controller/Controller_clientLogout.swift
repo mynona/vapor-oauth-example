@@ -20,6 +20,16 @@ extension Controller {
          sameSite: nil
       )
 
+      // Logout and destroy server session
+
+      let cookie = request.cookies["vapor-session"] ?? ""
+
+      let headers = HTTPHeaders(dictionaryLiteral:
+                                 ("Cookie", "vapor-session=\(cookie.string)")
+      )
+
+      let response = try await request.client.get(URI(string: "http://localhost:8090/oauth/logout"), headers: headers)
+
       let view = try await request.view.render(
          "index"
       )

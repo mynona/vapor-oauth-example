@@ -81,7 +81,9 @@ Client = Relying Party
 * Client stores access_token, refresh_token and id_token as cookies on the client 
 * Client checks /token_info endpoint to access restricted resources
 * Client can request a new access_token with the refresh_token flow
-* Client logout will just destroy the cookies on the client side in this example
+* Client initiates logout
+* **Server** destroys session upon logout
+* Client destroys cookies upon logou
 
 ---
 # What is out of scope of this example flow?
@@ -89,5 +91,4 @@ Client = Relying Party
 * /userinfo endpoint on OpenID provider side
 * Proper mapping of OIDC token claims to the JWT
 * Request id_token separately from Authorization Grant Flow
-* Proper logout handling on OpenID provider side
 

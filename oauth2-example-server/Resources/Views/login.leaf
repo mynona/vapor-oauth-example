@@ -23,10 +23,10 @@
             <input type="submit" value="Sign in" />
         </form>
 
-                  <p>The requested scope is 'admin'
+                  <p>The requested scope is 'openid'
           <ul>
-          <li>john_doe@something.com (entitled for 'admin')</li>
-          <li>jane_doe@something.com (entitled for 'viewer', 'openid', 'something')</li>
+          <li>john_doe@something.com (entitled for 'admin', 'openid'')</li>
+          <li>jane_doe@something.com (entitled for 'viewer', 'lalala', 'something')</li>
           </p>
 
     </body>

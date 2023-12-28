@@ -84,7 +84,7 @@ final class MyTokenManager: TokenManager {
          tokenString: [UInt8].random(count: 32).hex,
          issuer: "OAuth Server",
          subject: subject,
-         audience: ["Client"],
+         audience: audience,
          expiration: expiryTimeIDToken,
          issuedAt: Date(),
          nonce: nonce,
