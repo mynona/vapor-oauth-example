@@ -1,4 +1,4 @@
-# Simple VaporOAuth (OIDC) example for the Authorization Grant Flow
+# Simple VaporOAuth (OIDC) example of the Authorization Grant Flow
 
 https://github.com/brokenhandsio/vapor-oauth
 
@@ -9,10 +9,7 @@ This repository is based on the oauth example by marius-se:
 
 https://github.com/marius-se/vapor-oauth2-example
 
-As there were essential flows missing such as token introspection, I extended this
-example. 
-
-Unfortunately, vapor/oauth doesn't compile on linux anymore and is outdated. 
+Unfortunately, vapor/oauth doesn't compile on linux anymore and doesn't support PKCE.
 
 Therefore, I used the following fork which is updated to vapor 4.89.3 and includes OpenID Connect support:
 
