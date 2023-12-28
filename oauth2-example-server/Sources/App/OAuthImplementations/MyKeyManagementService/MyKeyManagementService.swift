@@ -7,8 +7,9 @@ import JWTKit
 /// Key Management Service
 ///
 /// Generate private key:
-/// *  openssl genpkey -algorithm RSA -out private_key.pem
-/// 
+/// * openssl genpkey -algorithm RSA -out private_key.pem
+/// * openssl genpkey -algorithm RSA -pass pass:test -out private_key.pem
+///
 /// Display private key; if passphrase defined you will be prompted
 /// * openssl rsa -check -in private_key.pem
 ///

@@ -1,5 +1,5 @@
 import Vapor
-import Leaf
+import JWT
 
 struct Controller: Encodable {
 
@@ -41,6 +41,71 @@ struct Controller: Encodable {
          isHTTPOnly: true,
          sameSite: .lax
       )
+
+   }
+
+
+   func validateJWT(forToken token: String, _ request: Request) async throws -> Bool {
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("validateJWT() \(#function)")
+      print("-----------------------------")
+      print("Called with Parameter:")
+      print("\(token)")
+      print("-----------------------------")
+#endif
+
+      let response = try await request.client.get("http://localhost:8090/.well-known/jwks.json")
+
+      guard
+         response.status == .ok
+      else {
+         throw Abort(.badRequest, reason: "JWK could not be retrieved from OpenID Provider.")
+      }
+
+      let jwks: OAuth_JWKResponse = try response.content.decode(OAuth_JWKResponse.self)
+
+      // In this example only one key exists
+
+      guard
+         let firstKey = jwks.keys.first,
+         let kid = firstKey.kid,
+         let kty = firstKey.kty,
+         let e = firstKey.e,
+         let n = firstKey.n,
+         let alg = firstKey.alg
+      else {
+         throw Abort(.badRequest, reason: "JWK key could not be unpacked")
+      }
+
+      let publicKey = JWTKit.RSAKey(modulus: n, exponent: e)
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("validateJWT() \(#function)")
+      print("-----------------------------")
+      print("RSAKey: \(publicKey)")
+      print("-----------------------------")
+#endif
+
+
+      let signers = JWTSigners()
+      signers.use(.rs256(key: publicKey!))
+
+      // Validate JWT payload and correct signature
+      // In this example we just validate the signature and use an empty payload
+
+      // For a real world case check JWKKit to retrieve the jwks.json
+
+      do {
+         let payload = try signers.verify(token, as: EmptyPayload.self)
+      } catch {
+         // Signature or payload issue
+         return false
+      }
+      return true
+
 
    }
 

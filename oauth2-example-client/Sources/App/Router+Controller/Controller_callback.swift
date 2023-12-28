@@ -10,7 +10,9 @@ extension Controller {
    /// - Client checks if the state matches the state value sent to the provider
    ///
    /// Step 2:
-   /// - Client sends the code back to the token endpoints of the provider to retrieve the access_token and refresh_token
+   /// - Client sends the code back to the token endpoints of the provider to retrieve the access_token,  refresh_token and id_token
+   /// - Client validates that tokens are correctly signed
+   /// - Client persists access_token, refresh_token and id_token as cookie
    ///
    func callback(_ request: Request) async throws -> Response {
 
@@ -95,6 +97,10 @@ extension Controller {
       let idToken = try? response.content.get(String.self, at: "id_token")
       let scope = try response.content.get(String.self, at: "scope")
 
+
+      // Client validates signature of tokens
+      // Client persists tokens  as cookies
+
       let view = try await request.view.render(
          "success"
       )
@@ -102,15 +108,24 @@ extension Controller {
       let res = try await view.encodeResponse(for: request)
 
       if let accessToken {
-         res.cookies["access_token"] = createCookie(value: accessToken, for: .AccessToken)
+         // Set cookie if accessToken signature has been validated
+         if try await validateJWT(forToken: accessToken, request) {
+            res.cookies["access_token"] = createCookie(value: accessToken, for: .AccessToken)
+         }
       }
 
       if let refreshToken {
-         res.cookies["refresh_token"] = createCookie(value: refreshToken, for: .RefreshToken)
+         // Set cookie if accessToken signature has been validated
+         if try await validateJWT(forToken: refreshToken, request) {
+            res.cookies["refresh_token"] = createCookie(value: refreshToken, for: .RefreshToken)
+         }
       }
 
       if let idToken {
-         res.cookies["id_token"] = createCookie(value: idToken, for: .RefreshToken)
+         // Set cookie if accessToken signature has been validated
+         if try await validateJWT(forToken: idToken, request) {
+            res.cookies["id_token"] = createCookie(value: idToken, for: .RefreshToken)
+         }
       }
 
       return res

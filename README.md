@@ -54,12 +54,11 @@ Client = Relying Party
 * Server returns Authorization code to client
 * Client requests Access/Refresh token in exchange of Authorization code
 * Server checks if user is entitled for requested scope
-* Server returns access_token as JWT token
-* Server returns refresh_token as JWT token
-* Server returns id_token as JWT token
+* Server returns access_token, refresh_token and id_token as JWT tokens
+* Client validates JWT signature and payload of each token
 * Server deletes expired Access tokens
 * Server deletes expired Refesh tokens 
-* Client stores both tokens as cookies on the client 
+* Client stores access_token, refresh_token and id_token as cookies on the client 
 * Client checks /token_info endpoint to access restricted resources
 * Client can request a new access_token with the refresh_token flow
 * Client logout will just destroy the cookies on the client side in this example
@@ -68,18 +67,18 @@ Client = Relying Party
 
 Open ID Provider (OAuth server)
 
-* oauth/authorize | Authorization flow
-* oauth/token | Exchange refresh token for new access token
-* oauth/token_info | Token introspection
-* .well-known/.well-known/jwks.json | Receive a list of the public RSA keys to validate signatures
-* .well-known/openid-configuration | JSON formatted document with the metadata that identifies all the available endpoints
-* oauth/login | Customized route to offer a simple sign-in form
+* /oauth/authorize | Authorization flow
+* /oauth/token | Exchange refresh token for new access token
+* /oauth/token_info | Token introspection
+* /.well-known/.well-known/jwks.json | Receive a list of the public RSA keys to validate signatures
+* /.well-known/openid-configuration | JSON formatted document with the metadata that identifies all the available endpoints
+* /oauth/login | Customized route to offer a simple sign-in form
 
 Customized routes on the relying party (client) side
 
 * /client-login | Start authorization flow
 * /callback | Retrieve authorization code; request acess_token and refresh_token
 * /refresh | Exchange refresh_token for a new access_token
-* /introspection | Example of a protected page that calls the oauth/token_info endpoint
+* /introspection-test | Page that calls the /oauth/token_info endpoint
 
 

@@ -66,8 +66,6 @@ public func configure(_ app: Application) throws {
    //      OAuth configuration
    //      =============================================================
 
-   let myDiscoveryDocument = OAuthDiscoveryDocument(issuer: "", authorizationEndpoint: "", tokenEndpoint: "", userInfoEndpoint: "", revocationEndpoint: "", introspectionEndpoint: "", jwksURI: "", registrationEndpoint: "", scopesSupported: [""], responseTypesSupported: [""], grantTypesSupported: [""], tokenEndpointAuthMethodsSupported: [""], tokenEndpointAuthSigningAlgValuesSupported: [""], serviceDocumentation: "", uiLocalesSupported: [""], opPolicyURI: "", opTosURI: "", subjectTypesSupported: [""], claimsSupported: [""])
-
    let keyManagementService = MyKeyManagementService(app: app)
 
    app.lifecycle.use(
@@ -77,7 +75,7 @@ public func configure(_ app: Application) throws {
          clientRetriever: MyClientRetriever(app: app),
          authorizeHandler: MyAuthorizationHandler(),
          userManager: MyUserManager(app: app),
-         validScopes: nil, //["admin,openid"], value required if no clients
+         validScopes: nil, //["admin,openid"], value required if no clients defined
          resourceServerRetriever: MyResourceServerRetriever(app: app),
          oAuthHelper: .remote(
             tokenIntrospectionEndpoint: "",
@@ -103,7 +101,6 @@ public func configure(_ app: Application) throws {
 
    app.jwt.signers.use(.rs256(key: privateKey))
 
-   
    try Routes(app)
    
 }
