@@ -24,13 +24,10 @@ extension MyTokenManager {
          token = accessToken
       }
 
-      
-
       // Check in database if the access_token exists
       guard
          let token,
          let accessToken = try await MyAccessToken.query(on: app.db)
-            //.filter(\.$tokenString == jwt.jti)
             .filter(\.$tokenString == token)
             .first()
       else {

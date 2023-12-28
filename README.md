@@ -1,4 +1,4 @@
-# Simple VaporOAuth example for the Authorization Grant Flow (OIDC)
+# Simple VaporOAuth (OIDC) example for the Authorization Grant Flow
 
 https://github.com/brokenhandsio/vapor-oauth
 
@@ -14,7 +14,7 @@ example.
 
 Unfortunately, vapor/oauth doesn't compile on linux anymore and is outdated. 
 
-Therefore, I used the following fork which is updated to vapor 4.89.3 and includes PKCE and id_token support:
+Therefore, I used the following fork which is updated to vapor 4.89.3 and includes OpenID Connect support:
 
 https://github.com/vamsii777/vapor-oauth.git
 
@@ -56,8 +56,7 @@ Client = Relying Party
 * Server checks if user is entitled for requested scope
 * Server returns access_token, refresh_token and id_token as JWT tokens
 * Client validates JWT signature and payload of each token
-* Server deletes expired Access tokens
-* Server deletes expired Refesh tokens 
+* (Server deletes expired tokens from the database)
 * Client stores access_token, refresh_token and id_token as cookies on the client 
 * Client checks /token_info endpoint to access restricted resources
 * Client can request a new access_token with the refresh_token flow

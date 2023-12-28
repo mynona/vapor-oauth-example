@@ -27,8 +27,6 @@ extension MyTokenManager {
          return nil
       }
 
-
-
       // Important: vapor/oauth does not invalidate refresh tokens
       // Therefore, expired refresh tokens are only removed when a new
       // refresh token for this user has been issued. There is no
