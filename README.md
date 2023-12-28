@@ -29,6 +29,7 @@ Start the client with http://localhost:8089
 
 All detailed outputs can be seen in the XCode console.
 
+---
 # Learning resources
 
 I recommend the following book as it does not only explain the theory but takes you through the whole flow with the required code:
@@ -85,7 +86,8 @@ Client = Relying Party
 ---
 # What is out of scope of this example flow?
 
-* /userinfo endpoint on server side
+* /userinfo endpoint on OpenID provider side
 * Proper mapping of OIDC token claims to the JWT
 * Request id_token separately from Authorization Grant Flow
+* Proper logout handling on OpenID provider side
 
