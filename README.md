@@ -1,4 +1,4 @@
-# Simple VaporOAuth example for the Authorization Grant Flow
+# Simple VaporOAuth example for the Authorization Grant Flow (OIDC)
 
 https://github.com/brokenhandsio/vapor-oauth
 
@@ -29,6 +29,8 @@ Start the client with http://localhost:8089
 * Access tokens are valid only for 1 minute for testing purposes.
 * Refresh tokens have no expiration.
 
+All detailed outputs can be seen in the XCode console.
+
 # Learning resources
 
 I recommend the following book as it does not only explain the theory but takes you through the whole flow with the required code:
@@ -37,25 +39,30 @@ https://leanpub.com/themodernguidetooauth
 
 As for the theory part:
 
-https://www.oauth.com
+https://developer.okta.com/blog/2017/07/25/oidc-primer-part-1
 
+https://www.oauth.com
 
 # What is included in this example?
 
+Server = OpenID Provider
+Client = Relying Party
+
 * Client requests Authorization code (with PKCE)
 * Server provides login screen (username, password)
-* Server side data handling: sessions for user data, db clients, db resource servers, db authorization code
+* Server side data handling: sessions for user data, db clients, db resource servers, db authorization code, db users (sqlite)
 * Server returns Authorization code to client
 * Client requests Access/Refresh token in exchange of Authorization code
 * Server checks if user is entitled for requested scope
-* Server returns Access token as JWT token
-* Server returns Refresh token as UUID value
+* Server returns access_token as JWT token
+* Server returns refresh_token as JWT token
+* Server returns id_token as JWT token
 * Server deletes expired Access tokens
 * Server deletes expired Refesh tokens 
-* Client stores both tokens as cookies on the client (reason: make it available for all microservices)
-* Client checks token_info endpoint to access restricted resources
+* Client stores both tokens as cookies on the client 
+* Client checks /token_info endpoint to access restricted resources
 * Client can request a new access_token with the refresh_token flow
-* Client logout will just destroy the cookies in this example
+* Client logout will just destroy the cookies on the client side in this example
 
 # Endpoints
 
@@ -65,6 +72,7 @@ Open ID Provider (OAuth server)
 * oauth/token | Exchange refresh token for new access token
 * oauth/token_info | Token introspection
 * .well-known/.well-known/jwks.json | Receive a list of the public RSA keys to validate signatures
+* .well-known/openid-configuration | JSON formatted document with the metadata that identifies all the available endpoints
 * oauth/login | Customized route to offer a simple sign-in form
 
 Customized routes on the relying party (client) side

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Open Id Provider</title>
+        <title>OpenID Provider</title>
         <meta charset="UTF-8">
     </head>
     <body style="background-color:#FEEAE9;">
-          <h1>Open Id Provider</h1>
+          <h1>OpenID Provider</h1>
 
           <h2>Sign-in</h2>
 

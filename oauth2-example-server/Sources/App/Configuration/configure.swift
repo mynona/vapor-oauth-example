@@ -66,6 +66,8 @@ public func configure(_ app: Application) throws {
    //      OAuth configuration
    //      =============================================================
 
+   let myDiscoveryDocument = OAuthDiscoveryDocument(issuer: "", authorizationEndpoint: "", tokenEndpoint: "", userInfoEndpoint: "", revocationEndpoint: "", introspectionEndpoint: "", jwksURI: "", registrationEndpoint: "", scopesSupported: [""], responseTypesSupported: [""], grantTypesSupported: [""], tokenEndpointAuthMethodsSupported: [""], tokenEndpointAuthSigningAlgValuesSupported: [""], serviceDocumentation: "", uiLocalesSupported: [""], opPolicyURI: "", opTosURI: "", subjectTypesSupported: [""], claimsSupported: [""])
+
    let keyManagementService = MyKeyManagementService(app: app)
 
    app.lifecycle.use(
@@ -84,6 +86,7 @@ public func configure(_ app: Application) throws {
             resourceServerPassword: ""
          ),
          jwtSignerService: MyJWTSignerService(keyManagementService: keyManagementService),
+         discoveryDocument: MyDiscoveryDocument(),
          keyManagementService: keyManagementService
       )
    )

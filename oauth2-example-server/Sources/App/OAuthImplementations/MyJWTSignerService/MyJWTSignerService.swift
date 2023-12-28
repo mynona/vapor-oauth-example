@@ -2,7 +2,7 @@ import Vapor
 import VaporOAuth
 
 /// JWT Signer Service
-class MyJWTSignerService: VaporOAuth.JWTSignerService {
+final class MyJWTSignerService: VaporOAuth.JWTSignerService {
    
    let keyManagementService: VaporOAuth.KeyManagementService
    

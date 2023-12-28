@@ -15,6 +15,14 @@ extension MyKeyManagementService {
    ///
    func publicKeyIdentifier() throws -> String {
 
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyKeyManagementService() \(#function)")
+      print("-----------------------------")
+      print("Called")
+      print("-----------------------------")
+#endif
+
       return "public-key"
 
    }

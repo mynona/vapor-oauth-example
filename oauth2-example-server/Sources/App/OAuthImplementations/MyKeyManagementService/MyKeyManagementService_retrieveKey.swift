@@ -8,6 +8,15 @@ extension MyKeyManagementService {
 
    func retrieveKey(identifier: String) throws -> JWTKit.RSAKey {
 
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyKeyManagementService() \(#function)")
+      print("-----------------------------")
+      print("Called with parameters:")
+      print("identifier: \(identifier)")
+      print("-----------------------------")
+#endif
+
       if identifier == "public-key" {
 
          /*

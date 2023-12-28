@@ -11,6 +11,8 @@ extension MyKeyManagementService {
       print("\n-----------------------------")
       print("MyKeyManagementService() \(#function)")
       print("-----------------------------")
+      print("Called with parameters:")
+      print("-----------------------------")
 #endif
 
       guard
