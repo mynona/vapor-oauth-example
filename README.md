@@ -61,6 +61,7 @@ Customized routes on the relying party (client) side
 * /callback | Retrieve authorization code; request acess_token and refresh_token
 * /refresh | Exchange refresh_token for a new access_token
 * /introspection-test | Page that calls the /oauth/token_info endpoint
+* /client-logout | Initiate logout
 
 ---
 # What is included in this example?
