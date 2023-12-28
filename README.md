@@ -2,7 +2,7 @@
 
 https://github.com/brokenhandsio/vapor-oauth
 
-
+---
 # Context
 
 This repository is based on the oauth example by marius-se:
@@ -18,6 +18,7 @@ Therefore, I used the following fork which is updated to vapor 4.89.3 and includ
 
 https://github.com/vamsii777/vapor-oauth.git
 
+---
 # Get started
 
 To see it working start both applications.
@@ -43,25 +44,7 @@ https://developer.okta.com/blog/2017/07/25/oidc-primer-part-1
 
 https://www.oauth.com
 
-# What is included in this example?
-
-Server = OpenID Provider
-Client = Relying Party
-
-* Client requests Authorization code (with PKCE)
-* Server provides login screen (username, password)
-* Server side data handling: sessions for user data, db clients, db resource servers, db authorization code, db users (sqlite)
-* Server returns Authorization code to client
-* Client requests Access/Refresh token in exchange of Authorization code
-* Server checks if user is entitled for requested scope
-* Server returns access_token, refresh_token and id_token as JWT tokens
-* Client validates JWT signature and payload of each token
-* (Server deletes expired tokens from the database)
-* Client stores access_token, refresh_token and id_token as cookies on the client 
-* Client checks /token_info endpoint to access restricted resources
-* Client can request a new access_token with the refresh_token flow
-* Client logout will just destroy the cookies on the client side in this example
-
+---
 # Endpoints
 
 Open ID Provider (OAuth server)
@@ -80,4 +63,32 @@ Customized routes on the relying party (client) side
 * /refresh | Exchange refresh_token for a new access_token
 * /introspection-test | Page that calls the /oauth/token_info endpoint
 
+---
+# What is included in this example?
+
+Server = OpenID Provider
+
+Client = Relying Party
+
+* Client requests Authorization code (with PKCE)
+* **Server** provides login screen (username, password)
+* **Server** side data handling: sessions for user data, db clients, db resource servers, db authorization code, db users (sqlite)
+* **Server** returns Authorization code to client
+* Client requests Access/Refresh token in exchange of Authorization code
+* **Server** checks if user is entitled for requested scope
+* **Server** returns access_token, refresh_token and id_token as JWT tokens
+* Client retrieves publicKey via /.well-known/jwks.json
+* Client validates JWT signature and payload of each token
+* (**Server** deletes expired tokens from the database)
+* Client stores access_token, refresh_token and id_token as cookies on the client 
+* Client checks /token_info endpoint to access restricted resources
+* Client can request a new access_token with the refresh_token flow
+* Client logout will just destroy the cookies on the client side in this example
+
+---
+# What is out of scope of this example flow?
+
+* /userinfo endpoint on server side
+* Proper mapping of OIDC token claims to the JWT
+* Request id_token separately from Authorization Grant Flow
 
