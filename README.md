@@ -53,6 +53,7 @@ Open ID Provider (OAuth server)
 * /.well-known/.well-known/jwks.json | Receive a list of the public RSA keys to validate signatures
 * /.well-known/openid-configuration | JSON formatted document with the metadata that identifies all the available endpoints
 * /oauth/login | Customized route to offer a simple sign-in form
+* /oauth/logout | Customized route to destroy server sessions. Client must sent session cookie to work.
 
 Customized routes on the relying party (client) side
 
