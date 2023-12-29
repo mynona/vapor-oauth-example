@@ -77,9 +77,9 @@ Client = Relying Party
 * Client requests Access/Refresh token in exchange of Authorization code
 * **Server** checks if user is entitled for requested scope
 * **Server** returns access_token, refresh_token and id_token as JWT tokens
+* **Server** deletes expired tokens from the database whenever new tokens are generated
 * Client retrieves publicKey via /.well-known/jwks.json
 * Client validates JWT signature and payload of each token
-* (**Server** deletes expired tokens from the database)
 * Client stores access_token, refresh_token and id_token as cookies on the client 
 * Client checks /token_info endpoint to access restricted resources
 * Client can request a new access_token with the refresh_token flow
