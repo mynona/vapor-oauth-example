@@ -31,17 +31,6 @@ extension MyTokenManager {
       // Expiry time 1 minutes for testing purposes
       let expiryTimeAccessToken = Date(timeIntervalSinceNow: TimeInterval(60))
 
-      /*
-      let jwt = try createJWT(
-         subject: userID ?? "",
-         expiration: expiryTimeAccessToken,
-         issuer: "OAuth Server",
-         audience: clientID,
-         jti: accessTokenUniqueId,
-         issuedAtTime: Date()
-      )
-       */
-
       // Access Token for Database
       let accessToken = try createAccessToken(
          tokenString: accessTokenUniqueId,
@@ -53,10 +42,18 @@ extension MyTokenManager {
 
       try await accessToken.save(on: app.db)
 
-      // Access Token for Client: replace the token with the JWT
-      //accessToken.tokenString = jwt
+      let payload = JWT_AccessTokenPayload(
+         tokenString: accessToken.tokenString,
+         clientID: accessToken.clientID,
+         userID: accessToken.userID,
+         scopes: accessToken.scopes,
+         expiryTime: accessToken.expiryTime,
+         issuer: accessToken.issuer,
+         issuedAt: Date()
+      )
 
-      return accessToken
+      //return accessToken
+      return payload
 
    }
 

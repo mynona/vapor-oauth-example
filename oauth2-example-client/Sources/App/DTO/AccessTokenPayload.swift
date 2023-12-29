@@ -1,7 +1,6 @@
-import VaporOAuth
 import JWTKit
 
-public struct JWT_AccessTokenPayload: VaporOAuth.AccessToken {
+public struct JWT_AccessTokenPayload: JWTPayload {
 
    enum CodingKeys: String, CodingKey {
       case tokenString = "jti" // unique token id
@@ -36,6 +35,10 @@ public struct JWT_AccessTokenPayload: VaporOAuth.AccessToken {
       self.expiryTime = expiryTime
       self.issuer = issuer
       self.issuedAt = issuedAt
+   }
+
+   public func verify(using signer: JWTSigner) throws {
+       try expiryTime.verifyNotExpired()
    }
 
 }

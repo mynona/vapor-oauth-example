@@ -68,7 +68,19 @@ extension MyTokenManager {
          
       }
 
-      return idToken
+      let payload = JWT_IDTokenPayload(
+         subject: idToken.subject,
+         audience: idToken.audience,
+         expiration: idToken.expiration,
+         nonce: idToken.nonce,
+         authTime: idToken.authTime,
+         issuer: idToken.issuer,
+         issuedAt: idToken.issuedAt,
+         tokenString: idToken.tokenString
+      )
+
+      return payload
+      //return idToken
 
    }
 

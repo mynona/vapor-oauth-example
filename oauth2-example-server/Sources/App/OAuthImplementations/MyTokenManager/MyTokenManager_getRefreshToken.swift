@@ -52,6 +52,16 @@ extension MyTokenManager {
 
       }
 
+      let payload = JWT_RefreshTokenPayload(
+         tokenString: refreshToken.tokenString,
+         clientID: refreshToken.clientID,
+         userID: refreshToken.userID,
+         scopes: refreshToken.scopes,
+         expiration: refreshToken.expiration,
+         issuer: "OpenID Provider",
+         issuedAt: Date()
+      )
+
       return refreshToken
 
    }

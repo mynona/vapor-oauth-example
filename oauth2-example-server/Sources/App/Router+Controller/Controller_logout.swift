@@ -5,7 +5,6 @@ import Fluent
 
 extension Controller {
 
-
    func logout(_ request: Request) async throws -> HTTPStatus {
 
       request.auth.logout(OAuthUser.self)

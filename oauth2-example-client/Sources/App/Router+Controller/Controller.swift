@@ -86,7 +86,7 @@ struct Controller: Encodable {
       do {
          switch tokenType {
          case .AccessToken:
-            let payload = try signers.verify(token, as: EmptyPayload.self)
+            let payload = try signers.verify(token, as: JWT_AccessTokenPayload.self)
          case .RefreshToken:
             let payload = try signers.verify(token, as: EmptyPayload.self)
          case .IdToken:

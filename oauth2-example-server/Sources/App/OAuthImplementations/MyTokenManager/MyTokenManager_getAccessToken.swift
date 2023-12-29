@@ -63,8 +63,19 @@ extension MyTokenManager {
       print("-----------------------------")
 #endif
 
+
+      let payload = JWT_AccessTokenPayload(
+         tokenString: accessToken.tokenString,
+         clientID: accessToken.clientID,
+         userID: accessToken.userID,
+         scopes: accessToken.scopes,
+         expiryTime: accessToken.expiryTime,
+         issuer: accessToken.issuer,
+         issuedAt: Date()
+      )
+
       // Return token from the database
-      return accessToken
+      return payload
    }
 
 

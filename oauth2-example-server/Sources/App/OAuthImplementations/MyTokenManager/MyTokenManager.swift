@@ -82,7 +82,7 @@ final class MyTokenManager: TokenManager {
       
       return MyIDToken(
          tokenString: [UInt8].random(count: 32).hex,
-         issuer: "OAuth Server",
+         issuer: "OpenID Provider",
          subject: subject,
          audience: audience,
          expiration: expiryTimeIDToken,

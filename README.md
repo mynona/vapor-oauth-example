@@ -91,6 +91,5 @@ Client = Relying Party
 # What is out of scope of this example flow?
 
 * /userinfo endpoint on OpenID provider side
-* Proper mapping of OIDC token claims to the JWT
 * Request id_token separately from Authorization Grant Flow
 
