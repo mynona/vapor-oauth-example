@@ -7,7 +7,7 @@ extension Controller {
    ///
    /// Endpoint /oauth/token is called with Basic Authentication 
    ///
-   func refreshToken(_ request: Request) async throws -> Response {
+   func refreshTokenExample(_ request: Request) async throws -> Response {
 
       guard
          let cookie = request.cookies["refresh_token"]?.string

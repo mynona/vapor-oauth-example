@@ -82,7 +82,7 @@ Client = Relying Party
 * Client validates JWT signature and payload of each token
 * Client stores access_token, refresh_token and id_token as cookies on the client 
 * Client checks /token_info endpoint to access restricted resources
-* Client can request a new access_token with the refresh_token flow
+* Client can request a new access_token with the refresh_token flow. (Example: when the user opens the protected page and no access_token cookie exists, then a new access_token will be requested without user interaction.)
 * Client initiates logout
 * **Server** destroys session upon logout
 * Client destroys cookies upon logout
