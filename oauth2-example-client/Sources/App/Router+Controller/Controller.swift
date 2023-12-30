@@ -9,7 +9,10 @@ struct Controller: Encodable {
       case IdToken
    }
 
+   // ----------------------------------------------------------
+
    /// Create cookie to store token value
+   ///
    func createCookie(value: String, for tokenType: TokenType) -> HTTPCookies.Value {
 
       let maxAge: Int
@@ -44,7 +47,137 @@ struct Controller: Encodable {
 
    }
 
+   // ----------------------------------------------------------
 
+   /// Request new accessToken with refreshToken
+   ///
+   /// - Returns: access_token
+   ///
+   func requestNewAccessToken(forRefreshToken refreshToken: String, _ request: Request) async throws -> OAuth_RefreshTokenResponse? {
+
+      // Add basic authentication credentials to the request header
+      let resourceServerUsername = "resource-1"
+      let resourceServerPassword = "resource-1-password"
+      let credentials = "\(resourceServerUsername):\(resourceServerPassword)".base64String()
+
+      let headers = HTTPHeaders(dictionaryLiteral:
+                                 ("Authorization", "Basic \(credentials)")
+      )
+
+      let tokenEndpoint = URI(string: "http://localhost:8090/oauth/token")
+
+      let content = OAuth_RefreshTokenRequest(
+         grant_type: "refresh_token",
+         client_id: "1",
+         client_secret: "password123",
+         refresh_token: refreshToken
+      )
+
+      let response = try await request.client.post(tokenEndpoint, headers: headers, content: content)
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("Controller() \(#function)")
+      print("-----------------------------")
+      print("Refresh token endpoint: \(tokenEndpoint)")
+      print("Refresh token request header: \(headers)")
+      print("-----------------------------")
+      print("Refresh token response: \(response)")
+      print("-----------------------------")
+#endif
+
+      guard
+         response.status == .ok
+      else {
+         return nil
+      }
+
+      // Unwrap response
+      let token: OAuth_RefreshTokenResponse = try response.content.decode(OAuth_RefreshTokenResponse.self)
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("Controller() \(#function)")
+      print("-----------------------------")
+      print("-----------------------------")
+      print("Unwrapped: \(token)")
+      print("-----------------------------")
+#endif
+
+      return token
+
+   }
+
+   // ----------------------------------------------------------
+
+   /// Call introspection endpoint
+   ///
+   func token_info(accessToken: String, _ request: Request) async throws -> OAuth_TokenIntrospectionResponse? {
+
+      // -------------------------------------------------------
+      // Token introspection to check if a valid token has been
+      // provided
+
+      let content = OAuth_TokenIntrospectionRequest(
+         token: accessToken
+      )
+
+      // Add basic authentication credentials to the request header
+      let resourceServerUsername = "resource-1"
+      let resourceServerPassword = "resource-1-password"
+      let credentials = "\(resourceServerUsername):\(resourceServerPassword)".base64String()
+
+      let headers = HTTPHeaders(dictionaryLiteral:
+                                 ("Authorization", "Basic \(credentials)")
+      )
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("Controller() \(#function)")
+      print("-----------------------------")
+      print("Token introspection request")
+      print("Headers: \(headers)")
+      print("Content: \(content)")
+      print("-----------------------------")
+#endif
+
+      let tokenEndpoint = URI(string: "http://localhost:8090/oauth/token_info")
+      let response = try await request.client.post(tokenEndpoint, headers: headers, content: content)
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("Controller() \(#function)")
+      print("-----------------------------")
+      print("Token introspection response:")
+      print("Response: \(response)")
+      print("-----------------------------")
+#endif
+
+      guard
+         response.status == .ok
+      else {
+         return nil
+      }
+
+      // Unwrap response
+      let introspection: OAuth_TokenIntrospectionResponse = try response.content.decode(OAuth_TokenIntrospectionResponse.self)
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("Controller() \(#function)")
+      print("-----------------------------")
+      print("Unwrapped response::")
+      print("Introspection: \(introspection)")
+      print("-----------------------------")
+#endif
+
+      return introspection
+   }
+
+   // ----------------------------------------------------------
+
+   /// Validate Signature and payload of JWT
+   ///
    func validateJWT(forToken token: String, tokenType: TokenType,  _ request: Request) async throws -> Bool {
 
 #if DEBUG
@@ -79,18 +212,16 @@ struct Controller: Encodable {
 
 
       // Validate JWT payload and correct signature
-      // In this example we just validate the signature and use an empty payload
-
-      var payload: EmptyPayload? = nil
+      var payload: JWTPayload? = nil
 
       do {
          switch tokenType {
          case .AccessToken:
-            let payload = try signers.verify(token, as: JWT_AccessTokenPayload.self)
+            payload = try signers.verify(token, as: OAuth_AccessTokenPayload.self)
          case .RefreshToken:
-            let payload = try signers.verify(token, as: EmptyPayload.self)
+            payload = try signers.verify(token, as: EmptyPayload.self)
          case .IdToken:
-            let payload = try signers.verify(token, as: EmptyPayload.self)
+            payload = try signers.verify(token, as: OAuth_IDTokenPayload.self)
          }
       } catch {
          // Signature or payload issue
@@ -103,12 +234,11 @@ struct Controller: Encodable {
       print("-----------------------------")
       print("Public Key: \(publicKey)")
       print("Payload: \(payload)")
-      print("JWT Token validation was successful.")
+      print("Signature and payload validation of \(tokenType) was successful.")
       print("-----------------------------")
 #endif
 
       return true
-
 
    }
 

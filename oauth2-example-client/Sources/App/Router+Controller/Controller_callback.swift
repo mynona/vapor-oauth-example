@@ -108,21 +108,21 @@ extension Controller {
       let res = try await view.encodeResponse(for: request)
 
       if let accessToken {
-         // Set cookie if accessToken signature has been validated
+         // Set cookie if accessToken signature and payload has been validated
          if try await validateJWT(forToken: accessToken, tokenType: .AccessToken, request) {
             res.cookies["access_token"] = createCookie(value: accessToken, for: .AccessToken)
          }
       }
 
       if let refreshToken {
-         // Set cookie if accessToken signature has been validated
+         // Set cookie if refreshToken signature and payload has been validated
          if try await validateJWT(forToken: refreshToken, tokenType: .RefreshToken, request) {
             res.cookies["refresh_token"] = createCookie(value: refreshToken, for: .RefreshToken)
          }
       }
 
       if let idToken {
-         // Set cookie if accessToken signature has been validated
+         // Set cookie if idToken signature and payload has been validated
          if try await validateJWT(forToken: idToken, tokenType: .IdToken, request) {
             res.cookies["id_token"] = createCookie(value: idToken, for: .RefreshToken)
          }

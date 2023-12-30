@@ -18,8 +18,9 @@ extension MyTokenManager {
 
       let token: String?
       do {
-         let jwt = try app.jwt.signers.verify(accessToken, as: MyAccessToken.self)
-         token = jwt.jti
+         //let jwt = try app.jwt.signers.verify(accessToken, as: MyAccessToken.self)
+         let jwt = try app.jwt.signers.verify(accessToken, as: JWT_AccessTokenPayload.self)
+         token = jwt.tokenString
       } catch {
          token = accessToken
       }
