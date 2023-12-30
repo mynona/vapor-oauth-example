@@ -1,7 +1,8 @@
 import Vapor
 import JWT
 
-public struct EmptyPayload: JWTPayload {
+/// Used for testing purposes only
+public struct OAuth_EmptyPayload: JWTPayload {
    public func verify(using signer: JWTKit.JWTSigner) throws {
 
    }

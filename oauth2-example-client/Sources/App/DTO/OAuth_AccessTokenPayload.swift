@@ -1,6 +1,6 @@
 import JWTKit
 
-public struct JWT_AccessTokenPayload: JWTPayload {
+public struct AccessTokenPayload: JWTPayload {
 
    enum CodingKeys: String, CodingKey {
       case tokenString = "jti" // unique token id
