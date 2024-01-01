@@ -7,8 +7,10 @@ extension MyTokenManager {
    
    func generateRefreshToken(clientID: String, userID: String?, scopes: [String]?) async throws -> VaporOAuth.RefreshToken {
 
+      let entitlements = try await isUserEntitled(user: userID, scopes: scopes)
+
       guard
-         try await isUserEntitled(user: userID, scopes: scopes) == true
+         entitlements.entitled == true
       else {
          throw Abort(.unauthorized, reason: "User is not entitled for this scope.")
       }
@@ -16,7 +18,7 @@ extension MyTokenManager {
       let refreshToken = try createRefreshToken(
          clientID: clientID,
          userID: userID,
-         scopes: scopes
+         scopes: entitlements.scopes
       )
       
       try await refreshToken.save(on: app.db)

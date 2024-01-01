@@ -32,6 +32,18 @@ extension Controller {
 
       }
 
+      // Here you would also check if the user has the correct scope to access this resource:
+
+#if DEBUG
+      print("\n-----------------------------")
+      print("Controller() \(#function)")
+      print("-----------------------------")
+      print("Check scopes")
+      print("Scopes: \(introspection.scope)")
+      print("-----------------------------")
+#endif
+
+
       // Return view and update cookie 'access_token'
       let view = try await request.view.render(
          "protected-resource"

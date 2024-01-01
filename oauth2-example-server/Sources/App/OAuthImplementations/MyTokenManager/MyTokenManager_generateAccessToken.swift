@@ -20,8 +20,10 @@ extension MyTokenManager {
       print("-----------------------------")
 #endif
 
+      let entitlements = try await isUserEntitled(user: userID, scopes: scopes)
+
       guard
-         try await isUserEntitled(user: userID, scopes: scopes) == true
+         entitlements.entitled == true
       else {
          throw Abort(.unauthorized, reason: "User is not entitled for this scope.")
       }
@@ -36,7 +38,7 @@ extension MyTokenManager {
          tokenString: accessTokenUniqueId,
          clientID: clientID,
          userID: userID,
-         scopes: scopes,
+         scopes: entitlements.scopes, 
          expiryTime: expiryTimeAccessToken
       )
 

@@ -18,26 +18,6 @@ final class MyTokenManager: TokenManager {
    init(app: Application) {
       self.app = app
    }
-   
-   // ----------------------------------------------------------
-   /*
-   /// Create JWT that is returned to the client
-   /// - Returns: signed JWT as String
-   func createJWT(subject: String, expiration: Date, issuer: String, audience: String, jti: String, issuedAtTime: Date ) throws -> String {
-      
-      let payload = Payload(
-         subject: SubjectClaim(value: subject),
-         expiration: ExpirationClaim(value: expiration),
-         issuer: issuer,
-         audience: audience,
-         jti: jti,
-         issuedAtTime: issuedAtTime
-      )
-      
-      return try app.jwt.signers.sign(payload)
-      
-   }
-    */
 
    // ----------------------------------------------------------
    
@@ -95,7 +75,7 @@ final class MyTokenManager: TokenManager {
 
    // ----------------------------------------------------------
 
-   func isUserEntitled(user userID: String?, scopes: [String]?) async throws -> Bool {
+   func isUserEntitled(user userID: String?, scopes: [String]?) async throws -> (entitled: Bool, scopes: [String]) {
 
       // Get user
       guard
@@ -115,8 +95,19 @@ final class MyTokenManager: TokenManager {
       let userScopes = Set(author.roles)
       let requestedScopes = Set(scopes)
 
+#if DEBUG
+      print("\n-----------------------------")
+      print("MyTokenManager() \(#function)")
+      print("-----------------------------")
+      print("Requested scopes: \(requestedScopes)")
+      print("User entitled for: \(userScopes)")
+      print("-----------------------------")
+#endif
+
       // Return true if all requestedScopes are part of the user scopes
-      return requestedScopes.isSubset(of: userScopes)
+      let entitled =  requestedScopes.isSubset(of: userScopes)
+
+      return (entitled: entitled, scopes: Array(userScopes))
 
    }
 
