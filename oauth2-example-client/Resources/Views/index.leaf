@@ -11,9 +11,13 @@
 
 <nav>
    <ul>
-      <li><a href="http://localhost:8089/client-login">Login</a></li>
+      <li>
+      <a href="http://localhost:8089/client-login">Login with Authorization Grant Flow (PKCE):</a><br />&nbsp;<br /><ol><li>Authorization: <br />Request authorization via GET oauth/authorize</li><li>Exchange code with tokens:<br />Request tokens via POST /oauth/token once authorization code has been received</li><li>Validate Tokens<br />Get public RSA key as JWKS via GET /oauth/.well-known/jwks.json<br />Validate signature and payload of received tokens</br>Check state and scope</li><li>Persist tokens as cookies</li></ol>
+      </li>
       <br />
-      <li><a href="http://localhost:8089/introspection-test">Protected Resource that calls the oauth/token_info endpoint</a></li>
+      <li>
+      <a href="http://localhost:8089/introspection-test">Access a protected resource</a><br />&nbsp;<br /><ol><li>Does the access_token cookie exist?<br />If not, retrieve new access_token via /oauth/token if refresh_token exists</li><li>Validate access_token with /oauth/token_info to see if token is active<br />If active -> show protected resource<br />If inactive -> disregard access_token cookie and retrieve new access token if refresh_token exists and validate once more with /oauth/token_info. If inactive -> show unauthorized; if active -> show protected resource</li></ol>
+      </li>
    </ul>
 </nav>
 

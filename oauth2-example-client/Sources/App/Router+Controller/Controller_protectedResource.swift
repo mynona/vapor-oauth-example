@@ -9,25 +9,32 @@ extension Controller {
    /// - valid: show page
    /// - invalid: show unauthorized page
    ///
-   func introspectionExample(_ request: Request) async throws -> Response {
+   func protectedResource(_ request: Request) async throws -> Response {
 
-      // Invalid access token
+      var result = try await introspect(request)
+      // If access_token is not valid anymore, try to request a new access_token with the refresh_token
+      if result?.introspection?.active == false {
+         result = try await introspect(enforceNewAccessToken: true, request)
+      }
+
+      // Run introspection
       guard
-         let result = try await introspect(request),
-         let introspection = result.introspection,
-         let access_token = result.accessToken,
+         let introspection = result?.introspection,
+         let access_token = result?.accessToken,
          introspection.active == true
-      else {
+      else { //
+
          let view = try await request.view.render(
             "unauthorized"
          )
          let res = try await view.encodeResponse(for: request)
          return res
+
       }
 
       // Return view and update cookie 'access_token'
       let view = try await request.view.render(
-         "introspection-success"
+         "protected-resource"
       )
 
       let res = try await view.encodeResponse(for: request)

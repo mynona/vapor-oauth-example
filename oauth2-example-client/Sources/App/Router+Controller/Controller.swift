@@ -53,7 +53,13 @@ struct Controller: Encodable {
    ///
    /// - Returns: access_token
    ///
-   func requestNewAccessToken(forRefreshToken refreshToken: String, _ request: Request) async throws -> OAuth_RefreshTokenResponse? {
+   func requestNewAccessToken(_ request: Request) async throws -> OAuth_RefreshTokenResponse? {
+
+      guard
+      let refreshToken = request.cookies["refresh_token"]?.string
+      else {
+         return nil
+      }
 
       // Add basic authentication credentials to the request header
       let resourceServerUsername = "resource-1"
@@ -108,21 +114,48 @@ struct Controller: Encodable {
 
    }
 
-   // ----------------------------------------------------------
 
    /// Call introspection endpoint
    ///
-   func token_info(accessToken: String, _ request: Request) async throws -> OAuth_TokenIntrospectionResponse? {
+   /// - Parameters:
+   ///   - enforceNewAccessToken: request new access_token regardless if an existing token was found or not
+   ///
+   func introspect(enforceNewAccessToken: Bool = false, _ request: Request) async throws -> (introspection: OAuth_TokenIntrospectionResponse?, accessToken: String?)? {
 
       // -------------------------------------------------------
-      // Token introspection to check if a valid token has been
-      // provided
+      // Get or refresh access_token
+      // -------------------------------------------------------
+
+      // Get existing access_token from cookie
+      var access_token: String? = request.cookies["access_token"]?.string
+
+      // Request new access token if access_token cookie was not found OR
+      // Enforce requesting a new access_token regardless of the cookie
+      if access_token == nil || enforceNewAccessToken == true {
+
+         let response = try await requestNewAccessToken(request)
+         if let retrievedToken = response?.access_token {
+            access_token = retrievedToken
+         }
+
+      }
+
+      guard
+         let access_token
+      else {
+         // New access token could not be retrieved
+         return nil
+      }
+      
+      // -------------------------------------------------------
+      // Call OpenID Provider endpoint
+      // -------------------------------------------------------
 
       let content = OAuth_TokenIntrospectionRequest(
-         token: accessToken
+         token: access_token
       )
 
-      // Add basic authentication credentials to the request header
+      // Basic authentication credentials for request header
       let resourceServerUsername = "resource-1"
       let resourceServerPassword = "resource-1-password"
       let credentials = "\(resourceServerUsername):\(resourceServerPassword)".base64String()
@@ -141,8 +174,11 @@ struct Controller: Encodable {
       print("-----------------------------")
 #endif
 
-      let tokenEndpoint = URI(string: "http://localhost:8090/oauth/token_info")
-      let response = try await request.client.post(tokenEndpoint, headers: headers, content: content)
+      let response = try await request.client.post(
+         URI(string: "http://localhost:8090/oauth/token_info"),
+         headers: headers,
+         content: content
+      )
 
 #if DEBUG
       print("\n-----------------------------")
@@ -156,6 +192,7 @@ struct Controller: Encodable {
       guard
          response.status == .ok
       else {
+         // Introspection endpoint could not be reached
          return nil
       }
 
@@ -171,9 +208,10 @@ struct Controller: Encodable {
       print("-----------------------------")
 #endif
 
-      return introspection
+      return (introspection, access_token)
    }
 
+   
    // ----------------------------------------------------------
 
    /// Validate Signature and payload of JWT
