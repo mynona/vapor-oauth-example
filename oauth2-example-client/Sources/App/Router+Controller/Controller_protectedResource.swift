@@ -51,6 +51,10 @@ extension Controller {
 
       let res = try await view.encodeResponse(for: request)
       res.cookies["access_token"] = createCookie(value: access_token, for: .AccessToken)
+      // Replace refresh_token cookie if a new refresh_token has been returned
+      if let refresh_token = result?.refreshToken {
+         res.cookies["refresh_token"] = createCookie(value: refresh_token, for: .RefreshToken)
+      }
       return res
 
    }

@@ -1,19 +1,21 @@
 import JWTKit
 
-public struct OAuth_RefreshTokenPayload: JWTPayload {
+public struct Payload_RefreshToken: JWTPayload {
 
+   public var id: String?
    public var jti: String
    public var clientID: String
    public var userID: String?
-   public var scopes: [String]?
+   public var scopes: String?
    public var exp: Date
-   public var issuer: String
-   public var issuedAt: Date
+   public var issuer: String?
+   public var issuedAt: Date?
 
    enum CodingKeys: String, CodingKey {
+      case id = "id"
       case jti = "jti" // unique token id
-      case clientID = "aud" // audience
-      case userID = "sub" // subject
+      case clientID = "clientID" // audience
+      case userID = "userID" // subject
       case scopes = "_scopes"
       case exp = "exp" // expiration
       case issuer = "iss" // issuer
@@ -21,14 +23,16 @@ public struct OAuth_RefreshTokenPayload: JWTPayload {
    }
 
    init(
+      id: String?,
       jti: String,
       clientID: String,
       userID: String? = nil,
-      scopes: [String]? = nil,
+      scopes: String? = nil,
       exp: Date,
-      issuer: String,
-      issuedAt: Date
+      issuer: String?,
+      issuedAt: Date?
    ) {
+      self.id = id
       self.jti = jti
       self.clientID = clientID
       self.userID = userID

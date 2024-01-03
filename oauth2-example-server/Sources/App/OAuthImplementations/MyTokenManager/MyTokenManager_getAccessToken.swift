@@ -19,7 +19,7 @@ extension MyTokenManager {
       let token: String?
       do {
          let jwt = try app.jwt.signers.verify(accessToken, as: JWT_AccessTokenPayload.self)
-         token = jwt.tokenString
+         token = jwt.jti
       } catch {
          token = accessToken
       }
@@ -65,7 +65,7 @@ extension MyTokenManager {
 
 
       let payload = JWT_AccessTokenPayload(
-         tokenString: accessToken.tokenString,
+         jti: accessToken.jti,
          clientID: accessToken.clientID,
          userID: accessToken.userID,
          scopes: accessToken.scopes,
@@ -74,7 +74,6 @@ extension MyTokenManager {
          issuedAt: Date()
       )
 
-      // Return token from the database
       return payload
    }
 

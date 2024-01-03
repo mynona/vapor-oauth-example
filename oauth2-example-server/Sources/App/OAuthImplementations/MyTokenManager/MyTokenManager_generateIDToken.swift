@@ -62,7 +62,7 @@ extension MyTokenManager {
       if let id = idToken.id {
          let expiredTokens = try await MyIDToken
             .query(on: app.db)
-            .filter(\.$expiration < idToken.expiration)
+            .filter(\.$exp < idToken.exp)
             .filter(\.$id != id)
             .all()
          
@@ -71,18 +71,17 @@ extension MyTokenManager {
       }
 
       let payload = JWT_IDTokenPayload(
-         subject: idToken.subject,
-         audience: idToken.audience,
-         expiration: idToken.expiration,
+         sub: idToken.sub,
+         aud: idToken.aud,
+         exp: idToken.exp,
          nonce: idToken.nonce,
          authTime: idToken.authTime,
-         issuer: idToken.issuer,
-         issuedAt: idToken.issuedAt,
-         tokenString: idToken.tokenString
+         iss: idToken.iss,
+         iat: idToken.iat,
+         jti: idToken.jti
       )
 
       return payload
-      //return idToken
 
    }
 

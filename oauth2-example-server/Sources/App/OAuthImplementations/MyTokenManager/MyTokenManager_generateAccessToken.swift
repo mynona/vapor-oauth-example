@@ -45,7 +45,7 @@ extension MyTokenManager {
       try await accessToken.save(on: app.db)
 
       let payload = JWT_AccessTokenPayload(
-         tokenString: accessToken.tokenString,
+         jti: accessToken.tokenString,
          clientID: accessToken.clientID,
          userID: accessToken.userID,
          scopes: accessToken.scopes,

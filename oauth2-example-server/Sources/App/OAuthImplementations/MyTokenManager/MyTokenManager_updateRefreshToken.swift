@@ -18,7 +18,7 @@ extension MyTokenManager {
 
       if let token = try await MyRefreshToken
          .query(on: app.db)
-         .filter(\.$tokenString == refreshToken.tokenString)
+         .filter(\.$jti == refreshToken.jti)
          .first() {
 
          token.scopes = scopes

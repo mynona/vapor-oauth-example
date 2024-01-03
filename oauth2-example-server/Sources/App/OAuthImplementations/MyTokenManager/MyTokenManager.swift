@@ -43,11 +43,11 @@ final class MyTokenManager: TokenManager {
       let expiryTimeRefreshToken = Date(timeIntervalSinceNow: TimeInterval(60 * 60 * 24 * 30))
       
       return MyRefreshToken(
-         tokenString: [UInt8].random(count: 32).hex,
+         jti: [UInt8].random(count: 32).hex,
          clientID: clientID,
          userID: userID,
          scopes: scopes,
-         expiration: expiryTimeRefreshToken
+         exp: expiryTimeRefreshToken
       )
       
    }
@@ -61,12 +61,12 @@ final class MyTokenManager: TokenManager {
       let expiryTimeIDToken = Date(timeIntervalSinceNow: TimeInterval(60 * 60 * 24 * 30))
       
       return MyIDToken(
-         tokenString: [UInt8].random(count: 32).hex,
-         issuer: "OpenID Provider",
-         subject: subject,
-         audience: audience,
-         expiration: expiryTimeIDToken,
-         issuedAt: Date(),
+         jti: [UInt8].random(count: 32).hex,
+         iss: "OpenID Provider",
+         sub: subject,
+         aud: audience,
+         exp: expiryTimeIDToken,
+         iat: Date(),
          nonce: nonce,
          authTime: nil
       )

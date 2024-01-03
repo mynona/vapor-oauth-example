@@ -4,46 +4,46 @@ import JWTKit
 public struct JWT_IDTokenPayload: VaporOAuth.IDToken {
 
    enum CodingKeys: String, CodingKey {
-      case subject = "sub"
-      case audience = "aud"
-      case expiration = "exp"
+      case sub = "sub"
+      case aud = "aud"
+      case exp = "exp"
       case nonce = "nonce"
       case authTime = "auth_time" // time when authentication occured
-      case issuer = "iss"
-      case issuedAt = "iat"
-      case tokenString = "jti"
+      case iss = "iss"
+      case iat = "iat"
+      case jti = "jti"
    }
 
-   public var subject: String
-   public var audience: [String]
-   public var expiration: Date
+   public var sub: String
+   public var aud: [String]
+   public var exp: Date
    public var nonce: String?
    public var authTime: Date?
-   public var issuer: String
-   public var issuedAt: Date
-   public var tokenString: String
+   public var iss: String
+   public var iat: Date
+   public var jti: String
 
-   init(subject: String,
-        audience: [String],
-        expiration: Date,
+   init(sub: String,
+        aud: [String],
+        exp: Date,
         nonce: String?,
         authTime: Date?,
-        issuer: String,
-        issuedAt: Date,
-        tokenString: String
+        iss: String,
+        iat: Date,
+        jti: String
    ) {
-      self.subject = subject
-      self.audience = audience
-      self.expiration = expiration
+      self.sub = sub
+      self.aud = aud
+      self.exp = exp
       self.nonce = nonce
       self.authTime = authTime
-      self.issuer = issuer
-      self.issuedAt = issuedAt
-      self.tokenString = tokenString
+      self.iss = iss
+      self.iat = iat
+      self.jti = jti
    }
 
    public func verify(using signer: JWTSigner) throws {
-       try expiration.verifyNotExpired()
+       try exp.verifyNotExpired()
    }
 
 }

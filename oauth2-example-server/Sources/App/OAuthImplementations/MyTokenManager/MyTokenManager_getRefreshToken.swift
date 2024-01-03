@@ -12,7 +12,7 @@ extension MyTokenManager {
       let token: String?
       do {
          let jwt = try app.jwt.signers.verify(refreshToken, as: MyRefreshToken.self)
-         token = jwt.tokenString
+         token = jwt.jti
       } catch {
          token = refreshToken
       }
@@ -21,7 +21,7 @@ extension MyTokenManager {
          let token,
          let refreshToken = try await MyRefreshToken
             .query(on: app.db)
-            .filter(\.$tokenString == token)
+            .filter(\.$jti == token)
             .first()
       else {
          return nil
@@ -35,7 +35,7 @@ extension MyTokenManager {
          let otherActiveRefreshTokens = try await MyRefreshToken
             .query(on: app.db)
             .filter(\.$userID == refreshToken.userID)
-            .filter(\.$expiration < refreshToken.expiration)
+            .filter(\.$exp < refreshToken.exp)
             .filter(\.$id != id)
             .all()
 
@@ -53,16 +53,16 @@ extension MyTokenManager {
       }
 
       let payload = JWT_RefreshTokenPayload(
-         tokenString: refreshToken.tokenString,
+         jti: refreshToken.jti,
          clientID: refreshToken.clientID,
          userID: refreshToken.userID,
          scopes: refreshToken.scopes,
-         expiration: refreshToken.expiration,
+         exp: refreshToken.exp,
          issuer: "OpenID Provider",
          issuedAt: Date()
       )
 
-      return refreshToken
+      return payload
 
    }
 

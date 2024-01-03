@@ -24,11 +24,11 @@ extension MyTokenManager {
       try await refreshToken.save(on: app.db)
 
       let payload = JWT_RefreshTokenPayload(
-         tokenString: refreshToken.tokenString,
+         jti: refreshToken.jti,
          clientID: refreshToken.clientID,
          userID: refreshToken.userID,
          scopes: refreshToken.scopes,
-         expiration: refreshToken.expiration,
+         exp: refreshToken.exp,
          issuer: "OpenID Provider",
          issuedAt: Date()
       )

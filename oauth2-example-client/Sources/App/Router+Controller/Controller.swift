@@ -56,7 +56,7 @@ struct Controller: Encodable {
    func requestNewAccessToken(_ request: Request) async throws -> OAuth_RefreshTokenResponse? {
 
       guard
-      let refreshToken = request.cookies["refresh_token"]?.string
+         let refreshToken = request.cookies["refresh_token"]?.string
       else {
          return nil
       }
@@ -120,7 +120,7 @@ struct Controller: Encodable {
    /// - Parameters:
    ///   - enforceNewAccessToken: request new access_token regardless if an existing token was found or not
    ///
-   func introspect(enforceNewAccessToken: Bool = false, _ request: Request) async throws -> (introspection: OAuth_TokenIntrospectionResponse?, accessToken: String?)? {
+   func introspect(enforceNewAccessToken: Bool = false, _ request: Request) async throws -> (introspection: OAuth_TokenIntrospectionResponse?, accessToken: String?, refreshToken: String?)? {
 
       // -------------------------------------------------------
       // Get or refresh access_token
@@ -128,22 +128,27 @@ struct Controller: Encodable {
 
       // Get existing access_token from cookie
       var access_token: String? = request.cookies["access_token"]?.string
+      var refresh_token: String? = request.cookies["refresh_token"]?.string
 
       // Request new access token if access_token cookie was not found OR
       // Enforce requesting a new access_token regardless of the cookie
       if access_token == nil || enforceNewAccessToken == true {
 
          let response = try await requestNewAccessToken(request)
-         if let retrievedToken = response?.access_token {
-            access_token = retrievedToken
+         if let retrievedAccessToken = response?.access_token {
+            access_token = retrievedAccessToken
+         }
+         if let retrievedRefreshToken = response?.refresh_token {
+            refresh_token = retrievedRefreshToken
          }
 
       }
 
       guard
-         let access_token
+         let access_token,
+         let refresh_token
       else {
-         // New access token could not be retrieved
+         // New access token and refresh token could not be retrieved
          return nil
       }
       
@@ -203,12 +208,12 @@ struct Controller: Encodable {
       print("\n-----------------------------")
       print("Controller() \(#function)")
       print("-----------------------------")
-      print("Unwrapped response::")
+      print("Unwrapped response:")
       print("Introspection: \(introspection)")
       print("-----------------------------")
 #endif
 
-      return (introspection, access_token)
+      return (introspection, access_token, refresh_token)
    }
 
    
@@ -255,11 +260,11 @@ struct Controller: Encodable {
       do {
          switch tokenType {
          case .AccessToken:
-            payload = try signers.verify(token, as: OAuth_AccessTokenPayload.self)
+            payload = try signers.verify(token, as: Payload_AccessToken.self)
          case .RefreshToken:
-            payload = try signers.verify(token, as: EmptyPayload.self)
+            payload = try signers.verify(token, as: Payload_RefreshToken.self)
          case .IdToken:
-            payload = try signers.verify(token, as: OAuth_IDTokenPayload.self)
+            payload = try signers.verify(token, as: Payload_IDToken.self)
          }
       } catch {
          // Signature or payload issue

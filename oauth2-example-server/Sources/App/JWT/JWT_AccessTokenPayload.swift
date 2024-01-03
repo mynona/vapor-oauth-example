@@ -2,9 +2,10 @@ import VaporOAuth
 import JWTKit
 
 public struct JWT_AccessTokenPayload: VaporOAuth.AccessToken {
+   
 
    enum CodingKeys: String, CodingKey {
-      case tokenString = "jti" // unique token id
+      case jti = "jti" // unique token id
       case clientID = "aud" // audience
       case userID = "sub" // subject
       case scopes = "scopes"
@@ -13,7 +14,7 @@ public struct JWT_AccessTokenPayload: VaporOAuth.AccessToken {
       case issuedAt = "iat" // issuing date
    }
 
-   public var tokenString: String
+   public var jti: String
    public var clientID: String
    public var userID: String?
    public var scopes: [String]?
@@ -21,7 +22,7 @@ public struct JWT_AccessTokenPayload: VaporOAuth.AccessToken {
    public var issuer: String
    public var issuedAt: Date
 
-   init(tokenString: String, 
+   init(jti: String,
         clientID: String,
         userID: String? = nil,
         scopes: [String]? = nil,
@@ -29,7 +30,7 @@ public struct JWT_AccessTokenPayload: VaporOAuth.AccessToken {
         issuer: String,
         issuedAt: Date
    ) {
-      self.tokenString = tokenString
+      self.jti = jti
       self.clientID = clientID
       self.userID = userID
       self.scopes = scopes

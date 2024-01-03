@@ -14,6 +14,7 @@ import JWTKit
 ///
 final class MyIDToken: Model, VaporOAuth.IDToken {
 
+
    func verify(using signer: JWTKit.JWTSigner) throws {
       //return try app.jwt.signers.sign(payload)
 
@@ -32,35 +33,35 @@ final class MyIDToken: Model, VaporOAuth.IDToken {
    @ID(key: .id)
    var id: UUID?
 
-   @Field(key: "token_string")
-   var tokenString: String
+   @Field(key: "jti")
+   var jti: String
 
-   @Field(key: "issuer")
-   var issuer: String
+   @Field(key: "iss")
+   var iss: String
 
-   @Field(key: "subject")
-   var subject: String
+   @Field(key: "sub")
+   var sub: String
 
-   var audience: [String] {
+   var aud: [String] {
       get {
-         let audience = _audience
-         let audienceArray = audience.split(separator: ",")
-         return audienceArray.map(String.init)
+         let aud = _aud
+         let audArray = aud.split(separator: ",")
+         return audArray.map(String.init)
       }
       set {
          let newValue = newValue
-         _audience = newValue.joined(separator: ",")
+         _aud = newValue.joined(separator: ",")
       }
    }
 
-   @Field(key: "audience")
-   var _audience: String
+   @Field(key: "aud")
+   var _aud: String
 
-   @Field(key: "expiration")
-   var expiration: Date
+   @Field(key: "exp")
+   var exp: Date
 
-   @Field(key: "issued_at")
-   var issuedAt: Date
+   @Field(key: "iat")
+   var iat: Date
 
    @OptionalField(key: "nonce")
    var nonce: String?
@@ -72,22 +73,22 @@ final class MyIDToken: Model, VaporOAuth.IDToken {
 
    init(
       id: UUID? = nil,
-      tokenString: String,
-      issuer: String,
-      subject: String,
-      audience: [String],
-      expiration: Date,
-      issuedAt: Date,
+      jti: String,
+      iss: String,
+      sub: String,
+      aud: [String],
+      exp: Date,
+      iat: Date,
       nonce: String?,
       authTime: Date?
    ) {
       self.id = id
-      self.tokenString = tokenString
-      self.issuer = issuer
-      self.subject = subject
-      self.audience = audience
-      self.expiration = expiration
-      self.issuedAt = issuedAt
+      self.jti = jti
+      self.iss = iss
+      self.sub = sub
+      self.aud = aud
+      self.exp = exp
+      self.iat = iat
       self.nonce = nonce
       self.authTime = authTime
    }
