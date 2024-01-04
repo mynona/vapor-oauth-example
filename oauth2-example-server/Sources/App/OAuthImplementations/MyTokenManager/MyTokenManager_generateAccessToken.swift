@@ -54,7 +54,6 @@ extension MyTokenManager {
          issuedAt: Date()
       )
 
-      //return accessToken
       return payload
 
    }
