@@ -11,7 +11,7 @@ https://github.com/marius-se/vapor-oauth2-example
 
 Unfortunately, vapor/oauth doesn't compile on linux anymore and doesn't support PKCE.
 
-Therefore, I used the following fork which is updated to vapor 4.89.3 and includes OpenID Connect support:
+Therefore, I used the following fork which is updated to vapor 4.90.0 and includes OpenID Connect support:
 
 https://github.com/vamsii777/vapor-oauth.git
 

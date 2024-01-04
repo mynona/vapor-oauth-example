@@ -8,20 +8,12 @@ extension MyTokenManager {
    /// Get Refresh Token
    func getRefreshToken(_ refreshToken: String) async throws -> VaporOAuth.RefreshToken? {
 
-
-      let token: String?
-      do {
-         let jwt = try app.jwt.signers.verify(refreshToken, as: MyRefreshToken.self)
-         token = jwt.jti
-      } catch {
-         token = refreshToken
-      }
+      let token = try app.jwt.signers.verify(refreshToken, as: JWT_RefreshTokenPayload.self)
 
       guard
-         let token,
          let refreshToken = try await MyRefreshToken
             .query(on: app.db)
-            .filter(\.$jti == token)
+            .filter(\.$jti == token.jti)
             .first()
       else {
          return nil
