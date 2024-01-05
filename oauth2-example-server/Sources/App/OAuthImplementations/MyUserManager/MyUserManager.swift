@@ -48,7 +48,7 @@ final class MyUserManager: UserManager {
       }
 
       guard
-         let author = try await MyUser
+         let myUser = try await MyUser
             .query(on: app.db)
             .filter(\.$id == uuid)
             .first()
@@ -57,11 +57,31 @@ final class MyUserManager: UserManager {
       }
 
       let user = OAuthUser(
-         userID: author.id?.uuidString,
-         username: author.username,
-         emailAddress: "",
-         password: author.password
+         userID: myUser.id?.uuidString,
+         username: myUser.username,
+         emailAddress: myUser.emailAddress,
+         password: "",
+         name: myUser.name,
+         givenName: myUser.givenName,
+         familyName: myUser.familyName,
+         middleName: myUser.middleName,
+         nickname: myUser.nickname,
+         profile: myUser.profile,
+         picture: myUser.picture,
+         website: myUser.website,
+         gender: myUser.gender,
+         birthdate: myUser.birthdate,
+         zoneinfo: myUser.zoneinfo,
+         locale: myUser.locale,
+         phoneNumber: myUser.phoneNumber,
+         updatedAt: myUser.updatedAt
       )
+
+      // Be aware:
+      // Extended properties are not exported
+      user.createdAt = myUser.createdAt
+      print(user.createdAt)
+
       return user
 
    }

@@ -142,16 +142,16 @@ final class MyUser: Model, Content {
    @Field(key: "oauth_provider") 
    var oauthProvider: OAuthProvider?
 
-
-
-
-
    var sub: String? {
       return id?.uuidString
    }
 
    var name: String? {
-      return "\(givenName ?? "") \(middleName ?? "") \(familyName ?? "")"
+      var result: String = ""
+      if let givenName { result += "\(givenName) " }
+      if let middleName { result += "\(middleName) " }
+      if let familyName { result += "\(familyName)" }
+      return result
    }
 
    init() { }

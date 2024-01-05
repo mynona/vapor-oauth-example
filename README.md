@@ -50,6 +50,7 @@ Open ID Provider (OAuth server)
 * /oauth/authorize | Authorization flow
 * /oauth/token | Exchange refresh token for new access token
 * /oauth/token_info | Token introspection
+* /oauth/userinfo | Return OAuthUser
 * /.well-known/.well-known/jwks.json | Receive a list of the public RSA keys to validate signatures
 * /.well-known/openid-configuration | JSON formatted document with the metadata that identifies all the available endpoints
 * /oauth/login | Customized route to offer a simple sign-in form
@@ -82,7 +83,8 @@ Client = Relying Party
 * Client validates JWT signature and payload of each token
 * Client stores access_token, refresh_token and id_token as cookies on the client 
 * Client checks /token_info endpoint to access restricted resources
-* Client can request a new access_token with the refresh_token flow. (Example: when the user opens the protected page and no access_token cookie exists, then a new access_token will be requested without user interaction.)
+* Client requests a new access_token if the access_token cookie has expired or if the access_token is not valid anymore when the protected page is accessed
+* Client can call /oauth/userinfo endpoint and shows result in Xcode console
 * Client initiates logout
 * **Server** destroys session upon logout
 * Client destroys cookies upon logout
@@ -90,6 +92,5 @@ Client = Relying Party
 ---
 # What is out of scope of this example flow?
 
-* /userinfo endpoint on OpenID provider side
 * Request id_token separately from Authorization Grant Flow
 

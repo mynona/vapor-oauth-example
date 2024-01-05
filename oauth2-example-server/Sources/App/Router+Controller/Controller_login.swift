@@ -28,6 +28,7 @@ extension Controller {
          )
 
       request.auth.login(oauth_user)
+      request.session.authenticate(oauth_user)
 
       /*
        I encountered the problem that the session cookie is not updated immediately. The call to the authorization endpoint requires that the OAuthUser is already logged in. To overcome this issue (that still needs more investigation) I do a redirect. Once this is done the OAuthUser is properly logged in.
