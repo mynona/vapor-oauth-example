@@ -30,12 +30,14 @@ extension Controller {
       request.auth.login(oauth_user)
       request.session.authenticate(oauth_user)
 
+
+
       /*
        I encountered the problem that the session cookie is not updated immediately. The call to the authorization endpoint requires that the OAuthUser is already logged in. To overcome this issue (that still needs more investigation) I do a redirect. Once this is done the OAuthUser is properly logged in.
+
+       Authenticating the session didn't solve this problem:
+       request.session.authenticate(oauth_user)
        */
-
-      //return request.redirect(to: "http://localhost:8090/oauth/login-forward")
-
 
       // Make sure session cookie is correctly forwarded
       let cookie = request.cookies["vapor-session"]
@@ -43,10 +45,7 @@ extension Controller {
       let response = try await request.redirect(to: "http://localhost:8090/oauth/login-forward").encodeResponse(for: request)
       response.cookies["vapor-session"] = cookie
 
-
-
       return response
-
 
    }
 

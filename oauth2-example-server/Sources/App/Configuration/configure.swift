@@ -51,7 +51,7 @@ public func configure(_ app: Application) throws {
    //      =============================================================
    //      OAuth / Session Middleware
    //      =============================================================
-   
+
    app.middleware.use(app.sessions.middleware, at: .beginning)
    app.middleware.use(OAuthUserSessionAuthenticator())
    app.middleware.use(MyUser.sessionAuthenticator())

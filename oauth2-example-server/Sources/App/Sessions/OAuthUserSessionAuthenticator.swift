@@ -68,6 +68,7 @@ public struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
             updatedAt: myuser.updatedAt
           )
           request.auth.login(user)
+          request.session.authenticate(user)
        }
 
     }
