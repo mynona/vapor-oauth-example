@@ -60,8 +60,7 @@ Customized routes on the relying party (client) side
 
 * /client-login | Start authorization flow
 * /callback | Retrieve authorization code; request acess_token and refresh_token
-* /refresh | Exchange refresh_token for a new access_token
-* /introspection-test | Page that calls the /oauth/token_info endpoint
+* /introspection-test | Page that calls the /oauth/token_info to see if the access_token is valid. If not, try to exchange the refresh_token for a new access_token
 * /userinfo-test | Calls oauth/userinfo endpoint with Bearer access_token 
 * /client-logout | Initiate logout
 
