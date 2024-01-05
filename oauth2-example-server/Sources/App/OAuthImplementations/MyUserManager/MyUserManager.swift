@@ -56,6 +56,8 @@ final class MyUserManager: UserManager {
          return nil
       }
 
+
+
       let user = OAuthUser(
          userID: myUser.id?.uuidString,
          username: myUser.username,
@@ -74,13 +76,10 @@ final class MyUserManager: UserManager {
          zoneinfo: myUser.zoneinfo,
          locale: myUser.locale,
          phoneNumber: myUser.phoneNumber,
+         // You can add customized properties as dictionary:
+         extend: ["cookiePreferences":myUser.cookiePreferences?.rawValue ?? ""],
          updatedAt: myUser.updatedAt
       )
-
-      // Be aware:
-      // Extended properties are not exported
-      user.createdAt = myUser.createdAt
-      print(user.createdAt)
 
       return user
 

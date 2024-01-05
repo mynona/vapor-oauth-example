@@ -62,6 +62,7 @@ Customized routes on the relying party (client) side
 * /callback | Retrieve authorization code; request acess_token and refresh_token
 * /refresh | Exchange refresh_token for a new access_token
 * /introspection-test | Page that calls the /oauth/token_info endpoint
+* /userinfo-test | Calls oauth/userinfo endpoint with Bearer access_token 
 * /client-logout | Initiate logout
 
 ---
@@ -84,13 +85,10 @@ Client = Relying Party
 * Client stores access_token, refresh_token and id_token as cookies on the client 
 * Client checks /token_info endpoint to access restricted resources
 * Client requests a new access_token if the access_token cookie has expired or if the access_token is not valid anymore when the protected page is accessed
-* Client can call /oauth/userinfo endpoint and shows result in Xcode console
+* Client can call /oauth/userinfo endpoint and shows result in Xcode console. 
+* **Server** can add customized properties to the returned OAuthUser payload
 * Client initiates logout
 * **Server** destroys session upon logout
 * Client destroys cookies upon logout
 
----
-# What is out of scope of this example flow?
-
-* Request id_token separately from Authorization Grant Flow
 

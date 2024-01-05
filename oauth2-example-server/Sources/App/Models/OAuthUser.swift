@@ -8,6 +8,7 @@ extension OAuthUser: SessionAuthenticatable {
 
 }
 
+/*
 extension OAuthUser {
    
    var createdAt: Date? {
@@ -16,5 +17,6 @@ extension OAuthUser {
    }
 
 }
+ */
 
 
