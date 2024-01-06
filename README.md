@@ -279,7 +279,7 @@ Add the following libraries if you want to support JWT tokens:
 ```
 
 
-### Initiate login:
+### Initiate Authorization Grant Flow:
 
 ```
 func clientLogin(_ request: Request) async throws -> Response {
@@ -291,4 +291,108 @@ let uri = "http://localhost:8090/oauth/authorize?client_id=\(content.client_id)&
 return request.redirect(to: uri)
 
 }
+```
+
+### Callback Authorization Grant Flow:
+
+#### 1. Retrieve Authorization Code:
+
+```
+let code: String? = request.query["code"]
+let state: String? = request.query["state"]
+```
+
+#### 2. Validate state parameter:
+
+```
+guard
+    state == "ping-pong"
+    else {
+         throw(Abort(.badRequest, reason: "Validation of 'state' failed."))
+      }
+```
+
+### 3. Request token:
+
+```
+let content = OAuth_TokenRequest(
+         code: code,
+         grant_type: "authorization_code",
+         redirect_uri: "http://localhost:8089/callback",
+         client_id: "1",
+         client_secret: "password123",
+         code_verifier: "hello_world"
+      )
+
+let tokenEndpoint = URI(string: "http://localhost:8090/oauth/token")
+      
+let response = try await request.client.post(tokenEndpoint, content: content)
+```
+
+#### 4. Retrieve public key and validate tokens:
+
+```
+let response = try await request.client.get("http://localhost:8090/.well-known/jwks.json")
+
+let jwkSet = try response.content.decode(JWKS.self)
+
+guard
+    let jwks = jwkSet.find(identifier: JWKIdentifier(string: "public-key"))?.first,
+    let modulus = jwks.modulus,
+    let exponent = jwks.exponent,
+    let publicKey = JWTKit.RSAKey(modulus: modulus, exponent: exponent)
+else {
+    throw Abort(.badRequest, reason: "JWK key could not be unpacked")
+      }
+
+let signers = JWTKit.JWTSigners()
+      signers.use(.rs256(key: publicKey))
+
+// Example Access Token:
+payload = try signers.verify(token, as: Payload_AccessToken.self)
+
+// Store tokens as cookies: see example
+
+```
+
+### Call oauth/token_info:
+
+Basic Authentication
+
+```
+let content = OAuth_TokenIntrospectionRequest(
+         token: access_token
+      )
+
+// Basic authentication credentials for request header
+let resourceServerUsername = "resource-1"
+let resourceServerPassword = "resource-1-password"
+let credentials = "\(resourceServerUsername):\(resourceServerPassword)".base64String()
+
+let headers = HTTPHeaders(dictionaryLiteral:
+                                 ("Authorization", "Basic \(credentials)")
+      )
+
+let response = try await request.client.post(
+         URI(string: "http://localhost:8090/oauth/token_info"),
+         headers: headers,
+         content: content
+      )
+```
+
+### Call /oauth/userinfo:
+
+Bearer authentication with Access Token:
+
+```
+let access_token: String? = request.cookies["access_token"]?.string
+
+let headers = HTTPHeaders(dictionaryLiteral:
+                                 ("Authorization", "Bearer \(access_token)")
+      )
+
+let response = try await request.client.get(
+         URI(string: "http://localhost:8090/oauth/userinfo"),
+         headers: headers
+      )
 ```
