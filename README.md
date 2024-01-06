@@ -90,6 +90,8 @@ Client = Relying Party
 
 # Usage: Authorization Grant Flow
 
+(Detailed code see example.)
+
 ## OpenID Provider:
 
 Add the library to Package.swift:
@@ -99,6 +101,7 @@ Add the library to Package.swift:
 ```
 
 ```
+// Be aware: this is a work-in-progress branch!!!
 .product(name: "OAuth", package: "vapor-oauth")
 ```
 
@@ -143,10 +146,21 @@ let keyManagementService = MyKeyManagementService(app: app)
 
 Responsible for generating and managing Authorization Codes:
 
-* generateCode: generate and persist the authorization `OAuthCode`
+* generateCode: generate and persist the authorization `OAuthCode`. 
 * retrieveCode: return `OAuthCode`
 * codeUsed: delete used `OAuthCode`. Each code can only be used once.
 
+### TokenManager:
+
+Responsible for generating and managing `AccessToken`, `RefreshToken` and `IDToken` tokens as JWT or String.
+
+* generateAccessToken: generate and persist `AccessToken`. In the example the scope of newly requested `AccessTokens` is matched against user entitlements.
+* generateRefreshToken: generate and persist `RefreshToken`.
+* generateIDToken: generate and persist `IDToken`.
+* getAccessToken: Retrieve `AccessToken`. In case of JWT validate token signature. In the example expired tokens are deleted as part of this call.
+* getRefreshToken: Retrieve `RefreshToken`. In case of JWT validate token signature. In the example expired tokens are deleted as part of this call.
+* updateRefreshToken: Update the scope of a `RefreshToken`.
+* generateAccessRefreshTokens and generateTokens: helper functions to generate and return multiple tokens at once.
 
 
 
