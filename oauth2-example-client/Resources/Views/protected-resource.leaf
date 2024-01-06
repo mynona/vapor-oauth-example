@@ -15,7 +15,7 @@
    <ul>
       <li><a href="http://localhost:8089">Return to home</a></li>
             <br />
-      <li><a href="http://localhost:8089/userinfo-test">Userinfo</a> (Result is shown in the XCode console)</li>
+      <li><a href="http://localhost:8089/userinfo-test">Userinfo</a> (Result is shown in the Xcode console)</li>
       <br />
       <li><a href="http://localhost:8089/client-logout">Log out</a> </li>
    </ul>

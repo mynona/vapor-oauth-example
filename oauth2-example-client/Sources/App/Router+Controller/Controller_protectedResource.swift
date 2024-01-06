@@ -11,10 +11,10 @@ extension Controller {
    ///
    func protectedResource(_ request: Request) async throws -> Response {
 
-      var result = try await introspect(request)
+      var result = try await verifyAccessToken(request)
       // If access_token is not valid anymore, try to request a new access_token with the refresh_token
       if result?.introspection?.active == false {
-         result = try await introspect(enforceNewAccessToken: true, request)
+         result = try await verifyAccessToken(enforceNewAccessToken: true, request)
       }
 
       // Run introspection
@@ -50,10 +50,10 @@ extension Controller {
       )
 
       let res = try await view.encodeResponse(for: request)
-      res.cookies["access_token"] = createCookie(value: access_token, for: .AccessToken)
+      res.cookies["access_token"] = createCookie(withValue: access_token, forToken: .AccessToken)
       // Replace refresh_token cookie if a new refresh_token has been returned
       if let refresh_token = result?.refreshToken {
-         res.cookies["refresh_token"] = createCookie(value: refresh_token, for: .RefreshToken)
+         res.cookies["refresh_token"] = createCookie(withValue: refresh_token, forToken: .RefreshToken)
       }
       return res
 

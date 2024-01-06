@@ -109,22 +109,22 @@ extension Controller {
 
       if let accessToken {
          // Set cookie if accessToken signature and payload has been validated
-         if try await validateJWT(forToken: accessToken, tokenType: .AccessToken, request) {
-            res.cookies["access_token"] = createCookie(value: accessToken, for: .AccessToken)
+         if try await verifyJWT(forToken: accessToken, tokenType: .AccessToken, request) {
+            res.cookies["access_token"] = createCookie(withValue: accessToken, forToken: .AccessToken)
          }
       }
 
       if let refreshToken {
          // Set cookie if refreshToken signature and payload has been validated
-         if try await validateJWT(forToken: refreshToken, tokenType: .RefreshToken, request) {
-            res.cookies["refresh_token"] = createCookie(value: refreshToken, for: .RefreshToken)
+         if try await verifyJWT(forToken: refreshToken, tokenType: .RefreshToken, request) {
+            res.cookies["refresh_token"] = createCookie(withValue: refreshToken, forToken: .RefreshToken)
          }
       }
 
       if let idToken {
          // Set cookie if idToken signature and payload has been validated
-         if try await validateJWT(forToken: idToken, tokenType: .IdToken, request) {
-            res.cookies["id_token"] = createCookie(value: idToken, for: .RefreshToken)
+         if try await verifyJWT(forToken: idToken, tokenType: .IDToken, request) {
+            res.cookies["id_token"] = createCookie(withValue: idToken, forToken: .RefreshToken)
          }
       }
 

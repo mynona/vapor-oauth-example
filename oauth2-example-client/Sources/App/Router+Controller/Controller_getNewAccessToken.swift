@@ -1,32 +1,53 @@
 import Vapor
-import Leaf
 
 extension Controller {
 
-   enum RequestAccessTokenError: Error {
+   /// getNewToken Error Codes
+   ///
+   /// - refreshTokenMissing: Cookie with Refresh Token could not be retrieved
+   /// - openIDProviderError: OpenIDProvider response code not 200 OK
+   /// - tokenDecodingError: OAuth_RefreshTokenResponse decoding failed
+   /// - tokenValidationError: Verification of Refresh Token Signature and / or payload failed
+   ///
+   enum getNewTokenError: Error {
       case refreshTokenMissing
-      case openIDServerError
-      case refreshTokenDecodingError
-      case refreshTokenValidationError
+      case openIDProviderError
+      case tokenDecodingError
+      case tokenValidationError
    }
 
 
-   /// Request new Access Token with Refresh Token.
+   /// Request new Access Token with Refresh Token
    ///
-   func requestNewAccessToken(_ request: Request) async throws -> OAuth_RefreshTokenResponse {
+   /// - Throws: getNewTokenError
+   ///
+   func getNewToken(_ request: Request) async throws -> OAuth_RefreshTokenResponse {
 
       // Get Refresh Token from Cookie
       guard
          let refreshToken = request.cookies["refresh_token"]?.string
       else {
-         throw RequestAccessTokenError.refreshTokenMissing
+         throw getNewTokenError.refreshTokenMissing
       }
 
       // Validate Refresh Token Signature and Payload
+      let jwtVerification: Bool
+      do {
+         jwtVerification = try await verifyJWT(
+            forToken: refreshToken,
+            tokenType: .RefreshToken,
+            request
+         )
+      } catch verifyJWTError.openIDProviderError {
+         throw getNewTokenError.openIDProviderError
+      } catch {
+         throw getNewTokenError.tokenValidationError
+      }
+
       guard
-         try await verifyJWT(forToken: refreshToken, tokenType: .RefreshToken, request)
+         jwtVerification
       else {
-         throw RequestAccessTokenError.refreshTokenValidationError
+         throw getNewTokenError.tokenValidationError
       }
 
       // Add basic authentication credentials to the request header
@@ -66,7 +87,7 @@ extension Controller {
       guard
          response.status == .ok
       else {
-         throw RequestAccessTokenError.openIDServerError
+         throw getNewTokenError.openIDProviderError
       }
 
       do {
@@ -83,7 +104,7 @@ extension Controller {
 
          return token
       } catch {
-         throw RequestAccessTokenError.refreshTokenDecodingError
+         throw getNewTokenError.tokenDecodingError
       }
 
    }
