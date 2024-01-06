@@ -262,3 +262,33 @@ public struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
 }
 ```
 
+## Relying Party (client)
+
+For a full documentation check the code example.
+
+Add the following libraries if you want to support JWT tokens:
+
+```
+.package(url: "https://github.com/apple/swift-crypto.git", from: "3.1.0"),
+.package(url: "https://github.com/vapor/jwt.git", from: "4.2.2")
+```
+
+```
+.product(name: "Crypto", package: "swift-crypto"),
+.product(name: "JWT", package: "jwt")
+```
+
+
+### Initiate login:
+
+```
+func clientLogin(_ request: Request) async throws -> Response {
+
+// …
+
+let uri = "http://localhost:8090/oauth/authorize?client_id=\(content.client_id)&redirect_uri=\(content.redirect_uri)&scope=\(content.scope.joined(separator: ","))&response_type=\(content.response_type)&state=\(content.state)&code_challenge=\(content.code_challenge)&code_challenge_method=\(content.code_challenge_method)&nonce=\(nonce)"
+
+return request.redirect(to: uri)
+
+}
+```
