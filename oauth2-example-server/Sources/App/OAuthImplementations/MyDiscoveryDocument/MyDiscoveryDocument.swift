@@ -19,12 +19,12 @@ struct MyDiscoveryDocument: DiscoveryDocument {
 
    /// URL of the OP's OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
    var tokenEndpoint: String {
-      return "http://localhost:8090/oauth//token"
+      return "http://localhost:8090/oauth/token"
    }
 
    /// URL of the OP's UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
    var userInfoEndpoint: String {
-      return ""
+      return "http://localhost:8090/oauth/userinfo"
    }
 
    var revocationEndpoint: String {
