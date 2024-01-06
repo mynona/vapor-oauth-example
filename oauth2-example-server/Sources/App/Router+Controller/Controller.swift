@@ -5,7 +5,4 @@ import Fluent
 
 struct Controller {
 
- 
-
-
 }

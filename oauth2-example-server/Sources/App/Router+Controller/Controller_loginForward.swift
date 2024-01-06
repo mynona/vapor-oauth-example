@@ -37,16 +37,18 @@ extension Controller {
          let csrfToken: String
          let code_challenge: String
          let code_challenge_method: String
+         let nonce: String
       }
 
       let content = Temp(
          applicationAuthorized: true,
          csrfToken: csrfToken,
          code_challenge: code_challenge,
-         code_challenge_method: code_challenge_method
+         code_challenge_method: code_challenge_method,
+         nonce: nonce
       )
 
-      let authorize = URI(string: "http://localhost:8090/oauth/authorize?client_id=\(client_id)&redirect_uri=\(redirect_uri)&response_type=code&scope=\(scope)&state=\(state)")
+      let authorize = URI(string: "http://localhost:8090/oauth/authorize?client_id=\(client_id)&redirect_uri=\(redirect_uri)&response_type=code&scope=\(scope)&state=\(state)&nonce=\(nonce)")
 
 #if DEBUG
       print("\n-----------------------------")
