@@ -30,7 +30,8 @@ extension MyAuthorizationCodeManger {
          expiryDate: authorizationCode.expiry_date,
          scopes: authorizationCode.scopes,
          codeChallenge: authorizationCode.code_challenge,
-         codeChallengeMethod: authorizationCode.code_challenge_method
+         codeChallengeMethod: authorizationCode.code_challenge_method,
+         nonce: authorizationCode.nonce
       )
 
    }

@@ -61,6 +61,9 @@ final class MyAuthorizationCode: Model, Content {
    @OptionalField(key: "code_challenge_method")
    var code_challenge_method: String?
 
+   @OptionalField(key: "nonce")
+   var nonce: String?
+
    init() {}
 
    init(id: UUID? = nil,
@@ -71,7 +74,8 @@ final class MyAuthorizationCode: Model, Content {
         expiry_date: Date,
         scopes: [String]?,
         code_challenge: String?,
-        code_challenge_method: String?
+        code_challenge_method: String?,
+        nonce: String?
    ) {
       self.id = id
       self.code_id = code_id
@@ -82,5 +86,6 @@ final class MyAuthorizationCode: Model, Content {
       self.scopes = scopes
       self.code_challenge = code_challenge
       self.code_challenge_method = code_challenge_method
+      self.nonce = nonce
    }
 }

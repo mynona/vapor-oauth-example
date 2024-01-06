@@ -17,6 +17,7 @@ struct CreateAuthorizationCode: AsyncMigration {
          .field("scopes", .string)
          .field("code_challenge", .string)
          .field("code_challenge_method", .string)
+         .field("nonce", .string)
          .create()
    }
 

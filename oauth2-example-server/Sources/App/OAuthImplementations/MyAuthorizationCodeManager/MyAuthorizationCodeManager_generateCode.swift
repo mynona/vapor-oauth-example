@@ -7,17 +7,9 @@ extension MyAuthorizationCodeManger {
    /// Generate Authorization Code
    func generateCode(userID: String, clientID: String, redirectURI: String, scopes: [String]?, codeChallenge: String?, codeChallengeMethod: String?) throws -> String {
 
-#if DEBUG
-      print("\n-----------------------------")
-      print("MyCodeManager() \(#function)")
-      print("-----------------------------")
-      print("Called with parameters:")
-      print("userID: \(userID)")
-      print("clientID: \(clientID)")
-      print("redirectURI: \(redirectURI)")
-      print("scopes: \(scopes)")
-      print("-----------------------------")
-#endif
+
+      // NONCE MISSING AS PARAMETER IN CODE GENERATION
+      
 
       let generatedCode = UUID().uuidString
       let expiryDate = Date().addingTimeInterval(60)
@@ -30,7 +22,8 @@ extension MyAuthorizationCodeManger {
          expiry_date: expiryDate,
          scopes: scopes,
          code_challenge: codeChallenge,
-         code_challenge_method: codeChallengeMethod
+         code_challenge_method: codeChallengeMethod,
+         nonce: "fake-in-generate-code-function" // FAKE IT FOR TESTING PURPOSES
       )
 
       _ = authorizationCode.save(on: app.db)
