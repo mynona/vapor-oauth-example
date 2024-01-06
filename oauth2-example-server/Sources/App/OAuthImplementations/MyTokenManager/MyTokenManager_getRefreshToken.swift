@@ -1,19 +1,22 @@
 import Vapor
 import VaporOAuth
 import Fluent
-import JWT
+import JWTKit
 
 extension MyTokenManager {
 
    /// Get Refresh Token
    func getRefreshToken(_ refreshToken: String) async throws -> VaporOAuth.RefreshToken? {
 
-      let token = try app.jwt.signers.verify(refreshToken, as: JWT_RefreshTokenPayload.self)
+      let publicKeyIdentifier = try keyManagementService.publicKeyIdentifier()
+      let publicKey = try keyManagementService.retrieveKey(identifier: publicKeyIdentifier)
+      let signer = JWTSigner.rs256(key: publicKey)
+      let jwt = try signer.verify(refreshToken, as: JWT_RefreshTokenPayload.self)
 
       guard
          let refreshToken = try await MyRefreshToken
             .query(on: app.db)
-            .filter(\.$jti == token.jti)
+            .filter(\.$jti == jwt.jti)
             .first()
       else {
          return nil

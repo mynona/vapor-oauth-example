@@ -3,7 +3,6 @@ import FluentSQLiteDriver
 import Vapor
 import VaporOAuth
 import Leaf
-import JWTKit
 
 public func configure(_ app: Application) throws {
    
@@ -88,18 +87,6 @@ public func configure(_ app: Application) throws {
          keyManagementService: keyManagementService
       )
    )
-
-   //      =============================================================
-   //      JWT
-   //      =============================================================
-
-   guard
-      let privateKey = keyManagementService.privateKey
-   else{
-      throw(Abort(.internalServerError, reason: "Private RSA Key could not be retrieved."))
-   }
-
-   app.jwt.signers.use(.rs256(key: privateKey))
 
    try Routes(app)
    

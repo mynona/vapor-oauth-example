@@ -1,7 +1,7 @@
 import Vapor
 import VaporOAuth
 import Fluent
-import JWT
+import JWTKit
 
 extension MyTokenManager {
 
@@ -18,7 +18,11 @@ extension MyTokenManager {
 
       let token: String?
       do {
-         let jwt = try app.jwt.signers.verify(accessToken, as: JWT_AccessTokenPayload.self)
+         let publicKeyIdentifier = try keyManagementService.publicKeyIdentifier()
+         let publicKey = try keyManagementService.retrieveKey(identifier: publicKeyIdentifier)
+         let signer = JWTSigner.rs256(key: publicKey)
+         let jwt = try signer.verify(accessToken, as: JWT_AccessTokenPayload.self)
+         //let jwt = try app.jwt.signers.verify(accessToken, as: JWT_AccessTokenPayload.self)
          token = jwt.jti
       } catch {
          token = accessToken

@@ -9,9 +9,7 @@ This repository is based on the oauth example by marius-se:
 
 https://github.com/marius-se/vapor-oauth2-example
 
-Unfortunately, vapor/oauth doesn't compile on linux anymore and doesn't support PKCE.
-
-Therefore, I used the following fork which is updated to vapor 4.90.0 and includes OpenID Connect support:
+Branch that supports OpenID Connect:
 
 https://github.com/vamsii777/vapor-oauth.git
 
@@ -90,4 +88,54 @@ Client = Relying Party
 * **Server** destroys session upon logout
 * Client destroys cookies upon logout
 
+# Usage
+
+## OpenID Provider:
+
+Add the library to Package.swift:
+
+```
+.package(url: "https://github.com/vamsii777/vapor-oauth.git", branch: "feature/jwk")
+```
+
+```
+.product(name: "OAuth", package: "vapor-oauth")
+```
+
+Add the OpenID provider to your configure.swift file:
+
+```
+import VaporOAuth
+
+public func configure(_ app: Application) throws { 
+
+// ...
+
+let keyManagementService = MyKeyManagementService(app: app)
+
+   app.lifecycle.use(
+      OAuth2(
+         codeManager: MyAuthorizationCodeManger(app: app),
+         tokenManager: MyTokenManager(app: app),
+         clientRetriever: MyClientRetriever(app: app),
+         authorizeHandler: MyAuthorizationHandler(),
+         userManager: MyUserManager(app: app),
+         validScopes: nil, //["admin,openid"], value required if no clients defined
+         resourceServerRetriever: MyResourceServerRetriever(app: app),
+         oAuthHelper: .remote(
+            tokenIntrospectionEndpoint: "",
+            client: app.client,
+            resourceServerUsername: "",
+            resourceServerPassword: ""
+         ),
+         jwtSignerService: MyJWTSignerService(keyManagementService: keyManagementService),
+         discoveryDocument: MyDiscoveryDocument(),
+         keyManagementService: keyManagementService
+      )
+   )
+
+// ...
+
+}
+```
 

@@ -1,7 +1,7 @@
 import Vapor
 import VaporOAuth
 import Fluent
-import JWT
+import JWTKit
 
 /// Manage Token handling
 ///
@@ -12,11 +12,14 @@ import JWT
 final class MyTokenManager: TokenManager {
 
    let app: Application
-   
+   let keyManagementService: KeyManagementService
+
+
    // ----------------------------------------------------------
    
    init(app: Application) {
       self.app = app
+      self.keyManagementService = MyKeyManagementService(app: app)
    }
 
    // ----------------------------------------------------------

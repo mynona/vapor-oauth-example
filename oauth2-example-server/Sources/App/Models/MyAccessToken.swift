@@ -1,7 +1,7 @@
 import Fluent
 import VaporOAuth
 import Vapor
-import JWT
+import JWTKit
 
 /// JWT
 ///

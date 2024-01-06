@@ -1,7 +1,7 @@
 import Vapor
 import VaporOAuth
 import Fluent
-import JWT
+import JWTKit
 
 extension MyTokenManager {
 
