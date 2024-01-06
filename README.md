@@ -88,7 +88,7 @@ Client = Relying Party
 * **Server** destroys session upon logout
 * Client destroys cookies upon logout
 
-# Usage
+# Usage: Authorization Grant Flow
 
 ## OpenID Provider:
 
@@ -138,4 +138,16 @@ let keyManagementService = MyKeyManagementService(app: app)
 
 }
 ```
+
+### CodeManager:
+
+Responsible for generating and managing Authorization Codes:
+
+* generateCode: generate and persist the authorization `OAuthCode`
+* retrieveCode: return `OAuthCode`
+* codeUsed: delete used `OAuthCode`. Each code can only be used once.
+
+
+
+
 
