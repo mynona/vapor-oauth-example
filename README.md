@@ -97,11 +97,11 @@ Client = Relying Party
 Add the library to Package.swift:
 
 ```
+// Be aware: this is a work-in-progress branch!!!
 .package(url: "https://github.com/vamsii777/vapor-oauth.git", branch: "feature/jwk")
 ```
 
 ```
-// Be aware: this is a work-in-progress branch!!!
 .product(name: "OAuth", package: "vapor-oauth")
 ```
 
