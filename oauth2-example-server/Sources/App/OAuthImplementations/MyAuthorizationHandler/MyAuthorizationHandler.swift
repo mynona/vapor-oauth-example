@@ -5,6 +5,5 @@ import Leaf
 /// Manage authorization flow
 struct MyAuthorizationHandler: AuthorizeHandler {
 
-
 }
 

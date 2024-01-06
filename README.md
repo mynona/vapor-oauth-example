@@ -105,7 +105,9 @@ Add the library to Package.swift:
 .product(name: "OAuth", package: "vapor-oauth")
 ```
 
-Add the OpenID provider to your configure.swift file:
+---
+
+Add the OpenID provider to your configure.swift file with the necessary OAuth implementations:
 
 ```
 import VaporOAuth
@@ -142,6 +144,12 @@ let keyManagementService = MyKeyManagementService(app: app)
 }
 ```
 
+### AuthorizeHandler:
+
+Manages the Authorization Grant flow:
+
+* handleAuthorizationRequest: in the example this flow is connected to the user login flow. 
+
 ### CodeManager:
 
 Responsible for generating and managing Authorization Codes:
@@ -162,6 +170,95 @@ Responsible for generating and managing `AccessToken`, `RefreshToken` and `IDTok
 * updateRefreshToken: Update the scope of a `RefreshToken`.
 * generateAccessRefreshTokens and generateTokens: helper functions to generate and return multiple tokens at once.
 
+### ClientRetriever:
 
+Responsible for retrieving clients.
 
+* getClient: return client as `OAuthClient`.
+
+### ResourceServerRetriever:
+
+Responsible for retrieving resource server credentials.
+
+* getServer: returns `OAuthResourceServer` username and password. Used for Basic authentication to exchange the authorization code with tokens.
+
+### UserManager:
+
+Responsible for retrieving `OAuthUser`.
+
+* getUser: retrieve `OAuthUser`. Used to return user details for the introspection endpoint, IDToken…
+
+### JWTSignerService:
+
+Wrapper for the `KeyManagementService`.
+
+### KeyManagementService:
+
+Responsible for generating, persisting and retrieving public and private RSA keys. The public key is also accessible via:
+
+```
+/.well-known/.well-known/jwks.json
+```
+
+This service can also be extended to support key rotation.
+
+* publicKeyIdentifier: returns the identifier (kid) of the public RSA key.
+* privateKeyIdentifier: returns the identifier (kid) of the private RSA key.
+* retrieveKey: returns key based on identifier 
+* convertToJWK: convert the publicKey to JWKs. 
+* (generateKey and storeKey not used in example)
+
+### DiscoveryDocument:
+
+Used to return the OpenID Connect Discovery Document.
+
+```
+/.well-known/openid-configuration
+```
+
+---
+
+Additionally you need to set up session handling for user authentication:
+
+Configuration.swift:
+
+```
+app.middleware.use(app.sessions.middleware, at: .beginning)
+
+# In the example users are managed separately from OAuthUser
+
+app.middleware.use(OAuthUserSessionAuthenticator())
+
+app.middleware.use(MyUser.sessionAuthenticator())
+```
+
+Extension of `OAuthUser` to be authenticatable:
+
+```
+import Vapor
+import VaporOAuth
+
+extension OAuthUser: SessionAuthenticatable {
+
+/// Store UserID (UUID) as sessionID
+public var sessionID: String { self.id ?? "" }
+
+}
+```
+
+```
+import Vapor
+import VaporOAuth
+import Fluent
+
+public struct OAuthUserSessionAuthenticator: AsyncSessionAuthenticator {
+    public typealias User = OAuthUser
+
+    public func authenticate(sessionID: String, for request: Vapor.Request) async throws { 
+
+        // see example
+
+    }
+}
+```
 
