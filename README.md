@@ -312,7 +312,7 @@ guard
       }
 ```
 
-### 3. Request token:
+#### 3. Request token:
 
 ```
 let content = OAuth_TokenRequest(
