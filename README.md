@@ -90,7 +90,7 @@ Client = Relying Party
 
 # Usage: Authorization Grant Flow
 
-(Detailed code see example.)
+(This is just a high level overview to give an idea what needs to be done. For details see the example code. Be aware, that the code only covers the basics without proper error handling as this was just a test case to experiment with the OpenID Connect flow.)
 
 ## OpenID Provider:
 
