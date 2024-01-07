@@ -97,7 +97,7 @@ extension Controller {
       let scope = try response.content.get(String.self, at: "scope")
 
       let view = try await request.view.render(
-         "success"
+         "protected-resource"
       )
 
       let res = try await view.encodeResponse(for: request)
@@ -127,15 +127,15 @@ extension Controller {
 
       // Persist tokens as cookies
       if let accessToken {
-         res.cookies["access_token"] = createCookie(withValue: accessToken, forToken: .AccessToken)
+         res.cookies["access_token"] = OAuthHelper.createCookie(withValue: accessToken, forToken: .AccessToken)
       }
 
       if let refreshToken {
-         res.cookies["refresh_token"] = createCookie(withValue: refreshToken, forToken: .RefreshToken)
+         res.cookies["refresh_token"] = OAuthHelper.createCookie(withValue: refreshToken, forToken: .RefreshToken)
       }
 
       if let idToken {
-         res.cookies["id_token"] = createCookie(withValue: idToken, forToken: .RefreshToken)
+         res.cookies["id_token"] = OAuthHelper.createCookie(withValue: idToken, forToken: .RefreshToken)
       }
 
       return res

@@ -41,12 +41,12 @@ extension Controller {
 
       // Replace Access Token cookie if the Access Token is renewed
       if let accessToken = introspectionResult.accessToken {
-         res.cookies["access_token"] = createCookie(withValue: accessToken, forToken: .AccessToken)
+         res.cookies["access_token"] = OAuthHelper.createCookie(withValue: accessToken, forToken: .AccessToken)
       }
 
       // Replace Refresh Token cookie if the Refresh Token is renewed
       if let refreshToken = introspectionResult.refreshToken {
-         res.cookies["refresh_token"] = createCookie(withValue: refreshToken, forToken: .RefreshToken)
+         res.cookies["refresh_token"] = OAuthHelper.createCookie(withValue: refreshToken, forToken: .RefreshToken)
       }
       
       return res

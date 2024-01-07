@@ -14,9 +14,7 @@ extension OAuthHelper {
    ///
    /// At the moment the cookies are not returned when the Authorization Code is returned to the relaying party (client). Therefore, the code_verifier and nonce are hardcoded values.
    /// 
-   static func getAuthorizationCode(_ request: Request) async throws -> Response {
-      //let codeVerifier = "hello_world" // [UInt8].random(count: 128).hex
-      //let nonce = "nonce-test"
+   static func requestAuthorizationCode(_ request: Request) async throws -> Response {
 
       guard
          let verifierData = codeVerifier.data(using: .utf8)
@@ -66,6 +64,3 @@ extension OAuthHelper {
    }
 
 }
-
-
-

@@ -1,11 +1,11 @@
 import Vapor
 import Leaf
 
-extension Controller {
+extension OAuthHelper {
 
    /// Create cookie to persist token on relying party (client)
    ///
-   func createCookie(withValue value: String, forToken tokenType: TokenType) -> HTTPCookies.Value {
+   static func createCookie(withValue value: String, forToken tokenType: TokenType) -> HTTPCookies.Value {
 
       let maxAge: Int
       let path: String?
@@ -38,6 +38,5 @@ extension Controller {
       )
 
    }
-
-
+   
 }
