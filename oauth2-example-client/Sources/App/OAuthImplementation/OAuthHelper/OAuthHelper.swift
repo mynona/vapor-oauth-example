@@ -1,8 +1,8 @@
-//
-//  File.swift
-//  
-//
-//  Created by Andreas Soller on 07.01.24.
-//
+import Vapor
 
-import Foundation
+public struct OAuthHelper: Content {
+
+   /// URL of the OpenID Provider
+   static let oAuthProvider: String = "http://localhost:8090"
+
+}

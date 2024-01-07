@@ -13,7 +13,7 @@ extension OAuthHelper {
 
    }
 
-   /// Validate Access Token with oauth/token_info (introspection endpoint)
+   /// Validate Access Token with `oauth/token_info` (introspection endpoint)
    ///
    static func introspect(accessToken access_token: String, _ request: Request) async throws -> OAuth_TokenIntrospectionResponse {
 

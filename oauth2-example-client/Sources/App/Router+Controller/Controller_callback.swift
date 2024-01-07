@@ -117,7 +117,7 @@ extension Controller {
       }
 
       guard
-         try await verifyJWT(forTokens: tokenSet, request)
+         try await OAuthHelper.validateJWT(forTokens: tokenSet, request)
       else {
          throw Abort(
             .badRequest,

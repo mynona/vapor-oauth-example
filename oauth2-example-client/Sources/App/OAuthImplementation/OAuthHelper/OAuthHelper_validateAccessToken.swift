@@ -10,70 +10,74 @@ extension OAuthHelper {
    ///
    static func validateAccessToken(_ request: Request) async throws -> OAuth_TokenIntrospectionResult? {
 
-      var result = try await bla(request)
-      // If access_token is not valid anymore, try to request a new access_token with the refresh_token
-      if result?.tokenInfo.active == false {
-         result = try await bla(enforceNewAccessToken: true, request)
+      func validate(enforceNewAccessToken: Bool = false, _ request: Request) async throws -> OAuth_TokenIntrospectionResult? {
+
+         // Get existing access_token from cookie
+         var accessToken: String? = request.cookies["access_token"]?.string
+         var refreshToken: String? = request.cookies["refresh_token"]?.string
+
+         // If Access Token was not found
+         // or retrieval of a new Access Token is enforced
+         if accessToken == nil || enforceNewAccessToken == true {
+
+            do {
+               let response = try await OAuthHelper.exchangeRefreshTokenForNewTokens(request)
+
+               // Replace existing Tokens with newly retrieved Tokens
+               accessToken = response.access_token
+               if let newRefreshToken = response.refresh_token {
+                  refreshToken = newRefreshToken
+               }
+            } catch  {
+               return nil
+            }
+
+         }
+
+         // Valid Access Token?
+         guard
+            let accessToken
+         else {
+            return nil
+         }
+
+         // Call introspection endpoint
+         let tokenInfo: OAuth_TokenIntrospectionResponse
+         do {
+            tokenInfo = try await OAuthHelper.introspect(accessToken: accessToken, request)
+         } catch {
+            return nil
+         }
+
+         // Here you would also check if the user has the correct scope to access this resource:
+
+         return OAuth_TokenIntrospectionResult(
+            tokenInfo: tokenInfo,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+         )
+      }
+
+      // -------------------------------------------------------
+
+      var validationResult = try await validate(request)
+      // If Access Token validation fails, try to exchange the Refresh Token for a new Access token
+      if validationResult?.tokenInfo.active == false {
+         validationResult = try await validate(enforceNewAccessToken: true, request)
       }
 
       guard
-         let tokenInfo = result?.tokenInfo
+         let tokenInfo = validationResult?.tokenInfo
       else {
-         return nil // no valid access_token and no refresh_token
+         // No valid Access and Refresh Token
+         return nil
       }
 
       return OAuth_TokenIntrospectionResult(
          tokenInfo: tokenInfo,
-         accessToken: result?.accessToken,
-         refreshToken: result?.refreshToken
-      )
-
-
-   }
-
-
-
-   /// Verify Access Token with oauth/token_info (introspection endpoint)
-   ///
-   /// - Parameters:
-   ///   - enforceNewAccessToken: request new access_token regardless if an existing token was found or not
-   ///
-   static func bla(enforceNewAccessToken: Bool = false, _ request: Request) async throws -> OAuth_TokenIntrospectionResult? {
-
-      // Get existing access_token from cookie
-      var access_token: String? = request.cookies["access_token"]?.string
-      var refresh_token: String? = request.cookies["refresh_token"]?.string
-
-      // Request new access token if access_token cookie was not found OR
-      // Enforce requesting a new access_token regardless of the cookie
-      if access_token == nil || enforceNewAccessToken == true {
-
-         do {
-            let response = try await OAuthHelper.exchangeRefreshTokenForNewTokens(request)
-            access_token = response.access_token
-            refresh_token = response.refresh_token
-         } catch  {
-            return nil
-         }
-
-      }
-
-      guard
-         let access_token
-      else {
-         return nil
-      }
-
-
-      let introspection = try await OAuthHelper.validateWithIntrospectionEndpoint(accessToken: access_token, request)
-
-      return OAuth_TokenIntrospectionResult(
-         tokenInfo: introspection,
-         accessToken: access_token,
-         refreshToken: refresh_token
+         accessToken: validationResult?.accessToken,
+         refreshToken: validationResult?.refreshToken
       )
 
    }
-
-   
 }

@@ -21,7 +21,7 @@ extension OAuthHelper {
    ///
    /// - Throws: `tokenExchangeError`
    ///
-   static func tokenExchange(_ request: Request) async throws -> OAuth_RefreshTokenResponse {
+   static func exchangeRefreshTokenForNewTokens(_ request: Request) async throws -> OAuth_RefreshTokenResponse {
 
       // Get Refresh Token from Cookie
       guard
