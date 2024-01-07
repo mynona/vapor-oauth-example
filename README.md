@@ -25,7 +25,7 @@ Start the client with http://localhost:8089
 * Access tokens are valid only for 1 minute for testing purposes.
 * Refresh tokens have no expiration.
 
-All detailed outputs can be seen in the XCode console.
+All detailed outputs can be seen in the Xcode console.
 
 ---
 # Learning resources
@@ -396,3 +396,8 @@ let response = try await request.client.get(
          headers: headers
       )
 ```
+
+# Known issues of the current beta release of the vapor/oauth repository:
+
+* You cannot request multiple scopes with the Authorization Grant Flow
+* Cookies are not included when the OpenID Provider returns the Authorization Code to the callback
