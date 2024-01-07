@@ -28,7 +28,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller() \(#function)")
+      print("OAuthHelper() \(#function)")
       print("-----------------------------")
       print("codeVerifier: \(codeVerifier)")
       print("\(verifierHash)")
@@ -39,8 +39,8 @@ extension OAuthHelper {
 
       let content = OAuth_AuthorizationRequest(
          client_id: "1",
-         redirect_uri: "http://localhost:8089/callback",
-         state: "ping-pong",
+         redirect_uri: "\(callback)/callback",
+         state: stateVerifier,
          response_type: "code",
          scope: ["openid"],
          code_challenge: "\(codeChallenge)",
@@ -48,11 +48,11 @@ extension OAuthHelper {
          nonce: nonce
       )
 
-      let uri = "http://localhost:8090/oauth/authorize?client_id=\(content.client_id)&redirect_uri=\(content.redirect_uri)&scope=\(content.scope.joined(separator: ","))&response_type=\(content.response_type)&state=\(content.state)&code_challenge=\(content.code_challenge)&code_challenge_method=\(content.code_challenge_method)&nonce=\(nonce)"
+      let uri = "\(oAuthProvider)/oauth/authorize?client_id=\(content.client_id)&redirect_uri=\(content.redirect_uri)&scope=\(content.scope.joined(separator: ","))&response_type=\(content.response_type)&state=\(content.state)&code_challenge=\(content.code_challenge)&code_challenge_method=\(content.code_challenge_method)&nonce=\(nonce)"
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller() \(#function)")
+      print("OAuthHelper() \(#function)")
       print("-----------------------------")
       print("Authorization request sent to oauth server:")
       print("URI: \(uri)")

@@ -56,7 +56,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller() \(#function)")
+      print("OAuthHelper() \(#function)")
       print("-----------------------------")
       print("Refresh token request header: \(headers)")
       print("-----------------------------")
@@ -79,7 +79,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("Controller() \(#function)")
+      print("OAuthHelper() \(#function)")
       print("-----------------------------")
       print("-----------------------------")
       print("Unwrapped: \(tokenResponse)")

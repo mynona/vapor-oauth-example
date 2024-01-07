@@ -15,6 +15,8 @@ extension OAuthHelper {
       case jwkDecodingError
       /// Verification of token signature or payload failed
       case jwtValidationError
+      /// Verification of nonce value in IDToken failed
+      case idTokenNonceError
 
    }
 
@@ -27,7 +29,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("validateJWT() \(#function)")
+      print("OAuthHelper() \(#function)")
       print("-----------------------------")
       print("Called for \(tokenSet)")
       print("-----------------------------")
@@ -87,7 +89,14 @@ extension OAuthHelper {
                _ = try signers.verify(token, as: Payload_RefreshToken.self)
 
             case .IDToken:
-               _ = try signers.verify(token, as: Payload_IDToken.self)
+               let payload = try signers.verify(token, as: Payload_IDToken.self)
+               
+               // Check nonce value
+               guard
+                  payload.nonce == nonce
+               else {
+                  throw ValidateJWTError.idTokenNonceError
+               }
 
             }
          } catch {
@@ -96,7 +105,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("validateJWT() \(#function)")
+      print("OAuthHelper() \(#function)")
       print("-----------------------------")
       print("Signature and payload validation of \(type) was successful.")
       print("-----------------------------")
