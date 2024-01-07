@@ -70,9 +70,9 @@ extension Controller {
          throw getNewTokenError.openIDProviderError
       }
 
-      let token: OAuth_RefreshTokenResponse
+      let tokenResponse: OAuth_RefreshTokenResponse
       do {
-         token = try response.content.decode(OAuth_RefreshTokenResponse.self)
+         tokenResponse = try response.content.decode(OAuth_RefreshTokenResponse.self)
       } catch {
          throw getNewTokenError.tokenDecodingError
       }
@@ -82,15 +82,15 @@ extension Controller {
       print("Controller() \(#function)")
       print("-----------------------------")
       print("-----------------------------")
-      print("Unwrapped: \(token)")
+      print("Unwrapped: \(tokenResponse)")
       print("-----------------------------")
 #endif
 
       // Verify Token Signature and Payload
       var tokenSet: [TokenType:String] = [:]
-      tokenSet[.AccessToken] = token.access_token
+      tokenSet[.AccessToken] = tokenResponse.access_token
 
-      if let refreshToken = token.refresh_token {
+      if let refreshToken = tokenResponse.refresh_token {
          tokenSet[.RefreshToken] = refreshToken
       }
 
@@ -100,7 +100,7 @@ extension Controller {
          throw getNewTokenError.tokenValidationError
       }
 
-      return token
+      return tokenResponse
 
    }
 

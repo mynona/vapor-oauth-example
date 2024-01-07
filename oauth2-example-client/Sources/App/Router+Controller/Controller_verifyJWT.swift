@@ -7,12 +7,12 @@ extension Controller {
    ///
    /// - openIDProviderError: Non 200 response from the OpenID Provider
    /// - jwksDecodingError: JWK Set could not be decoded
-   /// - payloadError: Token signature or payload validation failed
+   /// - jwtValidationError: Token signature or payload validation failed
    ///
    enum verifyJWTError: Error {
       case openIDProviderError
       case jwksDecodingError
-      case payloadError
+      case jwtValidationError
    }
 
 
@@ -20,13 +20,13 @@ extension Controller {
    ///
    /// - Throws: verifyJWTError
    ///
-   func verifyJWT(forToken token: String, tokenType: TokenType, _ request: Request) async throws -> Bool {
-      
+   func verifyJWT(forTokens tokenSet: [TokenType:String], _ request: Request) async throws -> Bool {
+
 #if DEBUG
       print("\n-----------------------------")
       print("validateJWT() \(#function)")
       print("-----------------------------")
-      print("Called for \(tokenType)")
+      print("Called for \(tokenSet)")
       print("-----------------------------")
 #endif
       
@@ -47,9 +47,12 @@ extension Controller {
       } catch {
          throw verifyJWTError.jwksDecodingError
       }
-      
+
+      // Your customized identifier for the RSA key
+      let kid = JWKIdentifier(string: "public-key")
+
       guard
-         let jwks = jwkSet.find(identifier: JWKIdentifier(string: "public-key"))?.first,
+         let jwks = jwkSet.find(identifier: kid)?.first,
          let modulus = jwks.modulus,
          let exponent = jwks.exponent,
          let publicKey = JWTKit.RSAKey(modulus: modulus, exponent: exponent)
@@ -59,33 +62,36 @@ extension Controller {
       
       let signers = JWTKit.JWTSigners()
       signers.use(.rs256(key: publicKey))
-      
+
       // Validate JWT Signature and payload
-      switch tokenType {
-         
-      case .AccessToken:
-         do { _ = try signers.verify(token, as: Payload_AccessToken.self) }
-         catch { throw verifyJWTError.payloadError }
+      for (type, token) in tokenSet {
 
-      case .RefreshToken:
-         do { _ = try signers.verify(token, as: Payload_RefreshToken.self) }
-         catch { throw verifyJWTError.payloadError }
+         do {
 
-      case .IDToken:
-         do { _ = try signers.verify(token, as: Payload_IDToken.self) }
-         catch { throw verifyJWTError.payloadError }
-         
-      }
-      
+            switch type {
+
+            case .AccessToken:
+               _ = try signers.verify(token, as: Payload_AccessToken.self)
+
+            case .RefreshToken:
+               _ = try signers.verify(token, as: Payload_RefreshToken.self)
+
+            case .IDToken:
+               _ = try signers.verify(token, as: Payload_IDToken.self)
+
+            }
+         } catch { throw verifyJWTError.jwtValidationError }
+
 #if DEBUG
       print("\n-----------------------------")
       print("validateJWT() \(#function)")
       print("-----------------------------")
-      print("Public Key: \(publicKey)")
-      print("Signature and payload validation of \(tokenType) was successful.")
+      print("Signature and payload validation of \(type) was successful.")
       print("-----------------------------")
 #endif
-      
+
+      }
+
       return true
       
    }

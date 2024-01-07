@@ -90,16 +90,11 @@ extension Controller {
          throw(Abort(response.status))
       }
 
-
       let expiryInMinutes = try response.content.get(Int.self, at: "expires_in")
       let accessToken = try? response.content.get(String.self, at: "access_token")
       let refreshToken = try? response.content.get(String.self, at: "refresh_token")
       let idToken = try? response.content.get(String.self, at: "id_token")
       let scope = try response.content.get(String.self, at: "scope")
-
-
-      // Client validates signature of tokens
-      // Client persists tokens  as cookies
 
       let view = try await request.view.render(
          "success"
@@ -107,25 +102,40 @@ extension Controller {
 
       let res = try await view.encodeResponse(for: request)
 
+      // Validate Tokens
+      var tokenSet: [TokenType:String] = [:]
       if let accessToken {
-         // Set cookie if accessToken signature and payload has been validated
-         if try await verifyJWT(forToken: accessToken, tokenType: .AccessToken, request) {
-            res.cookies["access_token"] = createCookie(withValue: accessToken, forToken: .AccessToken)
-         }
+         tokenSet[.AccessToken] = accessToken
       }
 
       if let refreshToken {
-         // Set cookie if refreshToken signature and payload has been validated
-         if try await verifyJWT(forToken: refreshToken, tokenType: .RefreshToken, request) {
-            res.cookies["refresh_token"] = createCookie(withValue: refreshToken, forToken: .RefreshToken)
-         }
+         tokenSet[.RefreshToken] = refreshToken
       }
 
       if let idToken {
-         // Set cookie if idToken signature and payload has been validated
-         if try await verifyJWT(forToken: idToken, tokenType: .IDToken, request) {
-            res.cookies["id_token"] = createCookie(withValue: idToken, forToken: .RefreshToken)
-         }
+         tokenSet[.IDToken] = idToken
+      }
+
+      guard
+         try await verifyJWT(forTokens: tokenSet, request)
+      else {
+         throw Abort(
+            .badRequest,
+            reason: "Validation of Token signature and payload failed."
+         )
+      }
+
+      // Persist tokens as cookies
+      if let accessToken {
+         res.cookies["access_token"] = createCookie(withValue: accessToken, forToken: .AccessToken)
+      }
+
+      if let refreshToken {
+         res.cookies["refresh_token"] = createCookie(withValue: refreshToken, forToken: .RefreshToken)
+      }
+
+      if let idToken {
+         res.cookies["id_token"] = createCookie(withValue: idToken, forToken: .RefreshToken)
       }
 
       return res

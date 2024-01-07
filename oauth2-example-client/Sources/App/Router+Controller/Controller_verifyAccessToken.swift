@@ -30,10 +30,8 @@ extension Controller {
       }
 
       guard
-         let access_token,
-         let refresh_token
+         let access_token
       else {
-         // New access token and refresh token could not be retrieved
          return nil
       }
 
