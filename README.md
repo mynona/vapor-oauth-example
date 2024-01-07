@@ -9,7 +9,7 @@ This repository is based on the oauth example by marius-se:
 
 https://github.com/marius-se/vapor-oauth2-example
 
-Branch that supports OpenID Connect:
+Beta release that supports OpenID Connect:
 
 https://github.com/vamsii777/vapor-oauth/releases/tag/1.1.0-beta.3
 
