@@ -10,7 +10,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", from: "4.90.0"),
         .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.1.0"),
-        .package(url: "https://github.com/vapor/jwt.git", from: "4.2.2")
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.13.1")
     ],
     targets: [
         .target(
@@ -19,7 +19,7 @@ let package = Package(
                 .product(name: "Leaf", package: "leaf"),
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "Crypto", package: "swift-crypto"),
-                .product(name: "JWT", package: "jwt")
+                .product(name: "JWTKit", package: "jwt-kit")
             ]
         ),
         .executableTarget(name: "Run", dependencies: [.target(name: "App")])

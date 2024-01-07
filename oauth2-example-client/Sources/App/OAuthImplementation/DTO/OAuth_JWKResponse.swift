@@ -1,5 +1,5 @@
 import Vapor
-import JWT
+import JWTKit
 
 
 public struct RSAKey: Content {
