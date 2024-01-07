@@ -11,7 +11,7 @@ https://github.com/marius-se/vapor-oauth2-example
 
 Branch that supports OpenID Connect:
 
-https://github.com/vamsii777/vapor-oauth.git
+https://github.com/vamsii777/vapor-oauth/releases/tag/1.1.0-beta.3
 
 ---
 # Get started
