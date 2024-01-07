@@ -1,33 +1,33 @@
 import Vapor
 
-extension Controller {
+extension OAuthHelper {
 
-   /// getNewToken Error Codes
-   ///
-   /// - refreshTokenMissing: Cookie with Refresh Token could not be retrieved
-   /// - openIDProviderError: OpenIDProvider response code not 200 OK
-   /// - tokenDecodingError: OAuth_RefreshTokenResponse decoding failed
-   /// - tokenValidationError: Verification of Refresh Token Signature and / or payload failed
-   ///
-   enum getNewTokenError: Error {
+   public enum TokenExchangeError: Error {
+
+      /// Refresh Token cookie could not be retrieved from request
       case refreshTokenMissing
+      /// OpenID Provider response for /oauth/token was not 200 OK
       case openIDProviderError
-      case tokenDecodingError
+      /// OAuth_RefreshTokenResponse decoding failed
+      case tokenResponseDecodingError
+      /// JWK could not be retrieved from OpenID Provider or decoding failed
+      case jwkError
+      /// Verification of JWT signature or payload failed
       case tokenValidationError
    }
 
 
    /// Request new Access Token with Refresh Token
    ///
-   /// - Throws: getNewTokenError
+   /// - Throws: `tokenExchangeError`
    ///
-   func getNewToken(_ request: Request) async throws -> OAuth_RefreshTokenResponse {
+   static func tokenExchange(_ request: Request) async throws -> OAuth_RefreshTokenResponse {
 
       // Get Refresh Token from Cookie
       guard
          let refreshToken = request.cookies["refresh_token"]?.string
       else {
-         throw getNewTokenError.refreshTokenMissing
+         throw TokenExchangeError.refreshTokenMissing
       }
 
       // Add basic authentication credentials to the request header
@@ -49,7 +49,7 @@ extension Controller {
       )
 
       let response = try await request.client.post(
-         URI(string: "http://localhost:8090/oauth/token"),
+         URI(string: "\(oAuthProvider)/oauth/token"),
          headers: headers,
          content: content
       )
@@ -67,14 +67,14 @@ extension Controller {
       guard
          response.status == .ok
       else {
-         throw getNewTokenError.openIDProviderError
+         throw TokenExchangeError.openIDProviderError
       }
 
       let tokenResponse: OAuth_RefreshTokenResponse
       do {
          tokenResponse = try response.content.decode(OAuth_RefreshTokenResponse.self)
       } catch {
-         throw getNewTokenError.tokenDecodingError
+         throw TokenExchangeError.tokenResponseDecodingError
       }
 
 #if DEBUG
@@ -94,10 +94,16 @@ extension Controller {
          tokenSet[.RefreshToken] = refreshToken
       }
 
-      guard
-         try await verifyJWT(forTokens: tokenSet, request)
-      else {
-         throw getNewTokenError.tokenValidationError
+      do {
+         _ = try await OAuthHelper.validateJWT(forTokens: tokenSet, request)
+      } catch ValidateJWTError.openIDProviderError {
+         throw TokenExchangeError.openIDProviderError
+      } catch ValidateJWTError.jwkDecodingError,
+              ValidateJWTError.jwkSetDecodingError,
+              ValidateJWTError.jwkMissing {
+         throw TokenExchangeError.jwkError
+      } catch {
+         throw TokenExchangeError.tokenValidationError
       }
 
       return tokenResponse

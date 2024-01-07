@@ -1,18 +1,21 @@
 import Vapor
 import JWTKit
 
-extension Controller {
+extension OAuthHelper {
 
-   /// verifyJWT Error Codes
-   ///
-   /// - openIDProviderError: Non 200 response from the OpenID Provider
-   /// - jwksDecodingError: JWK Set could not be decoded
-   /// - jwtValidationError: Token signature or payload validation failed
-   ///
-   enum verifyJWTError: Error {
+   public enum ValidateJWTError: Error {
+
+      /// OpenID Provider response status was not 200 OK
       case openIDProviderError
-      case jwksDecodingError
+      /// Retrieved JWK Set decoding failed
+      case jwkSetDecodingError
+      /// JWK for provided key identifier (kid) was not found
+      case jwkMissing
+      /// JWK decoding failed
+      case jwkDecodingError
+      /// Verification of token signature or payload failed
       case jwtValidationError
+
    }
 
 
@@ -20,7 +23,7 @@ extension Controller {
    ///
    /// - Throws: verifyJWTError
    ///
-   func verifyJWT(forTokens tokenSet: [TokenType:String], _ request: Request) async throws -> Bool {
+   static func validateJWT(forTokens tokenSet: [TokenType:String], _ request: Request) async throws -> Bool {
 
 #if DEBUG
       print("\n-----------------------------")
@@ -32,34 +35,41 @@ extension Controller {
       
       // Retrieve JWK Set with public RSA keys
       let response = try await request.client.get(
-         "http://localhost:8090/.well-known/jwks.json"
+         "\(oAuthProvider)/.well-known/jwks.json"
       )
       
       guard
          response.status == .ok
       else {
-         throw verifyJWTError.openIDProviderError
+         throw ValidateJWTError.openIDProviderError
       }
       
       let jwkSet: JWKS
       do {
          jwkSet = try response.content.decode(JWKS.self)
       } catch {
-         throw verifyJWTError.jwksDecodingError
+         throw ValidateJWTError.jwkSetDecodingError
       }
 
       // Your customized identifier for the RSA key
       let kid = JWKIdentifier(string: "public-key")
 
+      // Extract JWK for customized identifier
       guard
-         let jwks = jwkSet.find(identifier: kid)?.first,
+         let jwks = jwkSet.find(identifier: kid)?.first
+      else {
+         throw ValidateJWTError.jwkMissing
+      }
+
+      // Generate public Key from JWT for valiation
+      guard
          let modulus = jwks.modulus,
          let exponent = jwks.exponent,
          let publicKey = JWTKit.RSAKey(modulus: modulus, exponent: exponent)
       else {
-         throw verifyJWTError.jwksDecodingError
+         throw ValidateJWTError.jwkDecodingError
       }
-      
+
       let signers = JWTKit.JWTSigners()
       signers.use(.rs256(key: publicKey))
 
@@ -80,7 +90,9 @@ extension Controller {
                _ = try signers.verify(token, as: Payload_IDToken.self)
 
             }
-         } catch { throw verifyJWTError.jwtValidationError }
+         } catch {
+            throw ValidateJWTError.jwtValidationError
+         }
 
 #if DEBUG
       print("\n-----------------------------")
