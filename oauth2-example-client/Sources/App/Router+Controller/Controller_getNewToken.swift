@@ -30,26 +30,6 @@ extension Controller {
          throw getNewTokenError.refreshTokenMissing
       }
 
-      // Validate Refresh Token Signature and Payload
-      let jwtVerification: Bool
-      do {
-         jwtVerification = try await verifyJWT(
-            forToken: refreshToken,
-            tokenType: .RefreshToken,
-            request
-         )
-      } catch verifyJWTError.openIDProviderError {
-         throw getNewTokenError.openIDProviderError
-      } catch {
-         throw getNewTokenError.tokenValidationError
-      }
-
-      guard
-         jwtVerification
-      else {
-         throw getNewTokenError.tokenValidationError
-      }
-
       // Add basic authentication credentials to the request header
       let resourceServerUsername = "resource-1"
       let resourceServerPassword = "resource-1-password"
@@ -90,8 +70,12 @@ extension Controller {
          throw getNewTokenError.openIDProviderError
       }
 
+      let token: OAuth_RefreshTokenResponse
       do {
-         let token: OAuth_RefreshTokenResponse = try response.content.decode(OAuth_RefreshTokenResponse.self)
+         token = try response.content.decode(OAuth_RefreshTokenResponse.self)
+      } catch {
+         throw getNewTokenError.tokenDecodingError
+      }
 
 #if DEBUG
       print("\n-----------------------------")
@@ -102,10 +86,21 @@ extension Controller {
       print("-----------------------------")
 #endif
 
-         return token
-      } catch {
-         throw getNewTokenError.tokenDecodingError
+      // Verify Token Signature and Payload
+      var tokenSet: [TokenType:String] = [:]
+      tokenSet[.AccessToken] = token.access_token
+
+      if let refreshToken = token.refresh_token {
+         tokenSet[.RefreshToken] = refreshToken
       }
+
+      guard
+         try await verifyJWT(forTokens: tokenSet, request)
+      else {
+         throw getNewTokenError.tokenValidationError
+      }
+
+      return token
 
    }
 
