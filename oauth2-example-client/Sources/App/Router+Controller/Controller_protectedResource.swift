@@ -34,7 +34,7 @@ extension Controller {
             retrievedScopes: scopes
          )
       else {
-         throw OAuthClientErrors.scopesInvalid
+         return request.redirect(to: "http://localhost:8089/unauthorized")
       }
 
       // Return view and update cookies if renewed tokens have been returned

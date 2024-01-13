@@ -31,8 +31,5 @@ public enum OAuthClientErrors: Error {
    /// Authorization Grant Flow code could not be exchanged for tokens
    case authorizationFlowFailed
 
-   /// Scopes not valid
-   case scopesInvalid
-
 }
 
