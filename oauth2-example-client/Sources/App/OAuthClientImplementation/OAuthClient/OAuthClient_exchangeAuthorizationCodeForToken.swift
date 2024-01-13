@@ -13,7 +13,15 @@ extension OAuthClient {
    /// - Client sends the code back to the token endpoints of the provider to retrieve the access_token, refresh_token and id_token
    /// - Client validates signature and payload of tokens
    ///
-   static func exchangeAuthorizationCodeForToken(_ request: Request) async throws -> (accessToken: String?, refreshToken: String?, idToken: String?) {
+   /// - Throws: [OAuthClientErrors](x-source-tag://OAuthClientErrors)
+   ///
+   static func exchangeAuthorizationCodeForTokens(
+      _ request: Request
+   ) async throws -> (
+      accessToken: String?,
+      refreshToken: String?,
+      idToken: String?
+   ) {
 
 #if DEBUG
       print("\n-----------------------------")

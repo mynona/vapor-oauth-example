@@ -1,6 +1,6 @@
 import JWTKit
 
-public struct Payload_RefreshToken: JWTPayload {
+public struct PayloadRefreshToken: JWTPayload {
 
    public var jti: String
    public var clientID: String

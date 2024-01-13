@@ -13,8 +13,12 @@ extension OAuthClient {
    /// - The nonce parameter is included as value in the id_token
    ///
    /// At the moment the cookies are not returned when the Authorization Code is returned to the relaying party (client). Therefore, the code_verifier and nonce are hardcoded values.
-   /// 
-   static func requestAuthorizationCode(_ request: Request) async throws -> Response {
+   ///
+   /// - Throws: [OAuthClientErrors](x-source-tag://OAuthClientErrors)
+   ///
+   static func requestAuthorizationCode(
+      _ request: Request
+   ) async throws -> Response {
 
       guard
          let verifierData = codeVerifier.data(using: .utf8)

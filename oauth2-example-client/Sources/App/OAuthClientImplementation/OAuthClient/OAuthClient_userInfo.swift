@@ -5,8 +5,10 @@ extension OAuthClient {
    
    /// /oauth/userinfo
    ///
-   /// - Returns: User Information
-   /// - Throws: OAuthClientErrors
+   /// The UserInfo Endpoint is an OAuth 2.0 Protected Resource that returns Claims about the authenticated End-User. To obtain the requested Claims about the End-User, the Client makes a request to the UserInfo Endpoint using an Access Token obtained through OpenID Connect Authentication. These Claims are normally represented by a JSON object that contains a collection of name and value pairs for the Claims.
+   ///
+   /// - Returns: Claims about authenticated End-User
+   /// - Throws: [OAuthClientErrors](x-source-tag://OAuthClientErrors)
    ///
    static func userInfo(
       _ request: Request
@@ -29,7 +31,7 @@ extension OAuthClient {
             headers: headers
          )
       } catch {
-         throw OAuthClientErrors.openIDProviderNoResponse
+         throw OAuthClientErrors.openIDProviderServerError
       }
       
 #if DEBUG
@@ -43,7 +45,7 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw OAuthClientErrors.openIDProviderError(response.status)
+         throw OAuthClientErrors.openIDProviderResponseError("\(response.status)")
       }
       
       let user: OAuth_UserInfoResponse

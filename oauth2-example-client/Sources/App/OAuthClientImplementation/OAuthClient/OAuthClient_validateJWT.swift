@@ -5,9 +5,13 @@ extension OAuthClient {
 
    /// Verify JWT Signature and payload
    ///
-   /// - Throws: verifyJWTError
+   /// - Returns: true if signature and payload of all provided tokens succeeded
+   /// - Throws: [OAuthClientErrors](x-source-tag://OAuthClientErrors)
    ///
-   static func validateJWT(forTokens tokenSet: [TokenType:String], _ request: Request) async throws -> Bool {
+   static func validateJWT(
+      forTokens tokenSet: [TokenType:String],
+      _ request: Request
+   ) async throws -> Bool {
 
 #if DEBUG
       print("\n-----------------------------")
@@ -17,15 +21,20 @@ extension OAuthClient {
       print("-----------------------------")
 #endif
       
-      // Retrieve JWK Set with public RSA keys
-      let response = try await request.client.get(
-         "\(oAuthProvider)/.well-known/jwks.json"
-      )
-      
+      // Retrieve JWK Set containing public RSA keys
+      let response: ClientResponse
+      do {
+         response = try await request.client.get(
+            "\(oAuthProvider)/.well-known/jwks.json"
+         )
+      } catch {
+         throw OAuthClientErrors.openIDProviderServerError
+      }
+
       guard
          response.status == .ok
       else {
-         throw OAuthClientErrors.openIDProviderError(response.status)
+         throw OAuthClientErrors.openIDProviderResponseError("\(response.status)")
       }
       
       let jwkSet: JWKS
@@ -35,12 +44,9 @@ extension OAuthClient {
          throw OAuthClientErrors.validationError("JWK Set decoding failed.")
       }
 
-      // Your customized identifier for the RSA key
-      let kid = JWKIdentifier(string: "public-key")
-
       // Extract JWK for customized identifier
       guard
-         let jwks = jwkSet.find(identifier: kid)?.first
+         let jwks = jwkSet.find(identifier: publicKeyName)?.first
       else {
          throw OAuthClientErrors.jwkKeyNotFound
       }
@@ -100,3 +106,4 @@ extension OAuthClient {
    }
    
 }
+

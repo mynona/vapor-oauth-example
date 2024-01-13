@@ -9,7 +9,7 @@ import Vapor
 ///   - client_secret: Secret for the client application for the oauth server
 ///   - code_verifier: The PKCE code verifier value from which the code challenge in the authentication request was derived. It should be an unguessable, cryptographically random string between 43 and 128 characters in length, inclusive, using the characters A–Z, a–z, 0–9, “-”, “.”, “_”, and “~”.
 ///
-public struct OAuth_TokenRequest: Content {
+public struct OAuthClient_TokenRequest: Content {
 
    public let code: String
    public let grant_type: String

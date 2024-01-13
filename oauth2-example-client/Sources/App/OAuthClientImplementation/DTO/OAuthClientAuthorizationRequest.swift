@@ -11,7 +11,7 @@ import Vapor
 ///   - code_challenge_method: “S256” or “plain.” Applications capable of using S256 (SHA256 hash) must use it.
 ///   - nonce: An unguessable value passed to the OpenID Provider in the request and returned unmodified as a claim in the ID Token if an ID Token is requested. Used to protect against token replay.
 ///
-public struct OAuth_AuthorizationRequest: Content {
+public struct OAuthClient_AuthorizationRequest: Content {
 
    public let client_id: String
    public let redirect_uri: String

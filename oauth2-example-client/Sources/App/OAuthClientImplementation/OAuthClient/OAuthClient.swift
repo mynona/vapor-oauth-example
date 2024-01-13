@@ -1,9 +1,8 @@
-import Vapor
-
-
 /// Helper for OpenID Provider calls
 /// 
-public struct OAuthClient: Content {
+/// - Throws: [OAuthClientErrors](x-source-tag://OAuthClientErrors)
+///
+public struct OAuthClient {
 
    /// URL of the OpenID Provider
    static let oAuthProvider: String = "http://localhost:8090"
@@ -29,30 +28,16 @@ public struct OAuthClient: Content {
    /// Cookie duration ID Token
    static let maxAgeIDToken: Int = 60 * 60
 
-}
+   /// Server Session Cookie name
+   static let serverSessionCookieName = "vapor-session"
 
+   /// Customized Public RSA Key name for token validation
+   static let publicKeyName = "public-key"
 
-public enum OAuthClientErrors: Error {
+   /// Resource Server username for basic authentication
+   static let resourceServerUsername = "resource-1"
 
-   /// Request did not include expected token
-   case tokenCookieNotFound(TokenType)
-
-   /// OpenID Provider time out
-   case openIDProviderNoResponse
-
-   /// OpenID Provider response status was not 200 OK
-   case openIDProviderError(HTTPStatus)
-
-   /// Data could not be decoded
-   case dataDecodingError(String)
-
-   /// JWK for provided key identifier (kid) was not found in JWK Set
-   case jwkKeyNotFound
-
-   /// Validation failed
-   case validationError(String)
-
-   /// Public RSA Key generation failed
-   case publicKeyGenerationFailed
+   // Resource Server password for basic authentication
+   static let resourceServerPassword = "resource-1-password"
 
 }

@@ -1,6 +1,6 @@
 import JWTKit
 
-public struct Payload_IDToken: JWTPayload {
+public struct PayloadIDToken: JWTPayload {
 
    enum CodingKeys: String, CodingKey {
       case sub = "sub"

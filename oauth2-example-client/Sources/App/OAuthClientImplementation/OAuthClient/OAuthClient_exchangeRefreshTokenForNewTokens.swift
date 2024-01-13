@@ -2,12 +2,13 @@ import Vapor
 
 extension OAuthClient {
 
-
    /// Request new Access Token with Refresh Token
    ///
-   /// - Throws: `tokenExchangeError`
+   /// - Throws: [OAuthClientErrors](x-source-tag://OAuthClientErrors)
    ///
-   static func exchangeRefreshTokenForNewTokens(_ request: Request) async throws -> OAuth_RefreshTokenResponse {
+   static func exchangeRefreshTokenForNewTokens(
+      _ request: Request
+   ) async throws -> OAuth_RefreshTokenResponse {
 
       // Get Refresh Token from Cookie
       guard
@@ -17,14 +18,10 @@ extension OAuthClient {
       }
 
       // Add basic authentication credentials to the request header
-      let resourceServerUsername = "resource-1"
-      let resourceServerPassword = "resource-1-password"
       let credentials = "\(resourceServerUsername):\(resourceServerPassword)".base64String()
 
       let headers = HTTPHeaders(dictionaryLiteral:
-                                 (
-                                    "Authorization", "Basic \(credentials)"
-                                 )
+                                 ("Authorization", "Basic \(credentials)")
       )
 
       let content = OAuth_RefreshTokenRequest(
@@ -53,14 +50,14 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw OAuthClientErrors.openIDProviderError(response.status)
+         throw OAuthClientErrors.openIDProviderResponseError("\(response.status)")
       }
 
       let tokenResponse: OAuth_RefreshTokenResponse
       do {
          tokenResponse = try response.content.decode(OAuth_RefreshTokenResponse.self)
       } catch {
-         throw OAuthClientErrors.validationError("Refresh Token decoding failed.")
+         throw OAuthClientErrors.validationError("Refresh Token response could not be decoded.")
       }
 
 #if DEBUG
@@ -81,7 +78,10 @@ extension OAuthClient {
       }
 
       do {
-         _ = try await OAuthClient.validateJWT(forTokens: tokenSet, request)
+         _ = try await OAuthClient.validateJWT(
+            forTokens: tokenSet,
+            request
+         )
       } catch {
          throw Abort(.badRequest, reason: "Error exchanging Code for Token")
       }
@@ -91,3 +91,4 @@ extension OAuthClient {
    }
 
 }
+

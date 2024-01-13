@@ -8,7 +8,7 @@ import Vapor
 ///   - username: Username of the user
 ///   - token_type: "bearer"
 ///
-public struct OAuth_TokenIntrospectionResponse: Content {
+public struct OAuthClient_TokenIntrospectionResponse: Content {
 
    public let active: Bool
 

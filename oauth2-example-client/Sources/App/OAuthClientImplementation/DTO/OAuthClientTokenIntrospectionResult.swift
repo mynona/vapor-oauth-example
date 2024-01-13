@@ -1,13 +1,13 @@
 import Vapor
 
-public struct OAuth_TokenIntrospectionResult: Content {
+public struct OAuthClient_TokenIntrospectionResult: Content {
 
-   public let tokenInfo: OAuth_TokenIntrospectionResponse
+   public let tokenInfo: OAuthClient_TokenIntrospectionResponse
    public let accessToken: String?
    public let refreshToken: String?
 
    public init(
-      tokenInfo: OAuth_TokenIntrospectionResponse,
+      tokenInfo: OAuthClient_TokenIntrospectionResponse,
       accessToken: String?,
       refreshToken: String?
    ) {

@@ -6,7 +6,12 @@ extension OAuthClient {
 
    /// Validate Access Token with `oauth/token_info` (introspection endpoint)
    ///
-   static func introspect(accessToken access_token: String, _ request: Request) async throws -> OAuth_TokenIntrospectionResponse {
+   /// - Throws: [OAuthClientErrors](x-source-tag://OAuthClientErrors)
+   ///
+   static func introspect(
+      accessToken access_token: String,
+      _ request: Request
+   ) async throws -> OAuth_TokenIntrospectionResponse {
 
       let content = OAuth_TokenIntrospectionRequest(
          token: access_token
@@ -49,7 +54,7 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw OAuthClientErrors.openIDProviderError(response.status)
+         throw OAuthClientErrors.openIDProviderResponseError("\response.status)")
       }
 
       do {
