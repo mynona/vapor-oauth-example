@@ -4,15 +4,6 @@ import JWTKit
 
 extension OAuthClient {
 
-   public enum IntrospectionError: Error {
-
-      /// OpenID Provider response status was not 200 OK
-      case openIDProviderError
-      /// OAuth_TokenIntrospectionResponse decoding failed
-      case decodingError
-
-   }
-
    /// Validate Access Token with `oauth/token_info` (introspection endpoint)
    ///
    static func introspect(accessToken access_token: String, _ request: Request) async throws -> OAuth_TokenIntrospectionResponse {
@@ -58,7 +49,7 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw IntrospectionError.openIDProviderError
+         throw OAuthClientErrors.openIDProviderError(response.status)
       }
 
       do {
@@ -76,7 +67,7 @@ extension OAuthClient {
          return introspection
 
       } catch {
-         throw IntrospectionError.decodingError
+         throw OAuthClientErrors.dataDecodingError("OAuth_TokenIntrospectionResponse decoding failed.")
       }
    }
 

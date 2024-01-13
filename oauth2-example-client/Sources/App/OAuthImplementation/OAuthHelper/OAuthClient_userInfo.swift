@@ -3,10 +3,10 @@ import Leaf
 
 extension OAuthClient {
    
-   /// Calls endpoint: /oauth/userinfo
+   /// /oauth/userinfo
    ///
-   /// - Returns: Information about user
-   /// - Throws: UserInfoErrors
+   /// - Returns: User Information
+   /// - Throws: OAuthClientErrors
    ///
    static func userInfo(
       _ request: Request
@@ -15,7 +15,7 @@ extension OAuthClient {
       guard
          let access_token: String = request.cookies["access_token"]?.string
       else {
-         throw OAuthClientErrors.noAccessTokenCookieFound
+         throw OAuthClientErrors.tokenCookieNotFound(.AccessToken)
       }
       
       let headers = HTTPHeaders(dictionaryLiteral:
@@ -50,7 +50,7 @@ extension OAuthClient {
       do {
          user = try response.content.decode(OAuth_UserInfoResponse.self)
       } catch {
-         throw OAuthClientErrors.dataDecodingError
+         throw OAuthClientErrors.dataDecodingError("OAuth_UserInfoResponse decoding failed.")
       }
       
       return user

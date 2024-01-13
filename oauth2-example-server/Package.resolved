@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/console-kit.git",
       "state" : {
-        "revision" : "a7dd7001196d39b758e4990ec0f26f80162f4c84",
-        "version" : "4.14.0"
+        "revision" : "a31f44ebfbd15a2cc0fda705279676773ac16355",
+        "version" : "4.14.1"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/fluent-kit.git",
       "state" : {
-        "revision" : "e0bb2b060249b7a501249b1612807b2eaaec28c6",
-        "version" : "1.45.0"
+        "revision" : "6cef8533c9ab87865de58fa3c6e6317e3e09857a",
+        "version" : "1.45.1"
       }
     },
     {
@@ -158,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "b51f1d6845b353a2121de1c6a670738ec33561a6",
-        "version" : "3.1.0"
+        "revision" : "cc76b894169a3c86b71bac10c78a4db6beb7a9ad",
+        "version" : "3.2.0"
       }
     },
     {
@@ -248,8 +248,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "5f7c5a3b87ae12c7bdad61a69dc4a8aaf1f7d576",
-        "version" : "4.91.0"
+        "revision" : "0680f9f6bfab7100cd585b3186740ee7860c983e",
+        "version" : "4.91.1"
       }
     },
     {

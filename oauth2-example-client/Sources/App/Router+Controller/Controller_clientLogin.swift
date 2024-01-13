@@ -8,7 +8,7 @@ extension Controller {
    ///
    func clientLogin(_ request: Request) async throws -> Response {
 
-      return try await OAuthHelper.requestAuthorizationCode(request)
+      return try await OAuthClient.requestAuthorizationCode(request)
 
    }
 

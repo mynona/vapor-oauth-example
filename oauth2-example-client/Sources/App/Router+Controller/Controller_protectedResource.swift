@@ -3,24 +3,18 @@ import Leaf
 
 extension Controller {
 
-   /// Token introspection flow when accessing a protected resource
-   ///
-   /// Endpoint /oauth/token is called with Basic Authentication to check if the access_token is valid
-   /// - valid: show page
-   /// - invalid: show unauthorized page
-   ///
    func protectedResource(_ request: Request) async throws -> Response {
 
+      // Check if the Access Token is valid
+
       guard
-         let introspectionResult = try await OAuthHelper.validateAccessToken(request),
+         let introspectionResult = try await OAuthClient.validateAccessToken(request),
          introspectionResult.tokenInfo.active == true
       else {
-         let view = try await request.view.render(
-            "unauthorized"
-         )
-         let res = try await view.encodeResponse(for: request)
-         return res
+         return request.redirect(to: "http://localhost:8089/unauthorized")
       }
+
+      // You might include to check here also if the scope is correct
 
 #if DEBUG
       print("\n-----------------------------")
@@ -32,24 +26,32 @@ extension Controller {
 #endif
 
 
-      // Return view and update cookie 'access_token'
+      // Return view and update cookies if renewed tokens have been returned
       let view = try await request.view.render(
          "protected-resource"
       )
 
-      let res = try await view.encodeResponse(for: request)
+      let response = try await view.encodeResponse(for: request)
 
-      // Replace Access Token cookie if the Access Token is renewed
+      // Replace Access Token cookie if a new Access Token has been returned
       if let accessToken = introspectionResult.accessToken {
-         res.cookies["access_token"] = OAuthHelper.createCookie(withValue: accessToken, forToken: .AccessToken)
+         response.cookies["access_token"] = OAuthClient.createCookie(
+            withValue: accessToken,
+            forToken: .AccessToken,
+            environment: request.application.environment
+         )
       }
 
-      // Replace Refresh Token cookie if the Refresh Token is renewed
+      // Replace Refresh Token cookie if a new Refresh Token has been returned
       if let refreshToken = introspectionResult.refreshToken {
-         res.cookies["refresh_token"] = OAuthHelper.createCookie(withValue: refreshToken, forToken: .RefreshToken)
+         response.cookies["refresh_token"] = OAuthClient.createCookie(
+            withValue: refreshToken,
+            forToken: .RefreshToken,
+            environment: request.application.environment
+         )
       }
       
-      return res
+      return response
 
    }
 

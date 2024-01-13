@@ -3,24 +3,6 @@ import JWTKit
 
 extension OAuthClient {
 
-   public enum ValidateJWTError: Error {
-
-      /// OpenID Provider response status was not 200 OK
-      case openIDProviderError
-      /// Retrieved JWK Set decoding failed
-      case jwkSetDecodingError
-      /// JWK for provided key identifier (kid) was not found
-      case jwkMissing
-      /// JWK decoding failed
-      case jwkDecodingError
-      /// Verification of token signature or payload failed
-      case jwtValidationError
-      /// Verification of nonce value in IDToken failed
-      case idTokenNonceError
-
-   }
-
-
    /// Verify JWT Signature and payload
    ///
    /// - Throws: verifyJWTError
@@ -43,14 +25,14 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw ValidateJWTError.openIDProviderError
+         throw OAuthClientErrors.openIDProviderError(response.status)
       }
       
       let jwkSet: JWKS
       do {
          jwkSet = try response.content.decode(JWKS.self)
       } catch {
-         throw ValidateJWTError.jwkSetDecodingError
+         throw OAuthClientErrors.validationError("JWK Set decoding failed.")
       }
 
       // Your customized identifier for the RSA key
@@ -60,7 +42,7 @@ extension OAuthClient {
       guard
          let jwks = jwkSet.find(identifier: kid)?.first
       else {
-         throw ValidateJWTError.jwkMissing
+         throw OAuthClientErrors.jwkKeyNotFound
       }
 
       // Generate public Key from JWT for valiation
@@ -69,7 +51,7 @@ extension OAuthClient {
          let exponent = jwks.exponent,
          let publicKey = JWTKit.RSAKey(modulus: modulus, exponent: exponent)
       else {
-         throw ValidateJWTError.jwkDecodingError
+         throw OAuthClientErrors.publicKeyGenerationFailed
       }
 
       let signers = JWTKit.JWTSigners()
@@ -95,12 +77,12 @@ extension OAuthClient {
                guard
                   payload.nonce == nonce
                else {
-                  throw ValidateJWTError.idTokenNonceError
+                  throw OAuthClientErrors.validationError("Nonce could not be validated.")
                }
 
             }
          } catch {
-            throw ValidateJWTError.jwtValidationError
+            throw OAuthClientErrors.validationError("JWT Signature and Payload check of \(type) failed.")
          }
 
 #if DEBUG

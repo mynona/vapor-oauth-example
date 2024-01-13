@@ -58,7 +58,7 @@ extension OAuthClient {
       let content = OAuth_TokenRequest(
          code: code,
          grant_type: "authorization_code",
-         redirect_uri: "\(callback)/callback",
+         redirect_uri: "\(callbackURL)/callback",
          client_id: "1",
          client_secret: "password123",
          code_verifier: codeVerifier

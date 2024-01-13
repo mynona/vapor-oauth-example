@@ -39,7 +39,7 @@ extension OAuthClient {
 
       let content = OAuth_AuthorizationRequest(
          client_id: "1",
-         redirect_uri: "\(callback)/callback",
+         redirect_uri: "\(callbackURL)/callback",
          state: stateVerifier,
          response_type: "code",
          scope: ["openid"],

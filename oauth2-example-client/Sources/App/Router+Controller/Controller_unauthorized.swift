@@ -1,8 +1,16 @@
-//
-//  File.swift
-//  
-//
-//  Created by Andreas Soller on 13.01.24.
-//
+import Vapor
+import Leaf
 
-import Foundation
+extension Controller {
+
+   func unauthorized(_ request: Request) async throws -> Response {
+
+      let view = try await request.view.render(
+         "unauthorized"
+      )
+
+      return try await view.encodeResponse(for: request)
+
+   }
+
+}

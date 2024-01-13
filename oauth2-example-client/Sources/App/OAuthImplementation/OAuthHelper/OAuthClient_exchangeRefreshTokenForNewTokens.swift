@@ -2,20 +2,6 @@ import Vapor
 
 extension OAuthClient {
 
-   public enum TokenExchangeError: Error {
-
-      /// Refresh Token cookie could not be retrieved from request
-      case refreshTokenMissing
-      /// OpenID Provider response for /oauth/token was not 200 OK
-      case openIDProviderError
-      /// OAuth_RefreshTokenResponse decoding failed
-      case tokenResponseDecodingError
-      /// JWK could not be retrieved from OpenID Provider or decoding failed
-      case jwkError
-      /// Verification of JWT signature or payload failed
-      case tokenValidationError
-   }
-
 
    /// Request new Access Token with Refresh Token
    ///
@@ -27,7 +13,7 @@ extension OAuthClient {
       guard
          let refreshToken = request.cookies["refresh_token"]?.string
       else {
-         throw TokenExchangeError.refreshTokenMissing
+         throw OAuthClientErrors.tokenCookieNotFound(.RefreshToken)
       }
 
       // Add basic authentication credentials to the request header
@@ -67,14 +53,14 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw TokenExchangeError.openIDProviderError
+         throw OAuthClientErrors.openIDProviderError(response.status)
       }
 
       let tokenResponse: OAuth_RefreshTokenResponse
       do {
          tokenResponse = try response.content.decode(OAuth_RefreshTokenResponse.self)
       } catch {
-         throw TokenExchangeError.tokenResponseDecodingError
+         throw OAuthClientErrors.validationError("Refresh Token decoding failed.")
       }
 
 #if DEBUG
@@ -96,14 +82,8 @@ extension OAuthClient {
 
       do {
          _ = try await OAuthClient.validateJWT(forTokens: tokenSet, request)
-      } catch ValidateJWTError.openIDProviderError {
-         throw TokenExchangeError.openIDProviderError
-      } catch ValidateJWTError.jwkDecodingError,
-              ValidateJWTError.jwkSetDecodingError,
-              ValidateJWTError.jwkMissing {
-         throw TokenExchangeError.jwkError
       } catch {
-         throw TokenExchangeError.tokenValidationError
+         throw Abort(.badRequest, reason: "Error exchanging Code for Token")
       }
 
       return tokenResponse

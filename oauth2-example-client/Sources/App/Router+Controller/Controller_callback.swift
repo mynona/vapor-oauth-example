@@ -28,19 +28,31 @@ extension Controller {
 
       // Exchange Authorization Code for Access, Refresh and IDToken
       // Validate Token Signatures and Payloads
-      let token = try await OAuthHelper.exchangeAuthorizationCodeForToken(request)
+      let token = try await OAuthClient.exchangeAuthorizationCodeForToken(request)
 
       // Persist retrieved tokens as cookies
       if let accessToken = token.accessToken {
-         res.cookies["access_token"] = OAuthHelper.createCookie(withValue: accessToken, forToken: .AccessToken)
+         res.cookies["access_token"] = OAuthClient.createCookie(
+            withValue: accessToken,
+            forToken: .AccessToken,
+            environment: request.application.environment
+         )
       }
 
       if let refreshToken = token.refreshToken {
-         res.cookies["refresh_token"] = OAuthHelper.createCookie(withValue: refreshToken, forToken: .RefreshToken)
+         res.cookies["refresh_token"] = OAuthClient.createCookie(
+            withValue: refreshToken,
+            forToken: .RefreshToken,
+            environment: request.application.environment
+         )
       }
 
       if let idToken = token.idToken {
-         res.cookies["id_token"] = OAuthHelper.createCookie(withValue: idToken, forToken: .RefreshToken)
+         res.cookies["id_token"] = OAuthClient.createCookie(
+            withValue: idToken,
+            forToken: .RefreshToken,
+            environment: request.application.environment
+         )
       }
 
       return res
