@@ -11,15 +11,13 @@ extension OAuthClient {
    static func introspect(
       accessToken access_token: String,
       _ request: Request
-   ) async throws -> OAuth_TokenIntrospectionResponse {
+   ) async throws -> OAuthClientTokenIntrospectionResponse {
 
-      let content = OAuth_TokenIntrospectionRequest(
+      let content = OAuthClientTokenIntrospectionRequest(
          token: access_token
       )
 
       // Basic authentication credentials for request header
-      let resourceServerUsername = "resource-1"
-      let resourceServerPassword = "resource-1-password"
       let credentials = "\(resourceServerUsername):\(resourceServerPassword)".base64String()
 
       let headers = HTTPHeaders(dictionaryLiteral:
@@ -36,11 +34,16 @@ extension OAuthClient {
       print("-----------------------------")
 #endif
 
-      let response = try await request.client.post(
-         URI(string: "\(oAuthProvider)/oauth/token_info"),
-         headers: headers,
-         content: content
-      )
+      let response: ClientResponse
+      do {
+         response = try await request.client.post(
+            URI(string: "\(oAuthProvider)/oauth/token_info"),
+            headers: headers,
+            content: content
+         )
+      } catch {
+         throw OAuthClientErrors.openIDProviderServerError
+      }
 
 #if DEBUG
       print("\n-----------------------------")
@@ -54,11 +57,15 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw OAuthClientErrors.openIDProviderResponseError("\response.status)")
+         throw OAuthClientErrors.openIDProviderResponseError(
+            "\response.status)"
+         )
       }
 
       do {
-         let introspection: OAuth_TokenIntrospectionResponse = try response.content.decode(OAuth_TokenIntrospectionResponse.self)
+         let introspection: OAuthClientTokenIntrospectionResponse = try response.content.decode(
+            OAuthClientTokenIntrospectionResponse.self
+         )
 
 #if DEBUG
          print("\n-----------------------------")
@@ -68,11 +75,13 @@ extension OAuthClient {
          print("Introspection: \(introspection)")
          print("-----------------------------")
 #endif
-
+         
          return introspection
 
       } catch {
-         throw OAuthClientErrors.dataDecodingError("OAuth_TokenIntrospectionResponse decoding failed.")
+         throw OAuthClientErrors.dataDecodingError(
+            "OAuth_TokenIntrospectionResponse decoding failed."
+         )
       }
    }
 

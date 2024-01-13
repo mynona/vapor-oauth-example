@@ -1,6 +1,6 @@
 import Vapor
 
-public struct OAuthClient_AuthorizationResponse: Content {
+public struct OAuthClientAuthorizationResponse: Content {
 
    enum CodingKeys: String, CodingKey {
       case expiryInMinutes = "expires_in"

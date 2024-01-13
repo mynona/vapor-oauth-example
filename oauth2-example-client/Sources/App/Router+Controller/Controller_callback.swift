@@ -28,7 +28,11 @@ extension Controller {
 
       // Exchange Authorization Code for Access, Refresh and IDToken
       // Validate Token Signatures and Payloads
-      let token = try await OAuthClient.exchangeAuthorizationCodeForToken(request)
+      let token: (accessToken: String?, refreshToken: String?, idToken: String?)
+      do {
+         token = try await OAuthClient.exchangeAuthorizationCodeForTokens(request) }
+      catch { throw Abort(.badRequest, reason: "Error catched")}
+
 
       // Persist retrieved tokens as cookies
       if let accessToken = token.accessToken {

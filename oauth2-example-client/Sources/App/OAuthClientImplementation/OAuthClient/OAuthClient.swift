@@ -40,4 +40,10 @@ public struct OAuthClient {
    // Resource Server password for basic authentication
    static let resourceServerPassword = "resource-1-password"
 
+   // Client ID to call token endpoint
+   static let clientID = "1"
+
+   // Client secret to call token endpoint
+   static let clientSecret = "password123"
+
 }

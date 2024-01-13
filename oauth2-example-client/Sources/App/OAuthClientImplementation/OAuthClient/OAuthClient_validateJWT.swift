@@ -34,14 +34,18 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw OAuthClientErrors.openIDProviderResponseError("\(response.status)")
+         throw OAuthClientErrors.openIDProviderResponseError(
+            "\(response.status)"
+         )
       }
       
       let jwkSet: JWKS
       do {
          jwkSet = try response.content.decode(JWKS.self)
       } catch {
-         throw OAuthClientErrors.validationError("JWK Set decoding failed.")
+         throw OAuthClientErrors.validationError(
+            "JWK Set decoding failed."
+         )
       }
 
       // Extract JWK for customized identifier
@@ -71,24 +75,28 @@ extension OAuthClient {
             switch type {
 
             case .AccessToken:
-               _ = try signers.verify(token, as: Payload_AccessToken.self)
+               _ = try signers.verify(token, as: PayloadAccessToken.self)
 
             case .RefreshToken:
-               _ = try signers.verify(token, as: Payload_RefreshToken.self)
+               _ = try signers.verify(token, as: PayloadRefreshToken.self)
 
             case .IDToken:
-               let payload = try signers.verify(token, as: Payload_IDToken.self)
+               let payload = try signers.verify(token, as: PayloadIDToken.self)
                
                // Check nonce value
                guard
                   payload.nonce == nonce
                else {
-                  throw OAuthClientErrors.validationError("Nonce could not be validated.")
+                  throw OAuthClientErrors.validationError(
+                     "Nonce could not be validated."
+                  )
                }
 
             }
          } catch {
-            throw OAuthClientErrors.validationError("JWT Signature and Payload check of \(type) failed.")
+            throw OAuthClientErrors.validationError(
+               "JWT Signature and Payload check of \(type) failed."
+            )
          }
 
 #if DEBUG

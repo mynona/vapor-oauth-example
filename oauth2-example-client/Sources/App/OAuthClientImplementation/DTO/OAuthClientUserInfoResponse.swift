@@ -1,6 +1,6 @@
 import Vapor
 
-public final class OAuthClient_UserInfoResponse: Content {
+public final class OAuthClientUserInfoResponse: Content {
    
    public var id: String?
    public let username: String

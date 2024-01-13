@@ -8,7 +8,7 @@ extension OAuthClient {
    ///
    static func exchangeRefreshTokenForNewTokens(
       _ request: Request
-   ) async throws -> OAuth_RefreshTokenResponse {
+   ) async throws -> OAuthClientRefreshTokenResponse {
 
       // Get Refresh Token from Cookie
       guard
@@ -24,10 +24,10 @@ extension OAuthClient {
                                  ("Authorization", "Basic \(credentials)")
       )
 
-      let content = OAuth_RefreshTokenRequest(
+      let content = OAuthClientRefreshTokenRequest(
          grant_type: "refresh_token",
-         client_id: "1",
-         client_secret: "password123",
+         client_id: clientID,
+         client_secret: clientSecret,
          refresh_token: refreshToken
       )
 
@@ -50,14 +50,20 @@ extension OAuthClient {
       guard
          response.status == .ok
       else {
-         throw OAuthClientErrors.openIDProviderResponseError("\(response.status)")
+         throw OAuthClientErrors.openIDProviderResponseError(
+            "\(response.status)"
+         )
       }
 
-      let tokenResponse: OAuth_RefreshTokenResponse
+      let tokenResponse: OAuthClientRefreshTokenResponse
       do {
-         tokenResponse = try response.content.decode(OAuth_RefreshTokenResponse.self)
+         tokenResponse = try response.content.decode(
+            OAuthClientRefreshTokenResponse.self
+         )
       } catch {
-         throw OAuthClientErrors.validationError("Refresh Token response could not be decoded.")
+         throw OAuthClientErrors.validationError(
+            "Refresh Token response could not be decoded."
+         )
       }
 
 #if DEBUG
@@ -78,12 +84,9 @@ extension OAuthClient {
       }
 
       do {
-         _ = try await OAuthClient.validateJWT(
-            forTokens: tokenSet,
-            request
-         )
+         _ = try await OAuthClient.validateJWT(forTokens: tokenSet,request)
       } catch {
-         throw Abort(.badRequest, reason: "Error exchanging Code for Token")
+         throw OAuthClientErrors.authorizationFlowFailed
       }
 
       return tokenResponse

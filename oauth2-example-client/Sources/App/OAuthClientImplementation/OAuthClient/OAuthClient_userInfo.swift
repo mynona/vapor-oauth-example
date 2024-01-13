@@ -12,7 +12,7 @@ extension OAuthClient {
    ///
    static func userInfo(
       _ request: Request
-   ) async throws -> OAuth_UserInfoResponse {
+   ) async throws -> OAuthClientUserInfoResponse {
       
       guard
          let access_token: String = request.cookies["access_token"]?.string
@@ -48,11 +48,15 @@ extension OAuthClient {
          throw OAuthClientErrors.openIDProviderResponseError("\(response.status)")
       }
       
-      let user: OAuth_UserInfoResponse
+      let user: OAuthClientUserInfoResponse
       do {
-         user = try response.content.decode(OAuth_UserInfoResponse.self)
+         user = try response.content.decode(
+            OAuthClientUserInfoResponse.self
+         )
       } catch {
-         throw OAuthClientErrors.dataDecodingError("OAuth_UserInfoResponse decoding failed.")
+         throw OAuthClientErrors.dataDecodingError(
+            "OAuth_UserInfoResponse decoding failed."
+         )
       }
       
       return user

@@ -6,7 +6,7 @@ import Vapor
 ///   - client_id: The client ID for the relying party application, obtained when it registered with the OpenID Provider (authorization server)
 ///   - client_secret: Secret for the client application for the oauth server
 ///   - refresh_token: Refresh Token
-public struct OAuthClient_RefreshTokenRequest: Content {
+public struct OAuthClientRefreshTokenRequest: Content {
 
    public let grant_type: String
    public let client_id: String

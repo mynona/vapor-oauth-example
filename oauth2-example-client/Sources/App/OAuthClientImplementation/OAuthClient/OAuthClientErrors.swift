@@ -25,5 +25,14 @@ public enum OAuthClientErrors: Error {
    /// Public RSA Key generation failed
    case publicKeyGenerationFailed
 
+   /// Authorization Grant Flow parameter not returned from OpenID Provider
+   case authorizationFlowParameterMissing(String)
+
+   /// Authorization Grant Flow code could not be exchanged for tokens
+   case authorizationFlowFailed
+
+   /// Scopes not valid
+   case scopesInvalid
+
 }
 

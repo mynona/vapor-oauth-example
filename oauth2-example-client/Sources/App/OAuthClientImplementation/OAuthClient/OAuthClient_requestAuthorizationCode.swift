@@ -41,8 +41,8 @@ extension OAuthClient {
       print("-----------------------------")
 #endif
 
-      let content = OAuth_AuthorizationRequest(
-         client_id: "1",
+      let content = OAuthClientAuthorizationRequest(
+         client_id: clientID,
          redirect_uri: "\(callbackURL)/callback",
          state: stateVerifier,
          response_type: "code",

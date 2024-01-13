@@ -2,14 +2,13 @@ import Vapor
 
 extension OAuthClient {
 
-
    /// Open ID Provider redirects back to the specified redirect_uri with the code and the state.
    ///
-   /// Step 1:
+   /// Step 1: Get authorization code and state
    /// - Client receives the authorization code and state
    /// - Client checks if the state matches the state value sent to the provider
    ///
-   /// Step 2:
+   /// Step 2: Exchange code for tokens
    /// - Client sends the code back to the token endpoints of the provider to retrieve the access_token, refresh_token and id_token
    /// - Client validates signature and payload of tokens
    ///
@@ -31,24 +30,33 @@ extension OAuthClient {
       print("-----------------------------")
 #endif
 
-      // 1. Get authorization code and state
+      // -------------------------------------------------------
+      // Step 1: Get authorization code and state
+      // -------------------------------------------------------
 
-      let code: String? = request.query["code"]
-      let state: String? = request.query["state"]
-
-      // Code and state returned?
       guard
-         let code,
-         let state
+         let code: String = request.query["code"]
       else {
-         throw(Abort(.badRequest, reason: "No 'code' or 'state' value returned from provider."))
+         throw OAuthClientErrors.authorizationFlowParameterMissing(
+            "Required query parameter 'code' missing."
+         )
+      }
+
+      guard
+         let state: String = request.query["state"]
+      else {
+         throw OAuthClientErrors.authorizationFlowParameterMissing(
+            "Required query parameter 'state' missing."
+         )
       }
 
       // State correct?
       guard
          state == stateVerifier
       else {
-         throw(Abort(.badRequest, reason: "Validation of 'state' failed."))
+         throw OAuthClientErrors.validationError(
+            "Validation of query parameter 'state' failed."
+         )
       }
 
 #if DEBUG
@@ -61,14 +69,16 @@ extension OAuthClient {
       print("-----------------------------")
 #endif
 
-      // 2. Request token with authorization code
+      // -------------------------------------------------------
+      // Step 2: Exchange code for tokens
+      // -------------------------------------------------------
 
-      let content = OAuth_TokenRequest(
+      let content = OAuthClientTokenRequest(
          code: code,
          grant_type: "authorization_code",
          redirect_uri: "\(callbackURL)/callback",
-         client_id: "1",
-         client_secret: "password123",
+         client_id: clientID,
+         client_secret: clientSecret,
          code_verifier: codeVerifier
       )
 
@@ -84,48 +94,49 @@ extension OAuthClient {
       print("-----------------------------")
 #endif
 
-      // Throw error if token could not be retrieved
       guard
          response.status == .ok
       else {
-         throw(Abort(response.status))
-      }
-
-      let expiryInMinutes = try response.content.get(Int.self, at: "expires_in")
-      let accessToken = try? response.content.get(String.self, at: "access_token")
-      let refreshToken = try? response.content.get(String.self, at: "refresh_token")
-      let idToken = try? response.content.get(String.self, at: "id_token")
-      let scope = try response.content.get(String.self, at: "scope")
-
-      // Validate Tokens
-      var tokenSet: [TokenType:String] = [:]
-      if let accessToken {
-         tokenSet[.AccessToken] = accessToken
-      }
-
-      if let refreshToken {
-         tokenSet[.RefreshToken] = refreshToken
-      }
-
-      if let idToken {
-         tokenSet[.IDToken] = idToken
-      }
-
-      guard
-         try await OAuthClient.validateJWT(forTokens: tokenSet, request)
-      else {
-         throw Abort(
-            .badRequest,
-            reason: "Validation of Token signature and payload failed."
+         throw OAuthClientErrors.openIDProviderResponseError(
+            "\(response.status)"
          )
       }
 
+      let authorizationResponse: OAuthClientAuthorizationResponse
+      do {
+         authorizationResponse = try response.content.decode(
+            OAuthClientAuthorizationResponse.self
+         )
+      } catch {
+         throw OAuthClientErrors.dataDecodingError(
+            "OAuth_AuthorizationResponse decoding failed."
+         )
+      }
+
+      // Validate Tokens
+      var tokenSet: [TokenType:String] = [:]
+      if let accessToken = authorizationResponse.accessToken {
+         tokenSet[.AccessToken] = accessToken
+      }
+
+      if let refreshToken = authorizationResponse.refreshToken {
+         tokenSet[.RefreshToken] = refreshToken
+      }
+
+      if let idToken = authorizationResponse.idToken {
+         tokenSet[.IDToken] = idToken
+      }
+
+      // No error handling -> propagate potential valiation error to caller function
+      _ = try await OAuthClient.validateJWT(forTokens: tokenSet, request)
+
       return (
-         accessToken: accessToken,
-         refreshToken: refreshToken,
-         idToken: idToken
+         accessToken: authorizationResponse.accessToken,
+         refreshToken: authorizationResponse.refreshToken,
+         idToken: authorizationResponse.idToken
       )
 
    }
 
 }
+

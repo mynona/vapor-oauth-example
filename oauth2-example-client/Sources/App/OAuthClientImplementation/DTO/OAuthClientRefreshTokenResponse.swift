@@ -7,7 +7,7 @@ import Vapor
 ///   - id_token: The ID Token with user claims.
 ///   - expires_in: The lifetime of the access token, in seconds.
 ///   - token_type: Bearer is typically used unless an OpenID Provider has documented another type.
-public struct OAuthClient_RefreshTokenResponse: Content {
+public struct OAuthClientRefreshTokenResponse: Content {
 
    // Access token
    public let access_token: String

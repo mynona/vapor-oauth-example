@@ -5,7 +5,7 @@ extension Controller {
 
    func userInfo(_ request: Request) async throws -> Response {
 
-      let user: OAuth_UserInfoResponse
+      let user: OAuthClientUserInfoResponse
       do {
          user = try await OAuthClient.userInfo(request) }
       catch {
@@ -22,14 +22,10 @@ extension Controller {
 
       }
 
-      //return request.redirect(to: "/introspection-test")
-
       return try await request.view.render(
          "userinfo",
          UserInfo(user: user)
       ).encodeResponse(for: request)
-
-
 
    }
 
