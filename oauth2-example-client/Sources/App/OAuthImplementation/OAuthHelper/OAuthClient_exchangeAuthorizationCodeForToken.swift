@@ -1,6 +1,6 @@
 import Vapor
 
-extension OAuthHelper {
+extension OAuthClient {
 
 
    /// Open ID Provider redirects back to the specified redirect_uri with the code and the state.
@@ -17,7 +17,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Request: \(request)")
       print("-----------------------------")
@@ -45,7 +45,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Authorization code received from oauth server:")
       print("Code: \(code)")
@@ -69,7 +69,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Response received from oauth server:")
       print("Response: \(response)")
@@ -104,7 +104,7 @@ extension OAuthHelper {
       }
 
       guard
-         try await OAuthHelper.validateJWT(forTokens: tokenSet, request)
+         try await OAuthClient.validateJWT(forTokens: tokenSet, request)
       else {
          throw Abort(
             .badRequest,

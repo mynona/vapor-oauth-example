@@ -2,7 +2,7 @@ import Vapor
 import Leaf
 import JWTKit
 
-extension OAuthHelper {
+extension OAuthClient {
 
    public enum IntrospectionError: Error {
 
@@ -32,7 +32,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Token introspection request")
       print("Headers: \(headers)")
@@ -48,7 +48,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Token introspection response:")
       print("Response: \(response)")
@@ -66,7 +66,7 @@ extension OAuthHelper {
 
 #if DEBUG
          print("\n-----------------------------")
-         print("OAuthHelper() \(#function)")
+         print("OAuthClient() \(#function)")
          print("-----------------------------")
          print("Unwrapped response:")
          print("Introspection: \(introspection)")

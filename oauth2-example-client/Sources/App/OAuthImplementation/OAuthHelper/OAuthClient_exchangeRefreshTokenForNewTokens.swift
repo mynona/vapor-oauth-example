@@ -1,6 +1,6 @@
 import Vapor
 
-extension OAuthHelper {
+extension OAuthClient {
 
    public enum TokenExchangeError: Error {
 
@@ -56,7 +56,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Refresh token request header: \(headers)")
       print("-----------------------------")
@@ -79,7 +79,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("-----------------------------")
       print("Unwrapped: \(tokenResponse)")
@@ -95,7 +95,7 @@ extension OAuthHelper {
       }
 
       do {
-         _ = try await OAuthHelper.validateJWT(forTokens: tokenSet, request)
+         _ = try await OAuthClient.validateJWT(forTokens: tokenSet, request)
       } catch ValidateJWTError.openIDProviderError {
          throw TokenExchangeError.openIDProviderError
       } catch ValidateJWTError.jwkDecodingError,

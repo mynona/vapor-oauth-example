@@ -1,7 +1,7 @@
 import Vapor
 import JWTKit
 
-extension OAuthHelper {
+extension OAuthClient {
 
    public enum ValidateJWTError: Error {
 
@@ -29,7 +29,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Called for \(tokenSet)")
       print("-----------------------------")
@@ -105,7 +105,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Signature and payload validation of \(type) was successful.")
       print("-----------------------------")

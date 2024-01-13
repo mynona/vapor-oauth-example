@@ -1,7 +1,7 @@
 import Vapor
 import Leaf
 
-extension OAuthHelper {
+extension OAuthClient {
 
    static func logout(_ request: Request) async throws -> Response {
 
@@ -11,7 +11,7 @@ extension OAuthHelper {
          maxAge: 0,
          domain: nil,
          path: nil,
-         isSecure: false, // in real world case: true
+         isSecure: false, 
          isHTTPOnly: true,
          sameSite: nil
       )

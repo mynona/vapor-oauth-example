@@ -2,7 +2,7 @@ import Vapor
 import Leaf
 import JWTKit
 
-extension OAuthHelper {
+extension OAuthClient {
 
    /// Starts the Authentication flow
    ///
@@ -28,7 +28,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("codeVerifier: \(codeVerifier)")
       print("\(verifierHash)")
@@ -52,7 +52,7 @@ extension OAuthHelper {
 
 #if DEBUG
       print("\n-----------------------------")
-      print("OAuthHelper() \(#function)")
+      print("OAuthClient() \(#function)")
       print("-----------------------------")
       print("Authorization request sent to oauth server:")
       print("URI: \(uri)")

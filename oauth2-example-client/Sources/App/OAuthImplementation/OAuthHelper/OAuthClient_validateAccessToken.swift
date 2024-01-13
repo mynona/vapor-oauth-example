@@ -1,6 +1,6 @@
 import Vapor
 
-extension OAuthHelper {
+extension OAuthClient {
 
    /// Validate Access Token
    ///
@@ -21,7 +21,7 @@ extension OAuthHelper {
          if accessToken == nil || enforceNewAccessToken == true {
 
             do {
-               let response = try await OAuthHelper.exchangeRefreshTokenForNewTokens(request)
+               let response = try await OAuthClient.exchangeRefreshTokenForNewTokens(request)
 
                // Replace existing Tokens with newly retrieved Tokens
                accessToken = response.access_token
@@ -44,7 +44,7 @@ extension OAuthHelper {
          // Call introspection endpoint
          let tokenInfo: OAuth_TokenIntrospectionResponse
          do {
-            tokenInfo = try await OAuthHelper.introspect(accessToken: accessToken, request)
+            tokenInfo = try await OAuthClient.introspect(accessToken: accessToken, request)
          } catch {
             return nil
          }
