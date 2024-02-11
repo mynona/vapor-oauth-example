@@ -2,16 +2,17 @@
 
 https://github.com/brokenhandsio/vapor-oauth
 
+This example is based on the following templates:
+* https://github.com/vamsii777/vapor-auth-server
+* https://github.com/vamsii777/vapor-auth-client
+
+
 ---
 # Context
 
-This repository is based on the oauth example by marius-se:
-
-https://github.com/marius-se/vapor-oauth2-example
-
 Beta release that supports OpenID Connect:
 
-https://github.com/vamsii777/vapor-oauth/releases/tag/1.1.0-beta.3
+https://github.com/vamsii777/vapor-oauth/tree/feature/openid
 
 ---
 # Get started
@@ -56,11 +57,11 @@ Open ID Provider (OAuth server)
 
 Customized routes on the relying party (client) side
 
-* /client-login | Start authorization flow
-* /callback | Retrieve authorization code; request acess_token and refresh_token
-* /introspection-test | Page that calls the /oauth/token_info to see if the access_token is valid. If not, try to exchange the refresh_token for a new access_token
-* /userinfo-test | Calls oauth/userinfo endpoint with Bearer access_token 
-* /client-logout | Initiate logout
+* /auth/login | Start authorization flow
+* /auth/callback | Retrieve authorization code; request acess_token and refresh_token
+* /auth/introspection | Page that calls the /oauth/token_info to see if the access_token is valid. If not, try to exchange the refresh_token for a new access_token
+* /auth/userinfo | Calls oauth/userinfo endpoint with Bearer access_token 
+* /auth/logout | Initiate logout
 
 ---
 # What is included in this example?
@@ -98,7 +99,7 @@ Add the library to Package.swift:
 
 ```
 // Be aware: this is a work-in-progress branch!!!
-.package(url: "https://github.com/vamsii777/vapor-oauth.git", branch: "feature/jwk")
+.package(url: "https://github.com/vamsii777/vapor-oauth.git", branch: "feature/openid")
 ```
 
 ```
@@ -397,7 +398,3 @@ let response = try await request.client.get(
       )
 ```
 
-# Known issues of the current beta release of the vapor/oauth repository:
-
-* You cannot request multiple scopes with the Authorization Grant Flow
-* Cookies are not included when the OpenID Provider returns the Authorization Code to the callback

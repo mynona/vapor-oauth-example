@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Client</title>
+</head>
+
+<body style="background-color:#D7FEED;">
+
+  <h1>Client (Relying party)</h1>
+
+<nav>
+   <ul>
+      <li>
+      <a href="http://localhost:8089/auth/login">Login with Authorization Grant Flow (PKCE):</a><br />&nbsp;<br /><ol><li>Authorization: <br />Request authorization via GET oauth/authorize</li><li>Exchange code with tokens:<br />Request tokens via POST /oauth/token once authorization code has been received</li><li>Validate Tokens<br />Get public es256 key as JWKS via GET /oauth/.well-known/jwks.json<br />Validate signature and payload of received tokens</br>Check state and scope</li><li>Persist tokens as cookies</li></ol>
+      </li>
+      <br />
+      <li>
+      <a href="http://localhost:8089/auth/introspection">Access a protected resource</a><br />&nbsp;<br /><ol><li>Does the access_token cookie exist?<br />If not, retrieve new access_token via /oauth/token if refresh_token exists</li><li>Validate access_token with /oauth/token_info to see if token is active<br />If active -> show protected resource<br />If inactive -> disregard access_token cookie and retrieve new access token if refresh_token exists and validate once more with /oauth/token_info. If inactive -> show unauthorized; if active -> show protected resource</li></ol>
+      </li>
+      <br />
+      <li>
+      <a href="http://localhost:8089/auth/userinfo">Userinfo</a><br />&nbsp;<br /><ol><li>Call oauth/userinfo with existig access_token<br />(In this flow no new access token is requested for the refresh token for testing purposes. To refresh the access token access the protected resource first. As part of the token introspection flow the refresh token is exchanged for a new access token.)</li><li>Show retrieved user data</li></ol>
+      </li>
+   </ul>
+</nav>
+
+
+
+</body>
+</html>

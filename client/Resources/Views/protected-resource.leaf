@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Client</title>
+</head>
+
+<body style="background-color:#D7FEED;">
+
+  <h1>Client (Relying party)</h1>
+
+  <h2>Access granted. You have a valid access token :-)</h2>
+
+<nav>
+   <ul>
+      <li><a href="http://localhost:8089/auth">Return to home</a></li>
+      <br />
+      <li><a href="http://localhost:8089/auth/logout">Log out</a> </li>
+   </ul>
+</nav>
+
+
+
+</body>
+</html>
