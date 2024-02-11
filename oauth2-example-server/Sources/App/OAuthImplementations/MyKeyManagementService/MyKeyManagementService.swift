@@ -1,114 +1,166 @@
 import Vapor
-import VaporOAuth
 import Fluent
 import JWTKit
+import VaporOAuth
+import Crypto
 
-
-/// Key Management Service
-///
-/// Generate private key:
-/// * openssl genpkey -algorithm RSA -out private_key.pem
-/// * openssl genpkey -algorithm RSA -pass pass:test -out private_key.pem
-///
-/// Display private key; if passphrase defined you will be prompted
-/// * openssl rsa -check -in private_key.pem
-///
-/// Generate public key out of the private key
-/// * openssl rsa -pubout -in private_key.pem -out public_key.pem
-///
-/// Get the modulus of the key
-/// * openssl rsa -pubout -in private_key.pem -noout -modulus
-/// * openssl rsa -in private_key.pem -noout -text
-///
-/// Ansi parse
-/// * openssl asn1parse -in public_key.pem -i -dump
-///
 final class MyKeyManagementService: VaporOAuth.KeyManagementService {
 
-   private let app: Application
+    private let app: Application
+    private let cryptoKeysRepository: CryptoKeysRepository
 
-   init(app: Application) {
-      self.app = app
-   }
+    init(app: Application, cryptoKeysRepository: CryptoKeysRepository) {
+        self.app = app
+        self.cryptoKeysRepository = cryptoKeysRepository
+    }
 
-   public var privateKey: RSAKey? {
+    func generateKey() async throws -> (privateKeyIdentifier: String, publicKeyIdentifier: String) {
+        let privateKey = P256.KeyAgreement.PrivateKey()
+        let publicKey = privateKey.publicKey
 
-      let pem =
-"""
------BEGIN PRIVATE KEY-----
-MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC2eyLG1Z2aa2Gt
-F6iB7DuqYDsq2W9pkZiHeWrkZ2lxwq0+IIAGai4Y5UbW2iWKva2hesWRlzEpNbZA
-sG0JgmHec0ddWpjjFnmbHnsgkTrY4wE6X8wzpCy25SsuZm3WAyWlZaGX7XEI6aqh
-/GTFsfRzGOuT/6c5+6ycCS/gyZ2DLDuDWGVhEKp3FXCjspNjnRrISszViD1IoH+J
-kajo5NFMfYpfeuZE/oBQ2ZHpjToq0y//IsJ6ypHz1MEkKq48/PF18DYSjPadHiUu
-t7MzAq59t5TJ5lAFYBkZUeF+q8DvaX2HFc6rbCwh2E2qJUFBtw96Qg20D2zLjI4X
-DC/+qYlPAgMBAAECggEABJ+7fTJYhgXb5G5JtNEZn0hE94xUSGaKE5S+DVTu1RUh
-HVvmzULPhuNNwjqmN40gOIv13v89HargwrmLFHHwrO8Fi0C1Hbv/ZNuG3zJkPVld
-5JlyK999ypH6tXhJpuH5iDwPtjEsFhUQX9PCHJ2qcL2G6qnQa6W29VU+Q1dDMy8B
-ZaPObEM+DmANLMQPZCrkmi/wiJHgqZTeGN03bNk2sMjoq2r/H2VmCHK6BvDdohXr
-nOvyrBg9cDJETk/uYVJojGux+Dxvx3nFaFuuWfuhJ4J5N9yX7rUPoMv1oYRcYCBw
-oWd7QSdNNhXPlQEvq6q72GoFglgdF/oSoPcthqTRUQKBgQDxfPm9ML0xH0wKeoW2
-LCaiJCwdyp2j1q7W1FibBHs8a/g1Av3GkXctWjxgdKLaRsrpPm4pzXwVsECrkECg
-2FE5KAN/kHJKj1szpdYR5UtHxqHG2qqNmLNMff9VL3wt/nL+VrOMMVcUR4sR0zfe
-MEkRdyXHPIS6QaPdDX4UeLeL0wKBgQDBcmap0ox2UZqa9h0duJnO53QTyA10ORT1
-amjMNlMLEA/zk5/7dzmdfsUY8ihBoerT7oF6w6wuTA0R5D5sKNcBjemsI5iQHSS/
-Qp/Zxq36A7THt3VXpsrb8P5QRQNL9G8ig7aIQzhjyqA4bNpfi4+SB4zR+OJyZXOL
-DtOBFmMLFQKBgQCURHVZcYlXla2saVmbZjQ6LRdhGzv6kh87C5lzZCb+DBSTB8kk
-l7+ietrDJhmvBvQijRA6Xk2nS1YJgEIN/4KvIyAyvE9P9AC9Dz8GMdAsu4ose6ln
-0q+TcXDJrqQB4U5dVoJauxiJ/Psn8JVGuELElHD/iOq9KPwhBt24V/3pvQKBgEMc
-PSGNOc2SYeCAoXk+IZ32Df8O2BwJ8Ytybwjpj8W2vNHz1PyYUBSjdh1BZVXfpmf/
-xkugtosZNy+Nz1oWkQCpCvf9IWBdu/HeWzZiBtlFj+H5c2wFITtMT+3pA0vGcQe4
-SgrbxyRXl1375YZgFF7E38W4Ylbtezgy3I1cBuBBAoGBAMOa0ChC7VHV5WyB88cd
-ZeNNfZz+ugg2FvyEOjy0fs5L4FEjdJvnXJfRqCbLjBEpPsrTydGIWfm4H5YjGyx2
-EKBwiCB+VTRjQ8SqJ2PUsmVIBhAPKahAZQkhbMQAyMZwGaKva9FCvVtng6nMSixZ
-vZVdVCpopLzPjH7MWw5x1vB1
------END PRIVATE KEY-----
-"""
-      // Inititalize an RSA key with private pem
-      do {
-         let privateKey = try RSAKey.private(pem: pem)
-         return privateKey
-      } catch {
-         return nil
-      }
-   }
+        let privateKeyPem = privateKey.pemRepresentation
+        let publicKeyPem = publicKey.pemRepresentation
 
-   public var publicKey: RSAKey? {
+        let privateKeyRecord = CryptoKey(keyType: .private, keyValue: privateKeyPem, validFrom: Date(), validUntil: Date().addingTimeInterval(365*24*60*60), isActive: true)
+        let publicKeyRecord = CryptoKey(keyType: .public, keyValue: publicKeyPem, validFrom: Date(), validUntil: Date().addingTimeInterval(365*24*60*60), isActive: true)
 
-      let pem =
-"""
------BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtnsixtWdmmthrReogew7
-qmA7KtlvaZGYh3lq5GdpccKtPiCABmouGOVG1tolir2toXrFkZcxKTW2QLBtCYJh
-3nNHXVqY4xZ5mx57IJE62OMBOl/MM6QstuUrLmZt1gMlpWWhl+1xCOmqofxkxbH0
-cxjrk/+nOfusnAkv4Mmdgyw7g1hlYRCqdxVwo7KTY50ayErM1Yg9SKB/iZGo6OTR
-TH2KX3rmRP6AUNmR6Y06KtMv/yLCesqR89TBJCquPPzxdfA2Eoz2nR4lLrezMwKu
-fbeUyeZQBWAZGVHhfqvA72l9hxXOq2wsIdhNqiVBQbcPekINtA9sy4yOFwwv/qmJ
-TwIDAQAB
------END PUBLIC KEY-----
-"""
-      // Initialize an RSA key with public pem
-      do {
-         let publicKey = try RSAKey.public(pem: pem)
-         return publicKey
-      } catch {
-         return nil
-      }
-   }
+        try await cryptoKeysRepository.create(privateKeyRecord, operation: .create)
+        try await cryptoKeysRepository.create(publicKeyRecord, operation: .create)
 
-   /// Extract modulus from Key:
-   ///
-   /// PEM to JWK converter: Enter the public key and try the endpoint /.well-known/jwks.json to create the PEM for validation
-   ///
-   /// * https://8gwifi.org/jwkconvertfunctions.jsp
-   ///
-   public let modulus: String = "tnsixtWdmmthrReogew7qmA7KtlvaZGYh3lq5GdpccKtPiCABmouGOVG1tolir2toXrFkZcxKTW2QLBtCYJh3nNHXVqY4xZ5mx57IJE62OMBOl_MM6QstuUrLmZt1gMlpWWhl-1xCOmqofxkxbH0cxjrk_-nOfusnAkv4Mmdgyw7g1hlYRCqdxVwo7KTY50ayErM1Yg9SKB_iZGo6OTRTH2KX3rmRP6AUNmR6Y06KtMv_yLCesqR89TBJCquPPzxdfA2Eoz2nR4lLrezMwKufbeUyeZQBWAZGVHhfqvA72l9hxXOq2wsIdhNqiVBQbcPekINtA9sy4yOFwwv_qmJTw"
+        // Assuming the ID is generated during the 'create' process and is available in the record
+        guard let privateKeyId = privateKeyRecord.id?.uuidString, let publicKeyId = publicKeyRecord.id?.uuidString else {
+            throw Abort(.internalServerError)
+        }
+
+        return (privateKeyId, publicKeyId)
+    }
+
+    func storeKey(_ key: String, keyType: VaporOAuth.KeyType) async throws {
+        let keyRecord = CryptoKey(keyType: keyType, keyValue: key, validFrom: Date(), isActive: true)
+        try await cryptoKeysRepository.create(keyRecord, operation: .create)
+    }
+
+    func retrieveKey(identifier: String, keyType: VaporOAuth.KeyType) async throws -> Data {
+        guard let keyRecord = try await cryptoKeysRepository.find(identifier: identifier, keyType: keyType.rawValue) else {
+            throw Abort(.notFound)
+        }
+
+        switch keyType {
+        case .private:
+            // Parse the PEM representation of the private key
+            let privateKeyPem = keyRecord.keyValue
+            guard let privateKey = try? P256.Signing.PrivateKey(pemRepresentation: privateKeyPem) else {
+                throw Abort(.internalServerError, reason: "Failed to parse P-256 private key")
+            }
+            return privateKey.rawRepresentation
+
+        case .public:
+            // Parse the PEM representation of the public key
+            let publicKeyPem = keyRecord.keyValue
+            guard let publicKey = try? P256.Signing.PublicKey(pemRepresentation: publicKeyPem) else {
+                throw Abort(.internalServerError, reason: "Failed to parse P-256 public key")
+            }
+            return publicKey.rawRepresentation
+
+        default:
+            throw Abort(.badRequest, reason: "Unsupported key type")
+        }
+    }
+
+    func listKeys() async throws -> [String] {
+        let keys = try await cryptoKeysRepository.list()
+        return keys.map { $0.keyValue }
+    }
+
+    func deleteKey(identifier: String) async throws {
+        return try await cryptoKeysRepository.delete(identifier: identifier)
+    }
+
+    func publicKeyIdentifier() async throws -> String {
+        let keyRecord = try await cryptoKeysRepository.findActiveKey(keyType: .public)
+        // Assuming `keyRecord` has a property named `keyIdentifier` which is a String
+        return keyRecord.id!.uuidString
+    }
+
+    func rotateKey(deprecateOld: Bool) async throws {
+        let oldPrivateKey = try await cryptoKeysRepository.findActiveKey(keyType: .private)
+        let newPrivateKey = P256.KeyAgreement.PrivateKey()
+        let newPublicKey = newPrivateKey.publicKey
+
+        let privateKeyPem = newPrivateKey.pemRepresentation
+        let publicKeyPem = newPublicKey.pemRepresentation
+
+        let newPrivateKeyRecord = CryptoKey(keyType: .private, keyValue: privateKeyPem, validFrom: Date(), validUntil: Date().addingTimeInterval(365*24*60*60), isActive: true)
+        let newPublicKeyRecord = CryptoKey(keyType: .public, keyValue: publicKeyPem, validFrom: Date(), validUntil: Date().addingTimeInterval(365*24*60*60), isActive: true)
 
 
-   /// Extract modulus from Key:
-   ///
-   /// * openssl rsa -pubin -in public_key.pem -text -noout
-   ///
-   public let exponent: String = "AQAB" // representation of 65537
+        try await cryptoKeysRepository.create(newPrivateKeyRecord, operation: .rotate)
+        try await cryptoKeysRepository.create(newPublicKeyRecord, operation: .rotate)
 
+
+        if deprecateOld {
+            oldPrivateKey.isActive = false
+            try await cryptoKeysRepository.create(oldPrivateKey, operation: .deprecate)
+            // Also handle the deprecation of the old public key if necessary
+            let oldPublicKey = try await cryptoKeysRepository.findActiveKey(keyType: .public)
+            oldPublicKey.isActive = false
+            try await cryptoKeysRepository.create(oldPublicKey, operation: .deprecate)
+        }
+    }
+
+    func privateKeyIdentifier() async throws -> String {
+        let keyRecord = try await cryptoKeysRepository.findActiveKey(keyType: .private)
+        //        for key in keyRecord {
+        //            if key.isActive {
+        //                return key.keyValue
+        //            }
+        //        }
+        return keyRecord.id!.uuidString
+    }
+
+    func calculateKid(_ publicKey: Data) -> JWKIdentifier {
+        // Create a SHA-256 hash of the public key data
+        let sha256 = SHA256.hash(data: publicKey)
+
+        // Convert the hash to a Base64URL encoded string
+        let base64URL = Data(sha256).base64URLEncodedString()
+
+        return JWKIdentifier(stringLiteral: base64URL)
+    }
+
+    func convertToJWK(_ publicKey: Data) throws -> [JWK] {
+        // Since P-256 keys are 64 bytes in length (32 bytes for X and 32 bytes for Y),
+        // split the raw bytes into X and Y components.
+        // Note: This might vary for different key types.
+        guard publicKey.count == 64 else {
+            throw NSError(domain: "InvalidKeyLength", code: -1, userInfo: nil)
+        }
+
+        let xBytes = publicKey.prefix(32)
+        let yBytes = publicKey.suffix(32)
+
+        // Convert the X and Y bytes to Base64URL encoded strings
+        let xBase64 = xBytes.base64EncodedString()
+        let yBase64 = yBytes.base64EncodedString()
+
+        // Calculate the "kid" (Key ID)
+        let kid = calculateKid(publicKey)
+
+        // Construct the JWK dictionary
+        let jwk: JWK = .ecdsa(.es256, identifier: kid, x: xBase64, y: yBase64, curve: .p256)
+
+        return [jwk]
+    }
+}
+
+
+// Utility function to Base64URL encode Data
+extension Data {
+    func base64URLEncodedString() -> String {
+        var base64 = self.base64EncodedString()
+        base64 = base64.replacingOccurrences(of: "+", with: "-")
+        base64 = base64.replacingOccurrences(of: "/", with: "_")
+        base64 = base64.trimmingCharacters(in: CharacterSet(["="]))
+        return base64
+    }
 }
